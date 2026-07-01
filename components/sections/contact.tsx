@@ -1,0 +1,139 @@
+"use client"
+
+import { useState } from "react"
+import { MapPin, Mail, Phone, Send, Check } from "lucide-react"
+import { Reveal } from "@/components/motion-primitives"
+
+export function Contact() {
+  const [sent, setSent] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setSent(true)
+    setTimeout(() => setSent(false), 4000)
+  }
+
+  return (
+    <section id="contact" className="relative py-20 md:py-28">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* info + map */}
+          <Reveal>
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary">Contact</p>
+            <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+              Talk to a dermatology expert
+            </h2>
+            <p className="mt-4 text-pretty text-muted-foreground">
+              Whether you&apos;re a healthcare professional, distributor, or patient, our team is ready to help.
+            </p>
+
+            <div className="mt-8 space-y-4">
+              {[
+                { icon: MapPin, label: "Headquarters", value: "Innovation Park, Bengaluru, India" },
+                { icon: Mail, label: "Email", value: "care@galcare.com" },
+                { icon: Phone, label: "Phone", value: "+91 80 4000 1234" },
+              ].map((c) => (
+                <div key={c.label} className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-soft">
+                  <div className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
+                    <c.icon className="size-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">{c.label}</p>
+                    <p className="font-medium">{c.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 overflow-hidden rounded-3xl border border-border shadow-soft">
+              <iframe
+                title="Galcare location map"
+                src="https://www.google.com/maps?q=Bengaluru&output=embed"
+                className="h-56 w-full grayscale-[30%]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </Reveal>
+
+          {/* form */}
+          <Reveal delay={0.1}>
+            <form
+              onSubmit={handleSubmit}
+              className="rounded-[2rem] glass-strong p-6 shadow-soft sm:p-8"
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Full name" id="name" placeholder="Dr. Jane Doe" />
+                <Field label="Email" id="email" type="email" placeholder="you@example.com" />
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <Field label="Organization" id="org" placeholder="Clinic / Company" />
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="role" className="text-sm font-medium">I am a</label>
+                  <select
+                    id="role"
+                    className="rounded-xl border border-input bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+                  >
+                    <option>Healthcare Professional</option>
+                    <option>Distributor</option>
+                    <option>Patient</option>
+                    <option>Investor</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-col gap-1.5">
+                <label htmlFor="message" className="text-sm font-medium">Message</label>
+                <textarea
+                  id="message"
+                  rows={5}
+                  placeholder="How can we help?"
+                  className="resize-none rounded-xl border border-input bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <button
+                type="submit"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:-translate-y-0.5"
+              >
+                {sent ? (
+                  <>
+                    <Check className="size-4" /> Message sent
+                  </>
+                ) : (
+                  <>
+                    <Send className="size-4" /> Send message
+                  </>
+                )}
+              </button>
+            </form>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Field({
+  label,
+  id,
+  type = "text",
+  placeholder,
+}: {
+  label: string
+  id: string
+  type?: string
+  placeholder?: string
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={id} className="text-sm font-medium">
+        {label}
+      </label>
+      <input
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        className="rounded-xl border border-input bg-card px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+      />
+    </div>
+  )
+}
