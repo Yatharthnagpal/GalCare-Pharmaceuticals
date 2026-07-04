@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
@@ -58,13 +59,12 @@ export default function NewsPage() {
                       </p>
                     </div>
                     <div className="mt-6 pt-4 border-t border-border flex justify-between items-center">
-                      <a
+                      <Link
                         href={`/news/${i}`}
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-primary group-hover:underline"
-                        onClick={(e) => e.preventDefault()}
                       >
                         Read Article <ArrowRight className="size-3" />
-                      </a>
+                      </Link>
                       <span className="grid size-8 place-items-center rounded-lg bg-muted text-muted-foreground">
                         <BookOpen className="size-4" />
                       </span>

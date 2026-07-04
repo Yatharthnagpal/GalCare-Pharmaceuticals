@@ -54,7 +54,7 @@ export function Footer() {
               alt="Galcare"
               width={160}
               height={44}
-              className="h-10 w-auto dark:brightness-0 dark:invert"
+              className="h-10 w-auto logo-adaptive"
             />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
               Premium skincare and pharmaceutical solutions backed by science, trusted by dermatologists worldwide.

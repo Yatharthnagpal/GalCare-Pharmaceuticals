@@ -10,8 +10,8 @@ import { MapPin, Phone, Mail, Send, CheckCircle2, Building, ShieldCheck } from "
 const locations = [
   {
     type: "Corporate Headquarters",
-    address: "Galcare House, 45, Industrial Area, Phase 1, Panchkula, Haryana, India",
-    phone: "+91 172 5050501",
+    address: "53 - 54 Basement, Devi Nagar, Jaipur, Rajasthan, India",
+    phone: "+91-7230058817",
     email: "info@galcare.com"
   },
   {
@@ -220,7 +220,7 @@ export default function ContactPage() {
             <Reveal className="overflow-hidden rounded-[2rem] border border-border shadow-soft">
               <iframe
                 title="Galcare Head Office Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.4357731306353!2d76.84074211513221!3d30.70617938164627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390f9349e5d4cb05%3A0x6b87640db0881b2a!2sIndustrial%20Area%20Phase%201%2C%20Panchkula%2C%20Haryana%20134113!5e0!3m2!1sen!2sin!4v1625000000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps?q=Devi+Nagar,+Jaipur&output=embed"
                 width="100%"
                 height="450"
                 style={{ border: 0 }}

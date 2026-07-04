@@ -1,30 +1,37 @@
 "use client"
 
+import { useState, useRef } from "react"
 import Image from "next/image"
-import { motion, useMotionValue, useTransform, useSpring } from "motion/react"
+import { motion, useMotionValue, useTransform, useSpring, useScroll } from "motion/react"
 import { ArrowRight, ShieldCheck, Sparkles, Star } from "lucide-react"
-
-const molecules = [
-  { top: "12%", left: "8%", size: 90, delay: 0 },
-  { top: "62%", left: "14%", size: 60, delay: 0.4 },
-  { top: "22%", left: "82%", size: 70, delay: 0.8 },
-  { top: "70%", left: "78%", size: 110, delay: 0.2 },
-]
+import { Counter } from "@/components/motion-primitives"
 
 export function Hero() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  
+  // Parallax scroll effect for the secondary chip
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  })
+  
+  // Moves slightly slower than scroll speed
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -100])
+  const parallaxSpring = useSpring(parallaxY, { damping: 25, stiffness: 120 })
+
   const x = useMotionValue(0)
   const y = useMotionValue(0)
 
   // Spring animations for smooth, organic movement
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { damping: 25, stiffness: 180 })
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { damping: 25, stiffness: 180 })
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [8, -8]), { damping: 25, stiffness: 180 })
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-8, 8]), { damping: 25, stiffness: 180 })
 
   // Parallax offsets for floating badges
-  const badge1X = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { damping: 20, stiffness: 150 })
-  const badge1Y = useSpring(useTransform(y, [-0.5, 0.5], [-15, 15]), { damping: 20, stiffness: 150 })
+  const badge1X = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { damping: 20, stiffness: 150 })
+  const badge1Y = useSpring(useTransform(y, [-0.5, 0.5], [-10, 10]), { damping: 20, stiffness: 150 })
 
-  const badge2X = useSpring(useTransform(x, [-0.5, 0.5], [15, -15]), { damping: 20, stiffness: 150 })
-  const badge2Y = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { damping: 20, stiffness: 150 })
+  const badge2X = useSpring(useTransform(x, [-0.5, 0.5], [10, -10]), { damping: 20, stiffness: 150 })
+  const badge2Y = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { damping: 20, stiffness: 150 })
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect()
@@ -41,67 +48,101 @@ export function Hero() {
     y.set(0)
   }
 
+  // Cursor follow glow states
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleContainerMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
+  }
+
+  // Staggered animation containers
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  }
+
   return (
-    <section id="home" className="relative overflow-hidden pt-32 pb-20 md:pt-40 md:pb-28">
+    <section
+      ref={containerRef}
+      id="home"
+      onMouseMove={handleContainerMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative overflow-hidden pt-28 pb-12 md:pt-44 md:pb-28"
+    >
+      {/* cursor-follow glow background */}
+      {isHovered && (
+        <motion.div
+          className="pointer-events-none absolute -z-10 rounded-full bg-primary/10 blur-[120px] hidden md:block"
+          style={{
+            x: mousePosition.x - 200,
+            y: mousePosition.y - 200,
+            width: 400,
+            height: 400,
+          }}
+          transition={{ type: "spring", damping: 40, stiffness: 150, mass: 0.6 }}
+        />
+      )}
+
       {/* soft gradient backdrop */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]" />
         <div className="absolute right-0 top-40 h-[380px] w-[380px] rounded-full bg-teal/15 blur-[110px]" />
       </div>
 
-      {/* floating molecules */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 hidden md:block">
-        {molecules.map((m, i) => (
-          <div
-            key={i}
-            className={i % 2 === 0 ? "animate-float-slow absolute" : "animate-float-slower absolute"}
-            style={{ top: m.top, left: m.left }}
-          >
-            <div
-              className="rounded-full border border-primary/20 bg-primary/5 backdrop-blur-sm"
-              style={{ width: m.size, height: m.size }}
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-6 lg:grid-cols-2">
-        <div>
+      {/* Grid aligned items-start to prevent logo overlap on shorter viewports */}
+      <div className="mx-auto grid max-w-7xl items-start gap-12 px-4 md:px-6 lg:grid-cols-2 lg:pt-8">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col items-center text-center lg:items-start lg:text-left"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-sm font-medium text-foreground/70 backdrop-blur"
+            variants={itemVariants}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 text-sm font-medium text-foreground/70 backdrop-blur-sm"
           >
-            <Sparkles className="size-4 text-primary" />
-            Innovation Skin Care · Since 2001
+            <span 
+              className="size-2 rounded-full bg-emerald-500" 
+              style={{ animation: 'pulse 0.8s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}
+            />
+            Since 2008
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.05 }}
-            className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl"
+            variants={itemVariants}
+            className="mt-6 text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-5xl md:text-6xl"
           >
             Innovation in Dermatology.{" "}
             <span className="text-gradient">Trusted by Healthcare Professionals.</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.12 }}
-            className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground"
+            variants={itemVariants}
+            className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground"
           >
             Premium skincare and pharmaceutical solutions backed by science and innovation, trusted by
             dermatologists across 42 countries.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.18 }}
-            className="mt-8 flex flex-wrap items-center gap-3"
+            variants={itemVariants}
+            className="mt-6 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
           >
             <a
               href="#products"
@@ -112,73 +153,102 @@ export function Hero() {
             </a>
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur transition-colors hover:bg-accent"
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:bg-accent"
             >
               Contact Team
             </a>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground"
+            variants={itemVariants}
+            className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground lg:justify-start"
           >
-            <span className="inline-flex items-center gap-2">
+            <span className="inline-flex items-center gap-2 font-medium">
               <ShieldCheck className="size-4 text-teal" /> WHO-GMP Certified
             </span>
-            <span className="inline-flex items-center gap-2">
-              <Star className="size-4 text-teal" /> 30K+ Doctors Trust Us
+            <span className="inline-flex items-center gap-2 font-medium">
+              <Star className="size-4 text-teal" /> <Counter value={30} suffix="K+" /> Doctors Trust Us
             </span>
           </motion.div>
-        </div>
+        </motion.div>
 
-        {/* product showcase */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-md"
-          style={{ perspective: 1000 }}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-        >
+        {/* lifestyle image split layout right side */}
+        <div className="relative">
           <motion.div
-            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className="relative rounded-[2rem] glass-strong p-6 shadow-soft transition-all duration-200"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="relative mx-auto w-full max-w-[320px] sm:max-w-md lg:max-w-lg"
+            style={{ perspective: 1000 }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
           >
             <motion.div
-              animate={{ y: [0, -14, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="relative aspect-square overflow-hidden rounded-3xl bg-gradient-to-b from-primary/5 to-teal/5"
-              style={{ transform: "translateZ(40px)" }}
+              style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+              className="relative rounded-[2rem] glass-strong p-4 shadow-soft transition-all duration-200"
             >
-              <Image
-                src="/products/hero-serum.png"
-                alt="Galcare premium dermatology serum"
-                fill
-                priority
-                className="object-contain p-6"
-              />
-            </motion.div>
+              <div 
+                className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.8rem] bg-gradient-to-b from-primary/5 to-teal/5 z-10"
+                style={{ transform: "translateZ(40px)" }}
+              >
+                {/* Ken Burns effect on the main hero image */}
+                <motion.div
+                  className="relative w-full h-full"
+                  animate={{
+                    scale: [1, 1.07, 1.02, 1.09, 1],
+                    x: [0, 8, -6, 5, 0],
+                    y: [0, -5, 8, -4, 0]
+                  }}
+                  transition={{
+                    duration: 18,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Image
+                    src="/images/placeholders/hero-woman-applying-serum.png"
+                    alt="Woman applying serum to face"
+                    fill
+                    priority
+                    className="object-cover"
+                  />
+                </motion.div>
+              </div>
 
-            <motion.div
-              style={{ x: badge1X, y: badge1Y, transform: "translateZ(70px)" }}
-              className="absolute -left-4 top-10 rounded-2xl glass-strong px-4 py-3 shadow-soft"
-            >
-              <p className="text-xs text-muted-foreground">Clinically proven</p>
-              <p className="text-lg font-semibold">98% efficacy</p>
-            </motion.div>
+              {/* Parallax Floating Image Chip */}
+              <motion.div
+                style={{ y: parallaxSpring, z: 60 }}
+                className="absolute -left-12 bottom-12 hidden w-44 overflow-hidden rounded-2xl border-2 border-background shadow-lg md:block aspect-square z-20"
+              >
+                <div className="relative w-full h-full bg-gradient-to-b from-primary/5 to-teal/5">
+                  <Image
+                    src="/images/placeholders/hands-applying-moisturizer.png"
+                    alt="Close-up of hands applying moisturizer"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </motion.div>
 
-            <motion.div
-              style={{ x: badge2X, y: badge2Y, transform: "translateZ(70px)" }}
-              className="absolute -right-4 bottom-10 rounded-2xl glass-strong px-4 py-3 shadow-soft"
-            >
-              <p className="text-xs text-muted-foreground">Dermatologist</p>
-              <p className="text-lg font-semibold">Recommended</p>
+              {/* Extra context chips */}
+              <motion.div
+                style={{ x: badge1X, y: badge1Y, z: 70 }}
+                className="absolute right-2 sm:-right-6 top-8 rounded-xl sm:rounded-2xl glass-strong px-2.5 py-1.5 sm:px-4 sm:py-3 shadow-soft pointer-events-none z-30"
+              >
+                <p className="text-[9px] sm:text-xs text-muted-foreground leading-none">Clinically proven</p>
+                <p className="text-xs sm:text-lg font-semibold mt-0.5 sm:mt-1 leading-none">98% efficacy</p>
+              </motion.div>
+
+              <motion.div
+                style={{ x: badge2X, y: badge2Y, z: 70 }}
+                className="absolute right-2 sm:-right-4 bottom-14 rounded-xl sm:rounded-2xl glass-strong px-2.5 py-1.5 sm:px-4 sm:py-3 shadow-soft pointer-events-none z-30"
+              >
+                <p className="text-[9px] sm:text-xs text-muted-foreground leading-none">Dermatologist</p>
+                <p className="text-xs sm:text-lg font-semibold mt-0.5 sm:mt-1 leading-none">Recommended</p>
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
