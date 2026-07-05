@@ -78,9 +78,9 @@ export function Products() {
     <section id="products" className="relative py-12 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">Featured Products</p>
+          <a href="/products" className="text-sm font-semibold uppercase tracking-widest text-primary hover:underline underline-offset-4 transition-all">Featured Products</a>
           <h2 className="mt-3 text-balance text-2xl font-semibold tracking-tight sm:text-4xl leading-tight">
-            Science-led dermatology, beautifully formulated
+            <a href="/products" className="hover:text-primary transition-colors">Science-led dermatology, beautifully formulated</a>
           </h2>
           <p className="mt-4 text-pretty text-muted-foreground">
             A curated portfolio spanning prescription and cosmetic care, engineered for measurable results.

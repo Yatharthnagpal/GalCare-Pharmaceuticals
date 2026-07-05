@@ -145,7 +145,7 @@ export function Hero() {
             className="mt-6 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
           >
             <a
-              href="#products"
+              href="/products"
               className="group inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:-translate-y-0.5"
             >
               Explore Products
