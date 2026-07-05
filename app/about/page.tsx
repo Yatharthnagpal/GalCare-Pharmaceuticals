@@ -22,9 +22,9 @@ const journey = [
 ]
 
 const team = [
-  { name: "Dr. R. K. Nagpal", role: "Founder & Chairman", description: "Pharmacist and visionary with over 35 years of experience in healthcare leadership." },
-  { name: "Mrs. Meenakshi Nagpal", role: "Managing Director", description: "Drives corporate strategy, compliance, and global regulatory affairs." },
-  { name: "Mr. Yatharth Nagpal", role: "Director of Operations", description: "Spearheads manufacturing expansion, technology integration, and digital growth." }
+  { name: "Dr. Devkant Bhardwaj", role: "Founder & Chairman", description: "Pharmacist and visionary with over 35 years of experience in healthcare leadership." },
+  { name: "Mrs. Meenakshi Mishra", role: "Managing Director", description: "Drives corporate strategy, compliance, and global regulatory affairs." },
+  { name: "Mr. Praveen Yadav", role: "Director of Operations", description: "Spearheads manufacturing expansion, technology integration, and digital growth." }
 ]
 
 export default function AboutPage() {
@@ -59,7 +59,7 @@ export default function AboutPage() {
             <Reveal>
               <h2 className="text-3xl font-bold tracking-tight">Our Story</h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                Founded in 2001, Galcare was built on a foundation of scientific innovation and patient-first values. We recognized the need for dermatologist-grade formulations that are both highly effective and accessible to all. Over the past two decades, we have scaled our production capabilities, invested in proprietary research, and built an extensive distribution network that spans across 42 countries.
+                Founded in 2008, Galcare was built on a foundation of scientific innovation and patient-first values. We recognized the need for dermatologist-grade formulations that are both highly effective and accessible to all. Over the past two decades, we have scaled our production capabilities, invested in proprietary research, and built an extensive distribution network that spans across 42 countries.
               </p>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
                 Our facilities are equipped with class-leading automation, strict environmental controls, and a dedicated team of researchers and formulation scientists. Today, we stand as a trusted brand, prescribed by over 30,000 doctors globally.
