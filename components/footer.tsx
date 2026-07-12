@@ -8,10 +8,11 @@ const columns = [
   {
     title: "Company",
     links: [
-      { label: "About", href: "/about" },
+      { label: "About Us", href: "/about" },
       { label: "Research", href: "/research" },
       { label: "Manufacturing", href: "/facilities" },
-      { label: "News", href: "/news" },
+      { label: "News & Media", href: "/news" },
+      { label: "Careers Portal", href: "/careers" },
     ],
   },
   {
@@ -27,11 +28,11 @@ const columns = [
   {
     title: "Resources",
     links: [
+      { label: "Quality Assurance", href: "/quality" },
+      { label: "Certifications", href: "/certifications" },
       { label: "Downloads Center", href: "/quality" },
-      { label: "Media Gallery", href: "/news" },
       { label: "Publications", href: "/research" },
-      { label: "Investor Relations", href: "/about" },
-      { label: "CSR", href: "/about" },
+      { label: "CSR Initiatives", href: "/about" },
     ],
   },
 ]

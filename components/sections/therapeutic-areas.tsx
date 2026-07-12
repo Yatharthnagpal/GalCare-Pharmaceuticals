@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import Image from "next/image"
 import { motion } from "motion/react"
 import {
@@ -131,6 +132,7 @@ function TherapeuticAreaCard({
 }) {
   const [isHovered, setIsHovered] = useState(false)
   const Icon = ICONS[area.icon] ?? Sparkles
+  const slug = area.title.toLowerCase().replace(/\s+/g, "-")
 
   const cardVariants = {
     hidden: { opacity: 0, y: 35 },
@@ -155,21 +157,30 @@ function TherapeuticAreaCard({
         className
       )}
     >
-      <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-2 sm:gap-4">
-        {/* Dynamic circular photo slot */}
-        <div className="relative size-8 sm:size-12 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl border border-primary/10 shadow-inner">
-          <Image
-            src={area.image}
-            alt={area.alt}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
-          />
+      <Link href={`/therapeutic-areas/${slug}`} className="flex flex-col h-full justify-between group">
+        <div>
+          <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-2 sm:gap-4">
+            {/* Dynamic circular photo slot */}
+            <div className="relative size-8 sm:size-12 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl border border-primary/10 shadow-inner">
+              <Image
+                src={area.image}
+                alt={area.alt}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </div>
+            
+            <h3 className="text-xs sm:text-lg font-semibold tracking-tight leading-tight group-hover:text-primary transition-colors">{area.title}</h3>
+          </div>
+          
+          <p className="mt-3 sm:mt-4 text-xs sm:text-sm leading-relaxed text-muted-foreground hidden sm:block">{area.description}</p>
         </div>
         
-        <h3 className="text-xs sm:text-lg font-semibold tracking-tight leading-tight">{area.title}</h3>
-      </div>
-      
-      <p className="mt-3 sm:mt-4 text-xs sm:text-sm leading-relaxed text-muted-foreground hidden sm:block">{area.description}</p>
+        <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs font-bold text-primary group-hover:underline hidden sm:flex">
+          <span>Explore Treatments</span>
+          <span>→</span>
+        </div>
+      </Link>
     </motion.div>
   )
 }

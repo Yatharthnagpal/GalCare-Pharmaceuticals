@@ -29,7 +29,7 @@ export function Navbar() {
       style={{ transform: "translate3d(0, 0, 100px)" }}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6 transition-all duration-300">
-        <a href="#home" className="flex items-center gap-2" aria-label="Galcare home">
+        <a href="/" className="flex items-center gap-2" aria-label="Galcare home">
           <Image
             src="/galcare-logo.png"
             alt="Galcare"
@@ -62,7 +62,7 @@ export function Navbar() {
           </button>
 
           <a
-            href="#contact"
+            href="/contact"
             className="hidden items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:-translate-y-0.5 sm:flex"
           >
             <MessageCircle className="size-4" />
@@ -100,7 +100,7 @@ export function Navbar() {
                 </a>
               ))}
               <a
-                href="#contact"
+                href="/contact"
                 onClick={() => setOpen(false)}
                 className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
               >
