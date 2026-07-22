@@ -9,6 +9,7 @@ import { Manufacturing } from "@/components/sections/manufacturing"
 import { Research } from "@/components/sections/research"
 import { Testimonials } from "@/components/sections/testimonials"
 import { News } from "@/components/sections/news"
+import { Partners } from "@/components/sections/partners"
 import { Contact } from "@/components/sections/contact"
 import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
@@ -25,6 +26,7 @@ export default function Page() {
         <News />
         <TherapeuticAreas />
         <Manufacturing />
+        <Partners />
         <Research />
         <Testimonials />
         <WhyUs />

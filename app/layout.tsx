@@ -83,10 +83,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} bg-background`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
       <body className="font-sans antialiased">
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <ThemeProvider>
           <SmoothScroll />
           {children}

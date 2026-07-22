@@ -82,7 +82,7 @@ export function TherapeuticAreas() {
   }
 
   return (
-    <section id="areas" className="relative py-12 md:py-28">
+    <section id="areas" className="relative py-10 md:py-16">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 h-72 -translate-y-1/2">
         <div className="mx-auto h-full max-w-3xl rounded-full bg-teal/10 blur-[120px]" />
       </div>

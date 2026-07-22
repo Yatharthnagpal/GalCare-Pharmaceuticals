@@ -18,11 +18,11 @@ const columns = [
   {
     title: "Products",
     links: [
-      { label: "Prescription", href: "/products?category=Prescription" },
-      { label: "Cosmetic", href: "/products?category=Cosmetic" },
+      { label: "Acne Care", href: "/products?category=Acne%20Care" },
       { label: "Sunscreen", href: "/products?category=Sunscreen" },
       { label: "Hair Care", href: "/products?category=Hair%20Care" },
-      { label: "Antifungal", href: "/products?category=Antifungal" },
+      { label: "Skin Radiance", href: "/products?category=Hyperpigmentation%20%26%20Skin%20Radiance" },
+      { label: "Anti-Fungal", href: "/products?category=Anti-Fungal%20%26%20Anti-Bacterial" },
     ],
   },
   {

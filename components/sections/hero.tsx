@@ -83,7 +83,7 @@ export function Hero() {
       onMouseMove={handleContainerMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative overflow-hidden pt-28 pb-12 md:pt-44 md:pb-28"
+      className="relative overflow-hidden pt-24 pb-8 md:pt-32 md:pb-16"
     >
       {/* cursor-follow glow background */}
       {isHovered && (

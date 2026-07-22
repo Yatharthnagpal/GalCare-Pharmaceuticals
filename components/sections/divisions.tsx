@@ -74,7 +74,7 @@ function DivisionCarousel({ images, alt }: { images: string[]; alt: string }) {
 
 export function Divisions() {
   return (
-    <section id="divisions" className="relative py-12 md:py-28 bg-muted/30">
+    <section id="divisions" className="relative py-10 md:py-16 bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">Core Business Divisions</p>
@@ -86,7 +86,7 @@ export function Divisions() {
           </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-8 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
           {divisions.map((div, i) => {
             const Icon = div.icon
             return (
