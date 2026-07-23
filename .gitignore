@@ -30,9 +30,7 @@ product.md
 Website Product.xlsx
 lib/site-data.ts
 
-# Ignore root-level screenshot PNG files but keep public assets
-/*.png
-!public/
-
+# Ignore all PNG files
+*.png
 # Keep README.md tracked
 !README.md
