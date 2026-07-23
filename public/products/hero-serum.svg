@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" rx="20" fill="#042f2e"/>
+  <g transform="translate(150, 70)">
+    <rect x="40" y="10" width="20" height="30" rx="6" fill="#2dd4bf"/>
+    <rect x="30" y="40" width="40" height="15" fill="#134e4a"/>
+    <rect x="15" y="55" width="70" height="170" rx="25" fill="#0f766e" stroke="#5eead4" stroke-width="4"/>
+    <circle cx="50" cy="110" r="15" fill="#5eead4" opacity="0.3"/>
+    <text x="50" y="145" font-family="sans-serif" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">HERO SERUM</text>
+  </g>
+</svg>

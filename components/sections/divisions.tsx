@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion } from "motion/react"
 import { BrainCircuit, Sparkles, Factory, ArrowRight } from "lucide-react"
 import { Reveal } from "@/components/motion-primitives"
@@ -60,7 +60,7 @@ function DivisionCarousel({ images, alt }: { images: string[]; alt: string }) {
             transition: "opacity 800ms ease-in-out"
           }}
         >
-          <Image
+          <AdaptiveImage
             src={img}
             alt={alt}
             fill

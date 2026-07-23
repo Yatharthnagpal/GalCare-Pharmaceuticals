@@ -1,7 +1,7 @@
 "use client"
 
 import { Reveal } from "@/components/motion-primitives"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { ArrowRight, Handshake } from "lucide-react"
 
 // 7, 5 Type Arrangement: Row 1 (7 items), Row 2 (5 items)
@@ -28,7 +28,7 @@ function CircularLogoCard({ partner, delay }: { partner: typeof row1Partners[0];
     <Reveal delay={delay}>
       <div className="group relative size-20 sm:size-24 md:size-28 lg:size-32 rounded-full overflow-hidden border border-border/80 bg-white shadow-soft transition-all duration-300 hover:scale-110 hover:border-primary/60 hover:shadow-glow flex items-center justify-center p-2.5 cursor-pointer">
         <div className="relative size-full rounded-full overflow-hidden flex items-center justify-center">
-          <Image
+          <AdaptiveImage
             src={partner.image}
             alt={partner.alt}
             fill

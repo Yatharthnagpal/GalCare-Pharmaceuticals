@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" rx="20" fill="#0f1f1d"/>
+  <!-- Dropper bottle -->
+  <g transform="translate(150, 70)">
+    <rect x="40" y="10" width="20" height="30" rx="6" fill="#94a3b8"/>
+    <rect x="30" y="40" width="40" height="15" fill="#334155"/>
+    <rect x="15" y="55" width="70" height="170" rx="25" fill="#0d9488" stroke="#2dd4bf" stroke-width="3"/>
+    <text x="50" y="140" font-family="sans-serif" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">HAIR SERUM</text>
+  </g>
+</svg>

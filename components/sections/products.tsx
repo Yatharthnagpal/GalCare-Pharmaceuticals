@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "motion/react"
 import { ArrowRight, FlaskConical, Check, Sparkles } from "lucide-react"
 import { PRODUCTS, PRODUCT_CATEGORIES, type ProductCategory } from "@/lib/site-data"
@@ -132,7 +132,7 @@ export function Products() {
                             Hero Product
                           </span>
                         )}
-                        <Image
+                        <AdaptiveImage
                           src={product.image || "/placeholder.svg"}
                           alt={product.name}
                           fill

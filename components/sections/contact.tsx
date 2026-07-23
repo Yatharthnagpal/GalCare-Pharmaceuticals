@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { MapPin, Mail, Phone, Send, Check } from "lucide-react"
 import { Reveal } from "@/components/motion-primitives"
 
@@ -31,7 +31,7 @@ export function Contact() {
 
             {/* Friendly dermatologist lifestyle image slot to humanize the form */}
             <div className="mt-6 relative aspect-[16/9] w-full rounded-3xl overflow-hidden border border-border shadow-soft bg-muted group">
-              <Image
+              <AdaptiveImage
                 src="/images/placeholders/contact-dermatologist.png"
                 alt="Dermatologist smiling while writing on a clipboard"
                 fill

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion, useMotionValue, useTransform, useSpring, useScroll } from "motion/react"
 import { ArrowRight, ShieldCheck, Sparkles, Star } from "lucide-react"
 import { Counter } from "@/components/motion-primitives"
@@ -205,7 +205,7 @@ export function Hero() {
                     ease: "easeInOut"
                   }}
                 >
-                  <Image
+                  <AdaptiveImage
                     src="/images/placeholders/hero-woman-applying-serum.png"
                     alt="Woman applying serum to face"
                     fill
@@ -221,7 +221,7 @@ export function Hero() {
                 className="absolute -left-12 bottom-12 hidden w-44 overflow-hidden rounded-2xl border-2 border-background shadow-lg md:block aspect-square z-20"
               >
                 <div className="relative w-full h-full bg-gradient-to-b from-primary/5 to-teal/5">
-                  <Image
+                  <AdaptiveImage
                     src="/images/placeholders/hands-applying-moisturizer.png"
                     alt="Close-up of hands applying moisturizer"
                     fill

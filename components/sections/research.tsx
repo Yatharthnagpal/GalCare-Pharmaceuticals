@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion } from "motion/react"
 import { Reveal } from "@/components/motion-primitives"
 
@@ -59,7 +59,7 @@ export function Research() {
         <Reveal className="order-1 lg:order-2 lg:h-full">
           <div className="relative overflow-hidden rounded-[2rem] border border-border shadow-soft aspect-[1.2] lg:aspect-auto lg:h-full min-h-[350px] lg:min-h-0 w-full">
             {/* Main Lab Image */}
-            <Image
+            <AdaptiveImage
               src="/lab.png"
               alt="Galcare dermatology research laboratory"
               fill
@@ -71,10 +71,10 @@ export function Research() {
               <p className="text-2xl font-semibold text-gradient">150+</p>
               <p className="text-xs text-muted-foreground">Scientific publications</p>
             </div>
- 
+
             {/* Circular Inset Quality Control / Researcher reviewing tablet */}
             <div className="absolute top-4 right-4 z-20 size-24 md:size-32 overflow-hidden rounded-full border-4 border-card shadow-lg transition-transform duration-500 hover:scale-105">
-              <Image
+              <AdaptiveImage
                 src="/images/placeholders/researcher-tablet.png"
                 alt="Researcher reviewing clinical trial results on a tablet"
                 fill

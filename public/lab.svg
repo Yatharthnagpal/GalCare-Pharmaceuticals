@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="lab_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1f1d" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+    <linearGradient id="flask_glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.4" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" rx="24" fill="url(#lab_bg)" />
+  
+  <!-- Subtle grid lines -->
+  <g opacity="0.08" stroke="#ffffff" stroke-width="1">
+    <line x1="0" y1="150" x2="800" y2="150" />
+    <line x1="0" y1="300" x2="800" y2="300" />
+    <line x1="0" y1="450" x2="800" y2="450" />
+    <line x1="200" y1="0" x2="200" y2="600" />
+    <line x1="400" y1="0" x2="400" y2="600" />
+    <line x1="600" y1="0" x2="600" y2="600" />
+  </g>
+
+  <!-- Lab Flask illustration -->
+  <g transform="translate(320, 180)">
+    <path d="M70 20 H90 V70 L140 180 C150 200 135 220 110 220 H50 C25 220 10 200 20 180 L70 70 Z" fill="url(#flask_glow)" stroke="#5eead4" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M35 160 Q80 140 125 160 L135 185 C142 198 132 210 110 210 H50 C28 210 18 198 25 185 Z" fill="#14b8a6" fill-opacity="0.6"/>
+    <!-- Bubbles -->
+    <circle cx="80" cy="120" r="8" fill="#ffffff" opacity="0.7"/>
+    <circle cx="95" cy="90" r="5" fill="#ffffff" opacity="0.8"/>
+    <circle cx="65" cy="140" r="6" fill="#ffffff" opacity="0.6"/>
+  </g>
+
+  <!-- Text badge -->
+  <rect x="250" y="440" width="300" height="50" rx="12" fill="#042f2e" fill-opacity="0.7" stroke="#0d9488" stroke-width="1.5"/>
+  <text x="400" y="471" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#2dd4bf" text-anchor="middle">
+    WHO-GMP RESEARCH LAB
+  </text>
+</svg>

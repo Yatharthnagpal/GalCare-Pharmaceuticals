@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80" viewBox="0 0 200 80" fill="none">
+  <rect width="200" height="80" rx="12" fill="#0f291e" opacity="0.4"/>
+  <path d="M30 40 L45 25 L60 40 L45 55 Z" fill="#2dd4bf"/>
+  <text x="75" y="46" font-family="sans-serif" font-size="16" font-weight="bold" fill="#6ee7b7">GLOBAL MED</text>
+</svg>

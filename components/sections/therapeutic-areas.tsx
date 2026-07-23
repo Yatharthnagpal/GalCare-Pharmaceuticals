@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion } from "motion/react"
 import {
   Sparkles,
@@ -162,7 +162,7 @@ function TherapeuticAreaCard({
           <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-2 sm:gap-4">
             {/* Dynamic circular photo slot */}
             <div className="relative size-8 sm:size-12 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl border border-primary/10 shadow-inner">
-              <Image
+              <AdaptiveImage
                 src={area.image}
                 alt={area.alt}
                 fill

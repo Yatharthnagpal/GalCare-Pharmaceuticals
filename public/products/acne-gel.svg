@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="p_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f291e" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" rx="20" fill="url(#p_bg)"/>
+  <!-- Tube bottle outline -->
+  <g transform="translate(150, 80)">
+    <rect x="25" y="10" width="50" height="20" rx="4" fill="#5eead4"/>
+    <path d="M10 40 L90 40 L80 220 L20 220 Z" fill="#14b8a6" stroke="#5eead4" stroke-width="3"/>
+    <rect x="20" y="100" width="60" height="50" rx="6" fill="#042f2e" opacity="0.6"/>
+    <text x="50" y="130" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">ACNE GEL</text>
+  </g>
+</svg>

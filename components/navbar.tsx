@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion, AnimatePresence } from "motion/react"
 import { Menu, X, Moon, Sun, MessageCircle } from "lucide-react"
 import { NAV_LINKS } from "@/lib/site-data"
@@ -30,7 +30,7 @@ export function Navbar() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6 transition-all duration-300">
         <a href="/" className="flex items-center gap-2" aria-label="Galcare home">
-          <Image
+          <AdaptiveImage
             src="/galcare-logo.png"
             alt="Galcare"
             width={150}

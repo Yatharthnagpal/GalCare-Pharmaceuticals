@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion } from "motion/react"
 import { ArrowUpRight } from "lucide-react"
 import { NEWS } from "@/lib/site-data"
@@ -77,7 +77,7 @@ export function News() {
                 
                 {/* News card image slot with zoom-on-hover */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-                  <Image
+                  <AdaptiveImage
                     src={item.image}
                     alt={item.alt}
                     fill

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion, AnimatePresence } from "motion/react"
 import { Quote, ChevronLeft, ChevronRight } from "lucide-react"
 import { TESTIMONIALS } from "@/lib/site-data"
@@ -116,7 +116,7 @@ export function Testimonials() {
               <div className="mt-6 flex flex-col items-center gap-3">
                 {/* Circular Headshot Placeholder */}
                 <div className="relative size-14 shrink-0 overflow-hidden rounded-full border-2 border-primary shadow-md bg-muted">
-                  <Image
+                  <AdaptiveImage
                     src={t.image}
                     alt={t.alt}
                     fill

@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion } from "motion/react"
 import { Reveal } from "@/components/motion-primitives"
 import { Award, ShieldCheck, TestTube, Boxes } from "lucide-react"
@@ -76,7 +76,7 @@ export function Manufacturing() {
           <Reveal>
             <div className="relative rounded-[2rem] border border-border shadow-soft aspect-[1.3] w-full overflow-hidden bg-muted">
               {/* Big facility image */}
-              <Image
+              <AdaptiveImage
                 src="/manufacturing.png"
                 alt="Galcare WHO-GMP manufacturing facility"
                 fill
@@ -85,7 +85,7 @@ export function Manufacturing() {
 
               {/* Smaller circular inset showing quality control technician inspecting product */}
               <div className="absolute bottom-6 right-6 z-20 size-28 md:size-36 overflow-hidden rounded-full border-[4px] border-card shadow-xl transition-transform duration-500 hover:scale-105">
-                <Image
+                <AdaptiveImage
                   src="/images/placeholders/qc-technician-inspection.png"
                   alt="Quality control technician inspecting product"
                   fill

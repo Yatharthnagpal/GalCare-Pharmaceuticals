@@ -1,6 +1,6 @@
 "use client"
 
-import Image from "next/image"
+import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { Globe, Share2, MessageCircle, Rss } from "lucide-react"
 import { NAV_LINKS } from "@/lib/site-data"
 
@@ -50,7 +50,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-16 md:px-6">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
-            <Image
+            <AdaptiveImage
               src="/galcare-logo.png"
               alt="Galcare"
               width={160}
