@@ -15,7 +15,7 @@ export function Contact() {
   }
 
   return (
-    <section id="contact" className="relative py-12 md:py-28">
+    <section id="contact" className="relative py-8 md:py-16">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Row 1: Info/Image & Form */}
         <div className="grid gap-8 lg:grid-cols-2">

@@ -47,27 +47,27 @@ const socials = [
 export function Footer() {
   return (
     <footer className="border-t border-border bg-card">
-      <div className="mx-auto max-w-7xl px-4 py-16 md:px-6">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+      <div className="mx-auto max-w-7xl px-4 py-8 md:py-10 md:px-6">
+        <div className="grid gap-6 md:gap-8 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <AdaptiveImage
               src="/galcare-logo.png"
               alt="Galcare"
               width={160}
               height={44}
-              className="h-10 w-auto dark:hidden"
+              className="h-9 w-auto dark:hidden"
             />
             <AdaptiveImage
               src="/galcare-logo-dark.svg"
               alt="Galcare"
               width={160}
               height={44}
-              className="h-10 w-auto hidden dark:block"
+              className="h-9 w-auto hidden dark:block"
             />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-3 max-w-xs text-xs sm:text-sm leading-relaxed text-muted-foreground">
               Premium skincare and pharmaceutical solutions backed by science, trusted by dermatologists worldwide.
             </p>
-            <div className="mt-6 flex gap-2">
+            <div className="mt-4 flex gap-2">
               {socials.map(({ Icon, label, href }) => (
                 <a
                   key={label}
@@ -75,7 +75,7 @@ export function Footer() {
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                   aria-label={label}
-                  className="grid size-10 place-items-center rounded-xl border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
+                  className="grid size-9 place-items-center rounded-xl border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
                 >
                   <Icon className="size-4" />
                 </a>
@@ -86,10 +86,10 @@ export function Footer() {
           {columns.map((col) => (
             <div key={col.title}>
               <h3 className="text-sm font-semibold">{col.title}</h3>
-              <ul className="mt-4 space-y-2.5">
+              <ul className="mt-3 space-y-2">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-primary">
+                    <a href={link.href} className="text-xs sm:text-sm text-muted-foreground transition-colors hover:text-primary">
                       {link.label}
                     </a>
                   </li>
@@ -99,13 +99,13 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 sm:flex-row">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} Galcare. All rights reserved.
           </p>
           <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2" aria-label="Footer">
             {NAV_LINKS.slice(0, 6).map((l) => (
-              <a key={l.href} href={l.href} className="text-sm text-muted-foreground hover:text-primary">
+              <a key={l.href} href={l.href} className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
                 {l.label}
               </a>
             ))}
