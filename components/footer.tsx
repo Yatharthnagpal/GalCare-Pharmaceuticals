@@ -51,11 +51,18 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <AdaptiveImage
-              src="/galcare-logo.svg"
+              src="/galcare-logo.png"
               alt="Galcare"
-              width={180}
+              width={160}
               height={44}
-              className="h-10 w-auto logo-adaptive"
+              className="h-10 w-auto dark:hidden"
+            />
+            <AdaptiveImage
+              src="/galcare-logo-dark.svg"
+              alt="Galcare"
+              width={160}
+              height={44}
+              className="h-10 w-auto hidden dark:block"
             />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
               Premium skincare and pharmaceutical solutions backed by science, trusted by dermatologists worldwide.

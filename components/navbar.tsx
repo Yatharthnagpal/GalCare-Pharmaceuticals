@@ -31,11 +31,19 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6 transition-all duration-300">
         <a href="/" className="flex items-center gap-2" aria-label="Galcare home">
           <AdaptiveImage
-            src="/galcare-logo.svg"
+            src="/galcare-logo.png"
             alt="Galcare"
-            width={180}
+            width={150}
             height={40}
-            className="h-9 w-auto logo-adaptive"
+            className="h-9 w-auto dark:hidden"
+            priority
+          />
+          <AdaptiveImage
+            src="/galcare-logo-dark.svg"
+            alt="Galcare"
+            width={150}
+            height={40}
+            className="h-9 w-auto hidden dark:block"
             priority
           />
         </a>
