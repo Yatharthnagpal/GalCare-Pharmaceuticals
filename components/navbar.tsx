@@ -32,9 +32,11 @@ export function Navbar() {
         <a href="/" className="flex items-center gap-2" aria-label="Galcare home">
           <AdaptiveImage
             src="/galcare-logo.png"
-            alt="Galcare"
-            width={150}
-            height={40}
+            svgSrc="/galcare-logo.svg"
+            darkSvgSrc="/galcare-logo-dark.svg"
+            alt="Galcare Innovation Skin Care"
+            width={180}
+            height={45}
             className="h-9 w-auto logo-adaptive"
             priority
           />

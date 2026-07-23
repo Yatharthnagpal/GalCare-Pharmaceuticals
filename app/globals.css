@@ -198,6 +198,10 @@
   filter: brightness(0) invert(1);
 }
 
+.dark img.logo-adaptive[src*=".svg"] {
+  filter: none !important;
+}
+
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) translateX(0); }
   50% { transform: translateY(-22px) translateX(10px); }

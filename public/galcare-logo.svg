@@ -1,21 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="50" viewBox="0 0 200 50" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="50" viewBox="0 0 220 50" fill="none">
   <defs>
-    <linearGradient id="galcare_brand_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="galcare_light_grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0d9488" />
-      <stop offset="100%" stop-color="#16a34a" />
+      <stop offset="100%" stop-color="#10b981" />
     </linearGradient>
   </defs>
-  <!-- Medical Shield / Cross icon -->
+
+  <!-- White Circle Icon with Teal Medical Emblem -->
   <g transform="translate(4, 5)">
-    <rect width="40" height="40" rx="10" fill="url(#galcare_brand_grad)"/>
-    <path d="M20 12v16M12 20h16" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-    <circle cx="20" cy="20" r="3" fill="#ffffff"/>
+    <circle cx="20" cy="20" r="19" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" />
+    <circle cx="20" cy="20" r="15" fill="url(#galcare_light_grad)" />
+    <path d="M20 12v16M12 20h16" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <circle cx="20" cy="20" r="2" fill="#ffffff" />
   </g>
-  <!-- Brand text -->
-  <text x="54" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="800" letter-spacing="-0.5" fill="#0f172a">
+
+  <!-- Dark Slate Text: Galcare -->
+  <text x="52" y="27" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.4" fill="#0f172a">
     Gal<tspan fill="#0d9488">care</tspan>
   </text>
-  <text x="55" y="43" font-family="system-ui, -apple-system, sans-serif" font-size="7" font-weight="600" letter-spacing="1.5" fill="#64748b" text-transform="uppercase">
-    PHARMACEUTICALS
+
+  <!-- Subtitle: Innovation Skin Care -->
+  <text x="53" y="41" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="600" letter-spacing="0.8" fill="#475569">
+    Innovation Skin Care
   </text>
 </svg>

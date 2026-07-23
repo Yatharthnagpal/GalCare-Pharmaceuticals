@@ -52,9 +52,11 @@ export function Footer() {
           <div>
             <AdaptiveImage
               src="/galcare-logo.png"
-              alt="Galcare"
-              width={160}
-              height={44}
+              svgSrc="/galcare-logo.svg"
+              darkSvgSrc="/galcare-logo-dark.svg"
+              alt="Galcare Innovation Skin Care"
+              width={180}
+              height={45}
               className="h-10 w-auto logo-adaptive"
             />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
