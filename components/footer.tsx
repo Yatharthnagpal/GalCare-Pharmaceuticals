@@ -51,12 +51,10 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <AdaptiveImage
-              src="/galcare-logo.png"
-              svgSrc="/galcare-logo.svg"
-              darkSvgSrc="/galcare-logo-dark.svg"
-              alt="Galcare Innovation Skin Care"
+              src="/galcare-logo.svg"
+              alt="Galcare"
               width={180}
-              height={45}
+              height={44}
               className="h-10 w-auto logo-adaptive"
             />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">

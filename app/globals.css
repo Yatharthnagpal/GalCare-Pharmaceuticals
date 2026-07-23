@@ -191,15 +191,12 @@
   }
   .logo-adaptive {
     filter: none;
+    transition: opacity 0.2s ease;
   }
 }
 
 .dark .logo-adaptive {
-  filter: brightness(0) invert(1);
-}
-
-.dark img.logo-adaptive[src*=".svg"] {
-  filter: none !important;
+  filter: none;
 }
 
 @keyframes float-slow {
