@@ -19,9 +19,7 @@ node_modules
 .DS_Store
 .vercel
 .env*
-*.md
-*.png
-*.xlsx
+# User requested ignored files & patterns
 01_prompt.md
 02_Galcare_Company_Overview.md
 03_Additional_Enhancements.md
@@ -29,7 +27,12 @@ node_modules
 agent.md
 galcare-animation-imagery-prompt.md
 product.md
-#data
 Website Product.xlsx
 lib/site-data.ts
 
+# Ignore root-level screenshot PNG files but keep public assets
+/*.png
+!public/
+
+# Keep README.md tracked
+!README.md
