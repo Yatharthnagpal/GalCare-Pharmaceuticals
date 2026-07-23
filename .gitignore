@@ -20,7 +20,16 @@ node_modules
 .vercel
 .env*
 *.md
-.png
-.xlsx
+*.png
+*.xlsx
+01_prompt.md
+02_Galcare_Company_Overview.md
+03_Additional_Enhancements.md
+04_Products_Module_PRD.md
+agent.md
+galcare-animation-imagery-prompt.md
+product.md
 #data
+Website Product.xlsx
+lib/site-data.ts
 
