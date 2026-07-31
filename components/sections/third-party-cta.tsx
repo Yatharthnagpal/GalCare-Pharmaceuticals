@@ -3,8 +3,10 @@
 import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion, type Variants } from "motion/react"
 import { Reveal } from "@/components/motion-primitives"
-import { Award, ShieldCheck, TestTube, Boxes } from "lucide-react"
+import { Award, ShieldCheck, TestTube, Boxes, ArrowRight, Handshake } from "lucide-react"
 import { cn } from "@/lib/utils"
+
+const certs = ["WHO-GMP", "ISO 9001", "ISO 14001", "GLP Certified"]
 
 const steps = [
   { icon: TestTube, title: "R&D & Formulation", text: "Molecule design and stability validation." },
@@ -13,9 +15,43 @@ const steps = [
   { icon: Award, title: "Global Distribution", text: "Cold-chain logistics to 42 countries." },
 ]
 
-const certs = ["WHO-GMP", "ISO 9001", "ISO 14001", "GLP Certified"]
+// 7, 5 Type Arrangement: Row 1 (7 items), Row 2 (5 items)
+const row1Partners = [
+  { id: 1, image: "/partners/partner1.png", alt: "Global Partner Brand 1" },
+  { id: 2, image: "/partners/partner2.png", alt: "Global Partner Brand 2" },
+  { id: 3, image: "/partners/partner3.png", alt: "Global Partner Brand 3" },
+  { id: 4, image: "/partners/partner4.png", alt: "Global Partner Brand 4" },
+  { id: 5, image: "/partners/partner2.png", alt: "Global Partner Brand 5" },
+  { id: 6, image: "/partners/partner1.png", alt: "Global Partner Brand 6" },
+  { id: 7, image: "/partners/partner3.png", alt: "Global Partner Brand 7" },
+]
 
-export function Manufacturing() {
+const row2Partners = [
+  { id: 8, image: "/partners/partner4.png", alt: "Global Partner Brand 8" },
+  { id: 9, image: "/partners/partner3.png", alt: "Global Partner Brand 9" },
+  { id: 10, image: "/partners/partner1.png", alt: "Global Partner Brand 10" },
+  { id: 11, image: "/partners/partner2.png", alt: "Global Partner Brand 11" },
+  { id: 12, image: "/partners/partner4.png", alt: "Global Partner Brand 12" },
+]
+
+function CircularLogoCard({ partner, delay }: { partner: typeof row1Partners[0]; delay: number }) {
+  return (
+    <Reveal delay={delay}>
+      <div className="group relative size-20 sm:size-24 md:size-28 lg:size-32 rounded-full overflow-hidden border border-border/80 bg-white shadow-soft transition-all duration-300 hover:scale-110 hover:border-primary/60 hover:shadow-glow flex items-center justify-center p-2.5 cursor-pointer">
+        <div className="relative size-full rounded-full overflow-hidden flex items-center justify-center">
+          <AdaptiveImage
+            src={partner.image}
+            alt={partner.alt}
+            fill
+            className="object-contain p-2 rounded-full transition-transform duration-500 group-hover:scale-110"
+          />
+        </div>
+      </div>
+    </Reveal>
+  )
+}
+
+export function ThirdPartyCTA() {
   const containerVariants: Variants = {
     hidden: {},
     visible: {
@@ -44,20 +80,25 @@ export function Manufacturing() {
   }
 
   return (
-    <section id="manufacturing" className="relative py-12 md:py-28">
+    <section id="third-party-manufacturing" className="relative py-12 md:py-28 bg-card border-t border-border overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[120px]" />
+      </div>
+
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         
         {/* Split layout (Text left, facility image with human inset right) */}
-        <div className="grid gap-12 items-center lg:grid-cols-2">
+        <div className="grid gap-12 items-center lg:grid-cols-2 mt-10">
           <div className="text-center lg:text-left">
             <Reveal className="mx-auto lg:mx-0 max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">Manufacturing</p>
-              <h2 className="mt-3 text-balance text-2xl font-semibold tracking-tight sm:text-4xl leading-tight">
-                World-class, WHO-GMP certified production
+              <span className="text-xs font-bold uppercase tracking-widest text-primary">
+                Partner Ecosystem & Production Network
+              </span>
+              <h2 className="mt-2 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                Third-Party Manufacturing & Global Partners
               </h2>
-              <p className="mt-4 text-pretty text-muted-foreground leading-relaxed">
-                Every product is crafted in globally certified facilities under stringent quality protocols, ensuring
-                consistency, safety, and efficacy at scale.
+              <p className="mt-4 text-base md:text-lg leading-relaxed text-muted-foreground">
+                Galcare powers contract manufacturing, active molecule sourcing, and distribution for leading healthcare and dermatological brands worldwide.
               </p>
             </Reveal>
 
@@ -143,7 +184,7 @@ export function Manufacturing() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
-          className="relative mt-6 space-y-1 lg:hidden"
+          className="relative mt-12 space-y-1 lg:hidden"
         >
           {/* Central vertical line */}
           <div className="absolute left-1/2 top-3 bottom-3 w-[2px] bg-primary/20 -translate-x-1/2" />
@@ -201,7 +242,73 @@ export function Manufacturing() {
             )
           })}
         </motion.div>
-        
+
+        {/* 7, 5 Type Arrangement */}
+        <div className="mt-20 flex flex-col items-center gap-4 sm:gap-5">
+          
+          {/* Row 1 (Top: 7 items) */}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 max-w-6xl">
+            {row1Partners.map((partner, i) => (
+              <CircularLogoCard key={partner.id} partner={partner} delay={i * 0.03} />
+            ))}
+          </div>
+
+          {/* Row 2 (Bottom: 5 items) */}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 max-w-4xl">
+            {row2Partners.map((partner, i) => (
+              <CircularLogoCard key={partner.id} partner={partner} delay={0.21 + i * 0.03} />
+            ))}
+          </div>
+
+        </div>
+
+        {/* Metrics Banner */}
+        <Reveal className="mt-16 max-w-4xl mx-auto rounded-3xl border border-border bg-accent/30 p-6 sm:p-8 shadow-sm">
+          <div className="grid gap-6 sm:grid-cols-3 text-center">
+            <div>
+              <p className="text-3xl font-extrabold text-primary">42+</p>
+              <p className="mt-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Global Export Markets</p>
+            </div>
+            <div>
+              <p className="text-3xl font-extrabold text-primary">WHO-GMP</p>
+              <p className="mt-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Certified Facilities</p>
+            </div>
+            <div>
+              <p className="text-3xl font-extrabold text-primary">100%</p>
+              <p className="mt-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Batch Integrity</p>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Call-to-Action Section */}
+        <Reveal className="mt-16 text-center">
+          <div className="mx-auto max-w-2xl rounded-3xl border border-border bg-gradient-to-b from-card to-accent/40 p-6 sm:p-10 shadow-soft">
+            <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+              <Handshake className="size-6" />
+            </div>
+            <h3 className="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Scale Your Pharmaceutical Production
+            </h3>
+            <p className="mt-2.5 text-sm text-muted-foreground leading-relaxed">
+              Partner with Galcare for WHO-GMP certified third-party manufacturing, custom formulations, and global regulatory support.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+              <a
+                href="/register"
+                className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-bold text-primary-foreground shadow-glow transition-all hover:bg-primary/95 hover:scale-[1.02]"
+              >
+                Request a Quote <ArrowRight className="size-4" />
+              </a>
+              <a
+                href="/divisions/third-party-manufacturing"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+              >
+                View Manufacturing Details
+              </a>
+            </div>
+          </div>
+        </Reveal>
+
       </div>
     </section>
   )

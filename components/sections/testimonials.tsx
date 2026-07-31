@@ -66,7 +66,7 @@ export function Testimonials() {
       opacity: 1,
       scale: 1,
       transition: {
-        x: { type: "spring", stiffness: 120, damping: 18 },
+        x: { type: "spring" as const, stiffness: 120, damping: 18 },
         opacity: { duration: 0.4 },
         scale: { duration: 0.4 }
       }
@@ -76,7 +76,7 @@ export function Testimonials() {
       opacity: 0,
       scale: 0.95,
       transition: {
-        x: { type: "spring", stiffness: 120, damping: 18 },
+        x: { type: "spring" as const, stiffness: 120, damping: 18 },
         opacity: { duration: 0.3 },
         scale: { duration: 0.3 }
       }

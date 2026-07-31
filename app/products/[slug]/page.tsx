@@ -7,7 +7,7 @@ import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
 import { PRODUCTS, Product } from "@/lib/site-data"
 import Image from "next/image"
-import { ArrowLeft, Send, CheckCircle2, ShieldAlert, Download, Sparkles, Box, FileText } from "lucide-react"
+import { ArrowLeft, Send, CheckCircle2, ShieldAlert, Sparkles, Box } from "lucide-react"
 
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params)
@@ -121,24 +121,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                 </div>
               </div>
 
-              {/* Download Brochure Card */}
-              <div className="mt-8 rounded-2xl border border-dashed border-border p-5 bg-card flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
-                    <FileText className="size-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm">Product Monograph & Brochure</h4>
-                    <p className="text-xs text-muted-foreground">Contains complete chemical profile and warnings.</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => alert("Downloading brochure...")}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-glow hover:bg-primary/95 transition-colors"
-                >
-                  <Download className="size-4" /> Download PDF
-                </button>
-              </div>
+
             </Reveal>
           </div>
         </section>

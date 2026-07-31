@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { AdaptiveImage } from "@/components/ui/adaptive-image"
-import { motion, useMotionValue, useTransform, useSpring, useScroll } from "motion/react"
+import { motion, useMotionValue, useTransform, useSpring, useScroll, type Variants } from "motion/react"
 import { ArrowRight, ShieldCheck, Sparkles, Star } from "lucide-react"
 import { Counter } from "@/components/motion-primitives"
 
@@ -62,7 +62,7 @@ export function Hero() {
   }
 
   // Staggered animation containers
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: {},
     visible: {
       transition: {
@@ -71,9 +71,9 @@ export function Hero() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
   }
 
   return (
@@ -152,10 +152,10 @@ export function Hero() {
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </a>
             <a
-              href="#contact"
+              href="/divisions/third-party-manufacturing"
               className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:bg-accent"
             >
-              Contact Team
+              Third Party Manufacturing
             </a>
           </motion.div>
 

@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react"
 
-interface NetworkInformation extends EventTarget {
+interface NetworkInformation {
   effectiveType?: "slow-2g" | "2g" | "3g" | "4g"
   saveData?: boolean
-  addEventListener?: (type: string, listener: EventListener) => void
-  removeEventListener?: (type: string, listener: EventListener) => void
+  addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void
+  removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void
 }
 
 export function useNetworkStatus() {

@@ -17,6 +17,7 @@ export function AdaptiveImage({
   alt,
   onError,
   unoptimized,
+  priority,
   ...props
 }: AdaptiveImageProps) {
   const { isSlowNetwork } = useNetworkStatus()
@@ -44,6 +45,8 @@ export function AdaptiveImage({
       alt={alt || "Galcare Pharmaceutical"}
       unoptimized={isSvg || unoptimized}
       decoding="async"
+      priority={priority}
+      loading={priority ? "eager" : props.loading}
       onError={(e) => {
         if (!hasError && !shouldUseSvg) {
           setHasError(true)

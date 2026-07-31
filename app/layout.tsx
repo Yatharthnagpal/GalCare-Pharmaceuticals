@@ -72,6 +72,9 @@ const themeInitScript = `
 })();
 `
 
+import { AuthProvider } from '@/lib/auth-context'
+import { AuthModal } from '@/components/auth-modal'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -85,10 +88,13 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <ThemeProvider>
-          <SmoothScroll />
-          {children}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <SmoothScroll />
+            {children}
+            <AuthModal />
+          </ThemeProvider>
+        </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

@@ -105,7 +105,7 @@ export function Footer() {
           </p>
           <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2" aria-label="Footer">
             {NAV_LINKS.slice(0, 6).map((l) => (
-              <a key={l.href} href={l.href} className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
+              <a key={l.label} href={l.href || l.children?.[0]?.href || "#"} className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
                 {l.label}
               </a>
             ))}
