@@ -29,7 +29,10 @@ const departments = [
   { name: "HR & Recruitment", email: "careers@galcare.com", phone: "+91 98765 43213" }
 ]
 
+import { useAuth } from "@/lib/auth-context"
+
 export default function ContactPage() {
+  const { user, requireAuth, addEnquiry } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,7 +44,18 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+
+    const processSubmission = () => {
+      addEnquiry({
+        userEmail: user?.email || formData.email,
+        userName: formData.name || user?.fullName || "General Partner",
+        productName: `Contact Form: ${formData.subject}`,
+        message: formData.message || "General inquiry submitted.",
+      })
+      setSubmitted(true)
+    }
+
+    requireAuth(processSubmission, "Please sign in or create an account to submit your contact inquiry.")
   }
 
   return (

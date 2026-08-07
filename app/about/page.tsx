@@ -5,26 +5,81 @@ import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
 import Image from "next/image"
-import { ShieldCheck, Target, Heart, Eye, Award, Landmark, Users } from "lucide-react"
+import Link from "next/link"
+import { 
+  ShieldCheck, 
+  Target, 
+  Heart, 
+  Eye, 
+  Award, 
+  Building2, 
+  Users, 
+  Sparkles, 
+  CheckCircle2, 
+  ArrowRight,
+  TrendingUp,
+  Factory,
+  Compass,
+  Smile,
+  HeartHandshake
+} from "lucide-react"
+
+const corePillars = [
+  {
+    icon: Sparkles,
+    title: "Specialty Dermatology Formulations",
+    description: "Creating world-class, precision-oriented dermatology products engineered with superior Active Pharmaceutical Ingredients (API make) and high bio-efficacy."
+  },
+  {
+    icon: Users,
+    title: "Homely & Rewarding Atmosphere",
+    description: "Fostering a supportive, growth-oriented work environment for our 500+ associates through continuous development programs and a commitment to promotion from within."
+  },
+  {
+    icon: HeartHandshake,
+    title: "Superior Customer Satisfaction",
+    description: "Earning the enduring trust of medical practitioners, dermatologists, and patients across India by consistently exceeding quality expectations."
+  }
+]
 
 const values = [
-  { icon: ShieldCheck, title: "Integrity", text: "Upholding the highest ethical standards in all business practices, clinical research, and partnerships." },
-  { icon: Target, title: "Innovation", text: "Investing continuously in R&D to pioneer new formulations and drug delivery technologies." },
-  { icon: Award, title: "Quality", text: "Rigorous multi-stage quality control checks to meet and exceed global WHO-GMP standards." },
-  { icon: Heart, title: "Patient Focus", text: "Putting patient safety, efficacy, and affordability at the heart of our operations." }
+  { icon: ShieldCheck, title: "Ethics & Integrity", text: "Unflinching adherence to ethical business practices, steady organic growth, and complete transparency." },
+  { icon: Target, title: "Innovation First", text: "Pioneering first-time-in-India product introduction milestones that set new benchmarks in specialty care." },
+  { icon: Award, title: "Excellence in API Make", text: "Sourcing and formulating with top-tier active raw materials under WHO-GMP compliance." },
+  { icon: Heart, title: "Patient Centricity", text: "Placing patient safety, skin health, and affordable therapeutic solutions at the pinnacle of our priorities." }
 ]
 
-const journey = [
-  { year: "2001", title: "Foundation", text: "Galcare was established with a mission to bridge gaps in advanced dermatological care." },
-  { year: "2009", title: "WHO-GMP Facility", text: "Commissioned our first state-of-the-art manufacturing unit with international certification." },
-  { year: "2016", title: "Global Footprint", text: "Expanded distribution networks to 20+ countries across EU, APAC, and Africa." },
-  { year: "2024", title: "R&D Center of Excellence", text: "Inaugurated our advanced laboratory to focus on biomimetic skincare and CNS therapies." }
+const timelineHighlights = [
+  { year: "2008", title: "Foundation in Rajasthan", text: "Established in Jaipur by Founder Devkant Bhardwaj with a clear objective to deliver innovative therapeutic solutions." },
+  { year: "2009", title: "Uttar Pradesh Expansion", text: "Extended prescription marketing operations into North India's largest medical market." },
+  { year: "2011", title: "Western India Entry", text: "Established regional hub in Pune to serve Maharashtra and surrounding markets." },
+  { year: "2015", title: "MP & Hyderabad Reach", text: "Expanded footprint across Central India and Telangana/AP dermatology hubs." },
+  { year: "2018–19", title: "Pan-India Footprint", text: "Achieved nationwide distribution across 25–26 states in India." },
+  { year: "2023", title: "Own Manufacturing Unit", text: "Commissioned state-of-the-art WHO-GMP certified formulation plant in Rajasthan." }
 ]
 
-const team = [
-  { name: "Dr. Devkant Bhardwaj", role: "Founder & Chairman", description: "Pharmacist and visionary with over 35 years of experience in healthcare leadership." },
-  { name: "Mrs. Meenakshi Mishra", role: "Managing Director", description: "Drives corporate strategy, compliance, and global regulatory affairs." },
-  { name: "Mr. Praveen Yadav", role: "Director of Operations", description: "Spearheads manufacturing expansion, technology integration, and digital growth." }
+const exploreSections = [
+  {
+    title: "Vision & Values",
+    href: "/about/vision-values",
+    description: "Explore our corporate dictum 'Excellence through People & Innovation' and core ethical values.",
+    icon: Compass,
+    color: "from-blue-500/10 to-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+  },
+  {
+    title: "Milestones",
+    href: "/about/milestones",
+    description: "Discover our growth journey from 2008 in Jaipur to nationwide expansion and WHO-GMP manufacturing.",
+    icon: TrendingUp,
+    color: "from-emerald-500/10 to-teal-500/10 text-teal-600 dark:text-teal-400"
+  },
+  {
+    title: "R&D and Quality",
+    href: "/about/rd-quality",
+    description: "Learn about our WHO-GMP certified facility in Rajasthan, API quality testing, and R&D rigor.",
+    icon: Factory,
+    color: "from-purple-500/10 to-pink-500/10 text-purple-600 dark:text-purple-400"
+  }
 ]
 
 export default function AboutPage() {
@@ -35,123 +90,112 @@ export default function AboutPage() {
         {/* Hero Section */}
         <section className="relative overflow-hidden py-16 md:py-24">
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-            <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[100px]" />
+            <div className="absolute left-1/2 top-0 h-[450px] w-[900px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
           </div>
 
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <Reveal className="max-w-3xl">
-              <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary">
-                About Galcare
+              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary border border-primary/20">
+                <Building2 className="size-3.5" /> About Galcare Pharmaceuticals
               </span>
               <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                Science-backed healthcare, <span className="text-gradient">trusted globally.</span>
+                Driven by <span className="text-gradient">Excellence through People & Innovation.</span>
               </h1>
               <p className="mt-6 text-xl leading-relaxed text-muted-foreground">
-                Galcare is a leading pharmaceutical organization committed to delivering top-tier dermatological, cosmeceutical, and neuropsychiatric formulations through research, integrity, and manufacturing excellence.
+                Incorporated in 2008, Galcare Pharmaceutical Private Limited is a prominent, prescription-oriented pharmaceutical company dedicated to world-class dermatology formulations, ethical growth, and patient-first innovation.
               </p>
             </Reveal>
           </div>
         </section>
 
-        {/* Story & Infrastructure */}
-        <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-12 lg:grid-cols-2 items-center">
-            <Reveal>
-              <h2 className="text-3xl font-bold tracking-tight">Our Story</h2>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                Founded in 2008, Galcare was built on a foundation of scientific innovation and patient-first values. We recognized the need for dermatologist-grade formulations that are both highly effective and accessible to all. Over the past two decades, we have scaled our production capabilities, invested in proprietary research, and built an extensive distribution network that spans across 42 countries.
-              </p>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                Our facilities are equipped with class-leading automation, strict environmental controls, and a dedicated team of researchers and formulation scientists. Today, we stand as a trusted brand, prescribed by over 30,000 doctors globally.
-              </p>
-            </Reveal>
-            <Reveal>
-              <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-border shadow-soft">
-                <Image
-                  src="/manufacturing.png"
-                  alt="Galcare modern facility"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* Vision & Mission */}
-        <section className="py-16 bg-muted/30">
-          <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-8 md:grid-cols-2">
-            <Reveal>
-              <div className="h-full rounded-[2rem] border border-border bg-card p-8 md:p-10 shadow-soft">
-                <div className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
-                  <Eye className="size-6" />
-                </div>
-                <h3 className="mt-6 text-2xl font-bold">Our Vision</h3>
-                <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                  To emerge as a globally respected pharmaceutical leader recognized for proprietary innovation, uncompromised product quality, and improving patient quality of life through next-generation therapeutics.
-                </p>
-              </div>
-            </Reveal>
-            <Reveal>
-              <div className="h-full rounded-[2rem] border border-border bg-card p-8 md:p-10 shadow-soft">
-                <div className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary">
-                  <Target className="size-6" />
-                </div>
-                <h3 className="mt-6 text-2xl font-bold">Our Mission</h3>
-                <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                  To engineer, manufacture, and deliver safe, effective, and affordable medicines. We strive to maintain absolute compliance with world-class standards while fostering a culture of continuous research and ethical practices.
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* Core Values */}
-        <section className="py-16">
+        {/* Founder Spotlight */}
+        <section className="py-12 bg-muted/20 border-y border-border/50">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <Reveal className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight">Our Core Values</h2>
-              <p className="mt-3 text-muted-foreground">
-                The pillars that guide our daily operations, research development, and partnership goals.
-              </p>
-            </Reveal>
-
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {values.map((v, i) => (
-                <Reveal key={v.title} delay={i * 0.08}>
-                  <div className="h-full rounded-2xl border border-border bg-card p-6 shadow-soft transition-transform hover:-translate-y-1">
-                    <div className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
-                      <v.icon className="size-5" />
+            <div className="grid gap-12 lg:grid-cols-12 items-center">
+              <div className="lg:col-span-5">
+                <Reveal>
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] border border-border shadow-2xl bg-card">
+                    <Image
+                      src="/hero2.png"
+                      alt="Devkant Bhardwaj - Founder Galcare Pharmaceuticals"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                    <div className="absolute bottom-6 left-6 right-6 p-6 rounded-2xl glass-strong border border-border">
+                      <h3 className="text-xl font-bold text-foreground">Devkant Bhardwaj</h3>
+                      <p className="text-sm font-semibold text-primary">Founder & Visionary Leader</p>
+                      <p className="mt-1 text-xs text-muted-foreground">Galcare Pharmaceutical Pvt. Ltd.</p>
                     </div>
-                    <h4 className="mt-4 text-lg font-bold">{v.title}</h4>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{v.text}</p>
                   </div>
                 </Reveal>
-              ))}
+              </div>
+
+              <div className="lg:col-span-7">
+                <Reveal>
+                  <span className="rounded-full bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+                    Founder's Message & Philosophy
+                  </span>
+                  <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+                    "We don't just follow industry standards—we set them."
+                  </h2>
+                  <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-foreground">
+                    <p>
+                      In <strong className="text-foreground font-semibold">2008</strong>, Founder <strong className="text-foreground font-semibold">Devkant Bhardwaj</strong> embarked on a journey in Rajasthan with a clear, single objective: to provide quality, innovative therapeutic solutions that reach every patient at affordable prices.
+                    </p>
+                    <p>
+                      From day one, Galcare established its governing dictums: <em className="text-foreground font-medium">"Excellence through People and Innovation"</em> alongside the core values of <strong className="text-foreground font-semibold">Respect, Recognition, and Responsibility</strong>. We never lose sight of the human element—the passionate professionals who formulate our medicines and the patients who depend on them.
+                    </p>
+                    <p>
+                      Today, having expanded across 26 states in India with our own WHO-GMP certified formulation plant in Rajasthan and a team of over 500 associates, Galcare stands as an eminent name trusted by over 30,000 medical practitioners.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-border pt-6">
+                    <div>
+                      <div className="text-2xl font-extrabold text-gradient">2008</div>
+                      <div className="text-xs text-muted-foreground font-medium">Inception Year</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-extrabold text-gradient">26 States</div>
+                      <div className="text-xs text-muted-foreground font-medium">Pan-India Reach</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-extrabold text-gradient">500+</div>
+                      <div className="text-xs text-muted-foreground font-medium">Dedicated Team</div>
+                    </div>
+                  </div>
+                </Reveal>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Leadership Team */}
-        <section className="py-16 bg-muted/30">
+        {/* Three Core Pillars */}
+        <section className="py-16">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <Reveal className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight">Executive Leadership</h2>
+              <span className="rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold text-primary">
+                Organizational Foundation
+              </span>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+                The Three Pillars of Galcare
+              </h2>
               <p className="mt-3 text-muted-foreground">
-                Committed leaders steering Galcare toward global excellence and healthcare expansion.
+                Our business purpose is anchored in three core commitments defined by our leadership.
               </p>
             </Reveal>
 
             <div className="mt-12 grid gap-8 md:grid-cols-3">
-              {team.map((member, i) => (
-                <Reveal key={member.name} delay={i * 0.1}>
-                  <div className="h-full rounded-[2rem] border border-border bg-card p-6 md:p-8 shadow-soft">
+              {corePillars.map((pillar, i) => (
+                <Reveal key={pillar.title} delay={i * 0.1}>
+                  <div className="h-full rounded-[2rem] border border-border bg-card p-8 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-strong">
                     <div className="grid size-14 place-items-center rounded-2xl bg-primary/10 text-primary">
-                      <Users className="size-7" />
+                      <pillar.icon className="size-7" />
                     </div>
-                    <h4 className="mt-6 text-xl font-bold">{member.name}</h4>
-                    <p className="text-sm font-semibold text-primary">{member.role}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{member.description}</p>
+                    <span className="mt-6 inline-block text-xs font-bold text-primary uppercase tracking-wider">Pillar 0{i + 1}</span>
+                    <h3 className="mt-1 text-xl font-bold">{pillar.title}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{pillar.description}</p>
                   </div>
                 </Reveal>
               ))}
@@ -159,55 +203,73 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Timeline Journey */}
-        <section className="py-16">
+        {/* Explore Sub-Pages Grid */}
+        <section className="py-16 bg-muted/30">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <Reveal className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight">Our Growth Journey</h2>
+              <span className="rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold text-primary">
+                Deep Dive into Galcare
+              </span>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+                Explore Our Organization
+              </h2>
               <p className="mt-3 text-muted-foreground">
-                Key milestones that defined our transition from a local specialist to a global pharmaceutical player.
+                Learn more about our values, historical milestones, and R&D quality standards.
               </p>
             </Reveal>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-4">
-              {journey.map((j, i) => (
-                <Reveal key={j.year} delay={i * 0.08}>
-                  <div className="relative h-full rounded-2xl border border-border bg-card p-6 shadow-soft">
-                    <span className="text-3xl font-bold text-gradient">{j.year}</span>
-                    <h4 className="mt-2 text-base font-bold">{j.title}</h4>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{j.text}</p>
-                  </div>
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {exploreSections.map((sec, i) => (
+                <Reveal key={sec.title} delay={i * 0.1}>
+                  <Link href={sec.href} className="group block h-full">
+                    <div className="h-full rounded-[2rem] border border-border bg-card p-8 shadow-soft transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-strong group-hover:-translate-y-1">
+                      <div className={`grid size-12 place-items-center rounded-2xl bg-gradient-to-br ${sec.color}`}>
+                        <sec.icon className="size-6" />
+                      </div>
+                      <h3 className="mt-6 text-xl font-bold text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
+                        {sec.title}
+                        <ArrowRight className="size-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{sec.description}</p>
+                    </div>
+                  </Link>
                 </Reveal>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CSR Section */}
-        <section className="py-16 bg-muted/30">
-          <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-12 lg:grid-cols-2 items-center">
-            <Reveal>
-              <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-border shadow-soft">
-                <Image
-                  src="/lab.png"
-                  alt="Galcare CSR initiatives"
-                  fill
-                  className="object-cover"
-                />
+        {/* Highlights Timeline Preview */}
+        <section className="py-16">
+          <div className="mx-auto max-w-7xl px-4 md:px-6">
+            <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <span className="rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold text-primary">
+                  16+ Years Journey
+                </span>
+                <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+                  Key Growth Milestones
+                </h2>
               </div>
+              <Link
+                href="/about/milestones"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+              >
+                View Complete Interactive Timeline <ArrowRight className="size-4" />
+              </Link>
             </Reveal>
-            <Reveal>
-              <span className="rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold text-primary">
-                Corporate Social Responsibility
-              </span>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight">Caring for communities beyond medicine</h2>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                At Galcare, we believe that true healthcare goes beyond the products we manufacture. We actively invest in local communities, supporting free health camps, providing subsidized skin diagnostics in rural areas, and partnering with educational institutions to offer internships to aspiring biochemists.
-              </p>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                We are also committed to sustainable manufacturing. Our facilities implement zero-liquid-discharge systems, solar integration, and eco-friendly packaging initiatives to reduce our carbon and environmental footprint.
-              </p>
-            </Reveal>
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {timelineHighlights.map((t, i) => (
+                <Reveal key={t.year} delay={i * 0.08}>
+                  <div className="relative h-full rounded-2xl border border-border bg-card p-6 shadow-soft hover:border-primary/40 transition-colors">
+                    <span className="text-3xl font-black text-gradient">{t.year}</span>
+                    <h4 className="mt-2 text-base font-bold text-foreground">{t.title}</h4>
+                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t.text}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
       </main>

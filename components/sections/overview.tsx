@@ -10,22 +10,22 @@ import { Counter, Reveal } from "@/components/motion-primitives"
 const timeline = [
   {
     year: "2008",
-    text: "Founded with a mission to advance dermatological care.",
+    text: "Founded in Jaipur, Rajasthan.",
     icon: Award,
   },
   {
-    year: "2012",
-    text: "Commissioned first WHO-GMP certified manufacturing unit.",
+    year: "2015",
+    text: "Expanded operations into UP, Pune, MP & Hyderabad.",
     icon: Factory,
   },
   {
-    year: "2017",
-    text: "Expanded to 20+ international markets.",
+    year: "2018",
+    text: "Achieved Pan-India distribution across 26 states.",
     icon: Globe,
   },
   {
-    year: "2024",
-    text: "Launched dedicated dermatology R&D center of excellence.",
+    year: "2023",
+    text: "Commissioned WHO-GMP certified plant in Rajasthan.",
     icon: FlaskConical,
   },
 ]
@@ -46,7 +46,7 @@ export function Overview() {
           <Reveal className="max-w-2xl mx-auto text-center lg:mx-0 lg:text-left">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/80">Company Overview</p>
             <h2 className="mt-2 text-balance text-2xl font-semibold tracking-tight text-primary-foreground sm:text-3xl leading-snug">
-              A quarter century of dermatological excellence
+              Pioneering dermatological & specialty healthcare since 2008
             </h2>
             <p className="mt-2.5 text-pretty text-base text-primary-foreground/85 leading-relaxed">
               From a single laboratory to a globally trusted dermatology company, our journey is defined by science,

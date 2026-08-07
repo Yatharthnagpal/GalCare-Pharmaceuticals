@@ -1,12 +1,95 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, X, UploadCloud } from "lucide-react";
-import { NEWS } from "@/lib/site-data";
+import { NEWS, NewsItem } from "@/lib/site-data";
 import Image from "next/image";
 
 export default function AdminNewsroomPage() {
+  const [articles, setArticles] = useState<NewsItem[]>(NEWS);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  const [newsForm, setNewsForm] = useState<NewsItem>({
+    title: "",
+    category: "Award",
+    date: "",
+    excerpt: "",
+    image: "",
+  });
+
+  useEffect(() => {
+    // Sync articles from localStorage if present
+    const savedArticles = localStorage.getItem("galcare_admin_news");
+    if (savedArticles) {
+      try {
+        setArticles(JSON.parse(savedArticles));
+      } catch (e) {
+        console.error("Failed to parse saved articles", e);
+      }
+    } else {
+      localStorage.setItem("galcare_admin_news", JSON.stringify(NEWS));
+    }
+  }, []);
+
+  const handleOpenAddModal = () => {
+    setEditingIndex(null);
+    setNewsForm({
+      title: "",
+      category: "Award",
+      date: "",
+      excerpt: "",
+      image: "",
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (index: number) => {
+    setEditingIndex(index);
+    const item = articles[index];
+    setNewsForm({
+      title: item.title,
+      category: item.category,
+      date: item.date,
+      excerpt: item.excerpt,
+      image: item.image || "",
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSaveArticle = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsForm.title.trim()) return;
+
+    let updated: NewsItem[];
+    if (editingIndex !== null) {
+      updated = [...articles];
+      updated[editingIndex] = newsForm;
+    } else {
+      updated = [newsForm, ...articles];
+    }
+
+    setArticles(updated);
+    localStorage.setItem("galcare_admin_news", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
+    setIsModalOpen(false);
+    setNewsForm({
+      title: "",
+      category: "Award",
+      date: "",
+      excerpt: "",
+      image: "",
+    });
+  };
+
+  const handleDeleteArticle = (index: number) => {
+    if (confirm("Are you sure you want to remove this article?")) {
+      const updated = articles.filter((_, i) => i !== index);
+      setArticles(updated);
+      localStorage.setItem("galcare_admin_news", JSON.stringify(updated));
+      window.dispatchEvent(new Event("storage"));
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -20,7 +103,7 @@ export default function AdminNewsroomPage() {
           </p>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleOpenAddModal}
           className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-4 h-4" /> Add Article
@@ -32,7 +115,7 @@ export default function AdminNewsroomPage() {
           <h3 className="text-muted-foreground text-sm font-medium">
             Total Articles
           </h3>
-          <p className="text-4xl font-bold mt-2 text-primary">{NEWS.length}</p>
+          <p className="text-4xl font-bold mt-2 text-primary">{articles.length}</p>
         </div>
         <div className="bg-card border border-border p-6 rounded-2xl shadow-soft">
           <h3 className="text-muted-foreground text-sm font-medium">
@@ -46,7 +129,7 @@ export default function AdminNewsroomPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {NEWS.map((item, i) => (
+        {articles.map((item, i) => (
           <div
             key={i}
             className="bg-card border border-border rounded-2xl shadow-soft overflow-hidden group"
@@ -59,10 +142,16 @@ export default function AdminNewsroomPage() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                <button className="p-3 bg-white/20 hover:bg-white/40 text-white rounded-full backdrop-blur-md transition-colors">
+                <button
+                  onClick={() => handleOpenEditModal(i)}
+                  className="p-3 bg-white/20 hover:bg-white/40 text-white rounded-full backdrop-blur-md transition-colors"
+                >
                   <Edit2 className="w-5 h-5" />
                 </button>
-                <button className="p-3 bg-red-500/80 hover:bg-red-500 text-white rounded-full backdrop-blur-md transition-colors">
+                <button
+                  onClick={() => handleDeleteArticle(i)}
+                  className="p-3 bg-red-500/80 hover:bg-red-500 text-white rounded-full backdrop-blur-md transition-colors"
+                >
                   <Trash2 className="w-5 h-5" />
                 </button>
               </div>
@@ -92,7 +181,7 @@ export default function AdminNewsroomPage() {
           <div className="bg-card border border-border rounded-2xl shadow-glow w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
             <div className="flex justify-between items-center p-6 border-b border-border flex-shrink-0">
               <h2 className="text-xl font-bold text-foreground">
-                Add New Article
+                {editingIndex !== null ? "Edit Article" : "Add New Article"}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -102,10 +191,7 @@ export default function AdminNewsroomPage() {
               </button>
             </div>
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setIsModalOpen(false);
-              }}
+              onSubmit={handleSaveArticle}
               className="p-6 overflow-y-auto space-y-5"
             >
               <div className="space-y-1.5">
@@ -114,15 +200,25 @@ export default function AdminNewsroomPage() {
                   type="text"
                   className="w-full px-4 py-2 bg-background border border-border rounded-xl"
                   required
+                  value={newsForm.title}
+                  onChange={(e) =>
+                    setNewsForm({ ...newsForm, title: e.target.value })
+                  }
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium">Category</label>
-                  <select className="w-full px-4 py-2 bg-background border border-border rounded-xl">
-                    <option>Award</option>
-                    <option>Product Launch</option>
-                    <option>Event</option>
+                  <select
+                    className="w-full px-4 py-2 bg-background border border-border rounded-xl"
+                    value={newsForm.category}
+                    onChange={(e) =>
+                      setNewsForm({ ...newsForm, category: e.target.value })
+                    }
+                  >
+                    <option value="Award">Award</option>
+                    <option value="Product Launch">Product Launch</option>
+                    <option value="Event">Event</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
@@ -131,19 +227,32 @@ export default function AdminNewsroomPage() {
                     type="date"
                     className="w-full px-4 py-2 bg-background border border-border rounded-xl"
                     required
+                    value={newsForm.date}
+                    onChange={(e) =>
+                      setNewsForm({ ...newsForm, date: e.target.value })
+                    }
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-sm font-medium">Featured Image</label>
-                <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-secondary/50 transition-colors">
-                  <UploadCloud className="w-10 h-10 text-muted-foreground mb-3" />
+                <label className="text-sm font-medium">Featured Image URL</label>
+                <input
+                  type="text"
+                  placeholder="e.g. /images/placeholders/sunscreen-testing.png"
+                  className="w-full px-4 py-2 bg-background border border-border rounded-xl"
+                  value={newsForm.image || ""}
+                  onChange={(e) =>
+                    setNewsForm({ ...newsForm, image: e.target.value })
+                  }
+                />
+                <div className="border-2 border-dashed border-border rounded-xl p-4 flex flex-col items-center justify-center text-center mt-2 opacity-50 pointer-events-none">
+                  <UploadCloud className="w-8 h-8 text-muted-foreground mb-2" />
                   <p className="text-sm font-medium text-foreground">
-                    Click to upload or drag and drop
+                    Upload functionality coming soon...
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    SVG, PNG, JPG or GIF (max. 800x400px)
+                    For now, please paste an image URL above.
                   </p>
                 </div>
               </div>
@@ -153,6 +262,11 @@ export default function AdminNewsroomPage() {
                 <textarea
                   rows={3}
                   className="w-full px-4 py-2 bg-background border border-border rounded-xl resize-none"
+                  required
+                  value={newsForm.excerpt}
+                  onChange={(e) =>
+                    setNewsForm({ ...newsForm, excerpt: e.target.value })
+                  }
                 ></textarea>
               </div>
 
@@ -168,7 +282,7 @@ export default function AdminNewsroomPage() {
                   type="submit"
                   className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90"
                 >
-                  Publish Article
+                  {editingIndex !== null ? "Save Changes" : "Publish Article"}
                 </button>
               </div>
             </form>

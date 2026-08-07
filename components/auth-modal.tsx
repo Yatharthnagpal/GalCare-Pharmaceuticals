@@ -6,7 +6,7 @@ import { X, Lock, Mail, Phone, User, Building2, ShieldCheck, ArrowRight, CheckCi
 import { useAuth } from "@/lib/auth-context";
 
 export function AuthModal() {
-  const { isAuthModalOpen, authMode, closeAuthModal, signup, login, openAuthModal } = useAuth();
+  const { isAuthModalOpen, authMode, authPromptMessage, closeAuthModal, signup, login, openAuthModal } = useAuth();
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -89,6 +89,13 @@ export function AuthModal() {
           </div>
 
           <div className="p-6">
+            {authPromptMessage && (
+              <div className="mb-4 p-3 rounded-2xl bg-primary/10 border border-primary/20 text-xs font-semibold text-primary flex items-center gap-2">
+                <ShieldCheck className="size-4 shrink-0" />
+                <span>{authPromptMessage}</span>
+              </div>
+            )}
+
             {/* Mode Switcher */}
             <div className="flex rounded-2xl bg-muted p-1 border border-border/50 mb-6">
               <button
@@ -212,7 +219,6 @@ export function AuthModal() {
                     >
                       <option value="Third Party Manufacturing">3rd Party Manufacturing</option>
                       <option value="Dermatology Distribution">Dermatology Distribution</option>
-                      <option value="Neuropsychiatric Division">Neuropsychiatric Division</option>
                       <option value="Bulk Molecule Sourcing">Bulk Molecule Sourcing</option>
                       <option value="Global Export Opportunities">Global Export Opportunities</option>
                     </select>

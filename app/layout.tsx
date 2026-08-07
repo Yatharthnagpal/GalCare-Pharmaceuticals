@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: '%s | Galcare',
   },
   description:
-    'Galcare is a premium dermatology and skincare pharmaceutical company delivering science-backed, WHO-GMP certified solutions trusted by 30,000+ doctors across 42 countries.',
+    'Galcare is a premier dermatology and specialty pharmaceutical company founded in 2008 by Devkant Bhardwaj, delivering science-backed WHO-GMP certified solutions trusted by 30,000+ doctors across 26 states in India.',
   keywords: [
     'dermatology',
     'skincare',
@@ -60,18 +60,6 @@ export const viewport: Viewport = {
   ],
 }
 
-const themeInitScript = `
-(function() {
-  try {
-    var stored = localStorage.getItem('galcare-theme');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (stored === 'dark' || (!stored && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    }
-  } catch (e) {}
-})();
-`
-
 import { AuthProvider } from '@/lib/auth-context'
 import { AuthModal } from '@/components/auth-modal'
 
@@ -87,7 +75,6 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <AuthProvider>
           <ThemeProvider>
             <SmoothScroll />

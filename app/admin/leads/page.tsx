@@ -1,11 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Download, Filter, FileText, Phone, Mail, UserCheck, Copy, Check } from "lucide-react";
 import { useAuth, UserLead } from "@/lib/auth-context";
 
-const REGISTRATIONS = [
+interface GenericLead {
+  id?: string;
+  name: string;
+  company?: string;
+  phone?: string;
+  email?: string;
+  req?: string;
+  position?: string;
+  product?: string;
+  message?: string;
+  date: string;
+  status: string;
+}
+
+const INITIAL_REGISTRATIONS: GenericLead[] = [
   {
+    id: "reg-1",
     name: "John Doe",
     company: "PharmaCorp",
     phone: "+1 234 567 8900",
@@ -14,6 +29,7 @@ const REGISTRATIONS = [
     status: "New",
   },
   {
+    id: "reg-2",
     name: "Sarah Smith",
     company: "HealthPlus",
     phone: "+44 20 7123 4567",
@@ -22,6 +38,7 @@ const REGISTRATIONS = [
     status: "Contacted",
   },
   {
+    id: "reg-3",
     name: "Raj Patel",
     company: "MediGlobal",
     phone: "+91 98765 43210",
@@ -31,8 +48,9 @@ const REGISTRATIONS = [
   },
 ];
 
-const THIRD_PARTY = [
+const INITIAL_THIRD_PARTY: GenericLead[] = [
   {
+    id: "tp-1",
     name: "Alice Wong",
     company: "BioGen",
     phone: "+65 6123 4567",
@@ -41,6 +59,7 @@ const THIRD_PARTY = [
     status: "New",
   },
   {
+    id: "tp-2",
     name: "Carlos Ruiz",
     company: "VivaSalud",
     phone: "+34 91 123 4567",
@@ -50,25 +69,30 @@ const THIRD_PARTY = [
   },
 ];
 
-const JOB_APPS = [
+const INITIAL_JOB_APPS: GenericLead[] = [
   {
+    id: "ja-1",
     name: "Emily Chen",
     position: "Quality Control Manager",
     email: "emily.chen@email.com",
+    phone: "+1 (555) 890-1234",
     date: "Oct 26, 2023",
     status: "New",
   },
   {
+    id: "ja-2",
     name: "Michael Johnson",
     position: "Production Supervisor",
     email: "mjohnson@email.com",
+    phone: "+44 7700 900077",
     date: "Oct 23, 2023",
     status: "Contacted",
   },
 ];
 
-const ENQUIRIES = [
+const INITIAL_ENQUIRIES: GenericLead[] = [
   {
+    id: "enq-1",
     name: "David Kim",
     product: "Galmol 500",
     email: "david.kim@email.com",
@@ -81,7 +105,28 @@ const ENQUIRIES = [
 export default function AdminLeadsPage() {
   const [activeTab, setActiveTab] = useState("user-leads");
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const { capturedLeads, updateLeadStatus } = useAuth();
+  const { capturedLeads, updateLeadStatus, updateUserJobAppStatus, updateUser3rdPartyStatus } = useAuth();
+
+  // State for all categories to allow status changes
+  const [registrations, setRegistrations] = useState<GenericLead[]>(INITIAL_REGISTRATIONS);
+  const [thirdParty, setThirdParty] = useState<GenericLead[]>(INITIAL_THIRD_PARTY);
+  const [jobApps, setJobApps] = useState<GenericLead[]>(INITIAL_JOB_APPS);
+  const [enquiries, setEnquiries] = useState<GenericLead[]>(INITIAL_ENQUIRIES);
+
+  useEffect(() => {
+    // Load persisted statuses
+    const savedRegs = localStorage.getItem("galcare_leads_registrations");
+    if (savedRegs) setRegistrations(JSON.parse(savedRegs));
+
+    const savedTp = localStorage.getItem("galcare_leads_thirdparty");
+    if (savedTp) setThirdParty(JSON.parse(savedTp));
+
+    const savedJa = localStorage.getItem("galcare_leads_jobapps");
+    if (savedJa) setJobApps(JSON.parse(savedJa));
+
+    const savedEnq = localStorage.getItem("galcare_leads_enquiries");
+    if (savedEnq) setEnquiries(JSON.parse(savedEnq));
+  }, []);
 
   const TABS = [
     { id: "user-leads", label: `Captured B2B Leads (${capturedLeads.length})` },
@@ -97,21 +142,62 @@ export default function AdminLeadsPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const renderStatus = (status: string) => {
-    let bg = "bg-gray-100 text-gray-700";
-    if (status.includes("New"))
-      bg = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
-    if (status.includes("Contacted") || status.includes("Cold Emailed"))
-      bg = "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
-    if (status.includes("Called"))
-      bg = "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400";
-    if (status.includes("Converted"))
-      bg = "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+  const handleStatusChange = (
+    category: "registrations" | "third-party" | "job-apps" | "enquiries",
+    index: number,
+    newStatus: string
+  ) => {
+    if (category === "registrations") {
+      const updated = [...registrations];
+      updated[index].status = newStatus;
+      setRegistrations(updated);
+      localStorage.setItem("galcare_leads_registrations", JSON.stringify(updated));
+    } else if (category === "third-party") {
+      const updated = [...thirdParty];
+      const item = updated[index];
+      item.status = newStatus;
+      setThirdParty(updated);
+      localStorage.setItem("galcare_leads_thirdparty", JSON.stringify(updated));
 
+      // Also update user3rdPartyQuotes if item has id
+      if (item.id) {
+        updateUser3rdPartyStatus(item.id, newStatus as any);
+      }
+    } else if (category === "job-apps") {
+      const updated = [...jobApps];
+      const item = updated[index];
+      item.status = newStatus;
+      setJobApps(updated);
+      localStorage.setItem("galcare_leads_jobapps", JSON.stringify(updated));
+
+      // Also update userJobApps if item has id
+      if (item.id) {
+        updateUserJobAppStatus(item.id, newStatus as any);
+      }
+    } else if (category === "enquiries") {
+      const updated = [...enquiries];
+      updated[index].status = newStatus;
+      setEnquiries(updated);
+      localStorage.setItem("galcare_leads_enquiries", JSON.stringify(updated));
+    }
+  };
+
+  const renderStatusDropdown = (
+    currentStatus: string,
+    onStatusChange: (newStatus: string) => void
+  ) => {
     return (
-      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${bg}`}>
-        {status}
-      </span>
+      <select
+        value={currentStatus}
+        onChange={(e) => onStatusChange(e.target.value)}
+        className="rounded-xl border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+      >
+        <option value="New">New</option>
+        <option value="Contacted">Contacted</option>
+        <option value="In Discussion">In Discussion</option>
+        <option value="Converted">Converted</option>
+        <option value="Rejected">Rejected</option>
+      </select>
     );
   };
 
@@ -120,10 +206,10 @@ export default function AdminLeadsPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Leads Dashboard
+            Leads & Applications Dashboard
           </h1>
           <p className="text-muted-foreground mt-1">
-            Manage and track all incoming requests and applications
+            Manage, track, and update statuses for all incoming client requests and candidates
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -131,7 +217,7 @@ export default function AdminLeadsPage() {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search leads..."
               className="pl-9 pr-4 py-2 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
@@ -153,7 +239,7 @@ export default function AdminLeadsPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
                 activeTab === tab.id
-                  ? "border-primary text-primary"
+                  ? "border-primary text-primary font-bold"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               }`}
             >
@@ -179,78 +265,38 @@ export default function AdminLeadsPage() {
               )}
               {activeTab === "registrations" && (
                 <tr>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Name
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Company
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Contact
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Date
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Status
-                  </th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Name</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Company</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Contact</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Date</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Status (Changeable)</th>
                 </tr>
               )}
               {activeTab === "third-party" && (
                 <tr>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Name
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Company
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Requirements
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Date
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Status
-                  </th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Name</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Company</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Requirements</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Date</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Status (Changeable)</th>
                 </tr>
               )}
               {activeTab === "job-apps" && (
                 <tr>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Applicant
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Position
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Resume
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Date
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Status
-                  </th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Applicant</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Position</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Resume</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Date</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Status (Changeable)</th>
                 </tr>
               )}
               {activeTab === "enquiries" && (
                 <tr>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Name
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Product
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Message
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Date
-                  </th>
-                  <th className="p-4 font-semibold text-sm text-foreground">
-                    Status
-                  </th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Name</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Product</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Message</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Date</th>
+                  <th className="p-4 font-semibold text-sm text-foreground">Status (Changeable)</th>
                 </tr>
               )}
             </thead>
@@ -288,7 +334,7 @@ export default function AdminLeadsPage() {
                       <select
                         value={lead.status}
                         onChange={(e) => updateLeadStatus(lead.id, e.target.value as any)}
-                        className="rounded-lg border border-border bg-background px-2.5 py-1 text-xs font-semibold text-foreground focus:outline-none"
+                        className="rounded-xl border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                       >
                         <option value="New (Uncontacted)">New (Uncontacted)</option>
                         <option value="Cold Emailed">Cold Emailed</option>
@@ -319,108 +365,95 @@ export default function AdminLeadsPage() {
                 ))}
 
               {activeTab === "registrations" &&
-                REGISTRATIONS.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="border-t border-border hover:bg-secondary/20"
-                  >
+                registrations.map((row, i) => (
+                  <tr key={i} className="border-t border-border hover:bg-secondary/20">
                     <td className="p-4 text-sm font-medium">{row.name}</td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.company}
-                    </td>
+                    <td className="p-4 text-sm text-muted-foreground">{row.company}</td>
                     <td className="p-4 text-sm text-muted-foreground">
                       <div>{row.email}</div>
                       <div className="text-xs">{row.phone}</div>
                     </td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.date}
+                    <td className="p-4 text-sm text-muted-foreground">{row.date}</td>
+                    <td className="p-4">
+                      {renderStatusDropdown(row.status, (newStatus) =>
+                        handleStatusChange("registrations", i, newStatus)
+                      )}
                     </td>
-                    <td className="p-4">{renderStatus(row.status)}</td>
                   </tr>
                 ))}
 
               {activeTab === "third-party" &&
-                THIRD_PARTY.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="border-t border-border hover:bg-secondary/20"
-                  >
+                thirdParty.map((row, i) => (
+                  <tr key={i} className="border-t border-border hover:bg-secondary/20">
                     <td className="p-4 text-sm font-medium">{row.name}</td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.company}
+                    <td className="p-4 text-sm text-muted-foreground">{row.company}</td>
+                    <td className="p-4 text-sm text-muted-foreground">{row.req}</td>
+                    <td className="p-4 text-sm text-muted-foreground">{row.date}</td>
+                    <td className="p-4">
+                      {renderStatusDropdown(row.status, (newStatus) =>
+                        handleStatusChange("third-party", i, newStatus)
+                      )}
                     </td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.req}
-                    </td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.date}
-                    </td>
-                    <td className="p-4">{renderStatus(row.status)}</td>
                   </tr>
                 ))}
 
               {activeTab === "job-apps" &&
-                JOB_APPS.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="border-t border-border hover:bg-secondary/20"
-                  >
+                jobApps.map((row, i) => (
+                  <tr key={i} className="border-t border-border hover:bg-secondary/20">
                     <td className="p-4 text-sm font-medium">
                       <div>{row.name}</div>
-                      <div className="text-xs text-muted-foreground font-normal">
-                        {row.email}
-                      </div>
+                      <div className="text-xs text-muted-foreground font-normal">{row.email}</div>
+                      {row.phone && (
+                        <a
+                          href={`tel:${row.phone}`}
+                          className="text-xs font-semibold text-primary flex items-center gap-1 mt-0.5 hover:underline"
+                        >
+                          <Phone className="size-3" /> {row.phone}
+                        </a>
+                      )}
                     </td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.position}
-                    </td>
+                    <td className="p-4 text-sm text-muted-foreground">{row.position}</td>
                     <td className="p-4">
                       <button className="flex items-center gap-1.5 text-sm text-primary hover:underline">
                         <FileText className="w-4 h-4" /> View Resume
                       </button>
                     </td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.date}
+                    <td className="p-4 text-sm text-muted-foreground">{row.date}</td>
+                    <td className="p-4">
+                      {renderStatusDropdown(row.status, (newStatus) =>
+                        handleStatusChange("job-apps", i, newStatus)
+                      )}
                     </td>
-                    <td className="p-4">{renderStatus(row.status)}</td>
                   </tr>
                 ))}
 
               {activeTab === "enquiries" &&
-                ENQUIRIES.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="border-t border-border hover:bg-secondary/20"
-                  >
+                enquiries.map((row, i) => (
+                  <tr key={i} className="border-t border-border hover:bg-secondary/20">
                     <td className="p-4 text-sm font-medium">
                       <div>{row.name}</div>
-                      <div className="text-xs text-muted-foreground font-normal">
-                        {row.email}
-                      </div>
+                      <div className="text-xs text-muted-foreground font-normal">{row.email}</div>
                     </td>
-                    <td className="p-4 text-sm font-medium text-primary">
-                      {row.product}
-                    </td>
-                    <td
-                      className="p-4 text-sm text-muted-foreground max-w-xs truncate"
-                      title={row.message}
-                    >
+                    <td className="p-4 text-sm font-medium text-primary">{row.product}</td>
+                    <td className="p-4 text-sm text-muted-foreground max-w-xs truncate" title={row.message}>
                       {row.message}
                     </td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {row.date}
+                    <td className="p-4 text-sm text-muted-foreground">{row.date}</td>
+                    <td className="p-4">
+                      {renderStatusDropdown(row.status, (newStatus) =>
+                        handleStatusChange("enquiries", i, newStatus)
+                      )}
                     </td>
-                    <td className="p-4">{renderStatus(row.status)}</td>
                   </tr>
                 ))}
             </tbody>
           </table>
 
           {((activeTab === "user-leads" && capturedLeads.length === 0) ||
-            (activeTab === "registrations" && REGISTRATIONS.length === 0) ||
-            (activeTab === "third-party" && THIRD_PARTY.length === 0) ||
-            (activeTab === "job-apps" && JOB_APPS.length === 0) ||
-            (activeTab === "enquiries" && ENQUIRIES.length === 0)) && (
+            (activeTab === "registrations" && registrations.length === 0) ||
+            (activeTab === "third-party" && thirdParty.length === 0) ||
+            (activeTab === "job-apps" && jobApps.length === 0) ||
+            (activeTab === "enquiries" && enquiries.length === 0)) && (
             <div className="p-8 text-center text-muted-foreground">
               No data available for this category.
             </div>

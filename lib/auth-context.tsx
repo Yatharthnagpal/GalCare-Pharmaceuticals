@@ -14,17 +14,65 @@ export interface UserLead {
   consent: boolean;
 }
 
+export interface UserJobApp {
+  id: string;
+  userEmail: string;
+  userName: string;
+  jobTitle: string;
+  department: string;
+  phone: string;
+  experience: string;
+  resume: string;
+  date: string;
+  status: "Incomplete - Pending Admin Processing (Remind Later)" | "Under Review" | "Interview Scheduled" | "Accepted" | "Rejected";
+}
+
+export interface User3rdPartyQuote {
+  id: string;
+  userEmail: string;
+  userName: string;
+  companyName: string;
+  phone: string;
+  requirements: string;
+  message: string;
+  date: string;
+  status: "Submitted - Under Review" | "Quote Generated" | "Proposal Sent" | "Contract Finalized" | "Rejected";
+}
+
+export interface UserEnquiry {
+  id: string;
+  userEmail: string;
+  userName: string;
+  productName: string;
+  message: string;
+  date: string;
+  status: "Received - In Review" | "Proposal Ready" | "Resolved";
+}
+
 interface AuthContextType {
   user: UserLead | null;
   isAuthModalOpen: boolean;
   authMode: "login" | "signup";
-  openAuthModal: (mode?: "login" | "signup") => void;
+  authPromptMessage: string | null;
+  openAuthModal: (mode?: "login" | "signup", promptMessage?: string) => void;
   closeAuthModal: () => void;
+  requireAuth: (action: () => void, promptMessage?: string) => boolean;
   signup: (data: Omit<UserLead, "id" | "createdAt" | "status">) => void;
   login: (emailOrPhone: string) => boolean;
   logout: () => void;
   capturedLeads: UserLead[];
   updateLeadStatus: (id: string, status: UserLead["status"]) => void;
+  
+  // User Dashboard Submission Items
+  userJobApps: UserJobApp[];
+  user3rdPartyQuotes: User3rdPartyQuote[];
+  userEnquiries: UserEnquiry[];
+  addJobApplication: (app: Omit<UserJobApp, "id" | "date" | "status">) => void;
+  add3rdPartyQuote: (quote: Omit<User3rdPartyQuote, "id" | "date" | "status">) => void;
+  addEnquiry: (enquiry: Omit<UserEnquiry, "id" | "date" | "status">) => void;
+  updateUserJobAppStatus: (id: string, status: UserJobApp["status"]) => void;
+  updateUser3rdPartyStatus: (id: string, status: User3rdPartyQuote["status"]) => void;
+  updateUserEnquiryStatus: (id: string, status: UserEnquiry["status"]) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,16 +89,46 @@ const INITIAL_LEADS: UserLead[] = [
     status: "New (Uncontacted)",
     consent: true,
   },
+];
+
+const INITIAL_JOB_APPS: UserJobApp[] = [
   {
-    id: "lead-2",
-    fullName: "Dr. Kavita Sharma",
-    email: "kavita@skinclinics.in",
-    phone: "+91 98200 11223",
-    company: "Skin & Care Clinics",
-    interest: "Dermatology Products",
-    createdAt: "2026-07-29",
-    status: "Cold Emailed",
-    consent: true,
+    id: "app-101",
+    userEmail: "alexander@apexpharma.com",
+    userName: "Alexander Wright",
+    jobTitle: "Senior Formulation Scientist",
+    department: "R&D",
+    phone: "+1 (555) 234-5678",
+    experience: "6 Years",
+    resume: "https://drive.google.com/sample-resume",
+    date: "2026-07-30",
+    status: "Incomplete - Pending Admin Processing (Remind Later)",
+  },
+];
+
+const INITIAL_3RD_PARTY_QUOTES: User3rdPartyQuote[] = [
+  {
+    id: "quote-101",
+    userEmail: "alexander@apexpharma.com",
+    userName: "Alexander Wright",
+    companyName: "Apex Healthcare Ltd",
+    phone: "+1 (555) 234-5678",
+    requirements: "Tablets & Ointments",
+    message: "Requirement for 50,000 units batch production.",
+    date: "2026-07-30",
+    status: "Submitted - Under Review",
+  },
+];
+
+const INITIAL_ENQUIRIES: UserEnquiry[] = [
+  {
+    id: "enq-101",
+    userEmail: "client@pharmacorp.com",
+    userName: "General Client",
+    productName: "Galmol 500 Paracetamol",
+    message: "Inquiring about bulk distributor pricing for domestic supply.",
+    date: "2026-07-30",
+    status: "Received - In Review",
   },
 ];
 
@@ -58,7 +136,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserLead | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
+  const [authPromptMessage, setAuthPromptMessage] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
   const [capturedLeads, setCapturedLeads] = useState<UserLead[]>(INITIAL_LEADS);
+  const [userJobApps, setUserJobApps] = useState<UserJobApp[]>(INITIAL_JOB_APPS);
+  const [user3rdPartyQuotes, setUser3rdPartyQuotes] = useState<User3rdPartyQuote[]>(INITIAL_3RD_PARTY_QUOTES);
+  const [userEnquiries, setUserEnquiries] = useState<UserEnquiry[]>(INITIAL_ENQUIRIES);
 
   useEffect(() => {
     // Load session user
@@ -82,15 +166,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       localStorage.setItem("galcare_captured_leads", JSON.stringify(INITIAL_LEADS));
     }
+
+    // Load job apps
+    const savedApps = localStorage.getItem("galcare_user_job_apps");
+    if (savedApps) {
+      try {
+        setUserJobApps(JSON.parse(savedApps));
+      } catch (e) {
+        console.error("Failed to parse job apps", e);
+      }
+    } else {
+      localStorage.setItem("galcare_user_job_apps", JSON.stringify(INITIAL_JOB_APPS));
+    }
+
+    // Load 3rd party quotes
+    const savedQuotes = localStorage.getItem("galcare_user_quotes");
+    if (savedQuotes) {
+      try {
+        setUser3rdPartyQuotes(JSON.parse(savedQuotes));
+      } catch (e) {
+        console.error("Failed to parse 3rd party quotes", e);
+      }
+    } else {
+      localStorage.setItem("galcare_user_quotes", JSON.stringify(INITIAL_3RD_PARTY_QUOTES));
+    }
+
+    // Load enquiries
+    const savedEnquiries = localStorage.getItem("galcare_user_enquiries");
+    if (savedEnquiries) {
+      try {
+        setUserEnquiries(JSON.parse(savedEnquiries));
+      } catch (e) {
+        console.error("Failed to parse user enquiries", e);
+      }
+    } else {
+      localStorage.setItem("galcare_user_enquiries", JSON.stringify(INITIAL_ENQUIRIES));
+    }
   }, []);
 
-  const openAuthModal = (mode: "login" | "signup" = "signup") => {
+  const openAuthModal = (mode: "login" | "signup" = "signup", promptMessage?: string) => {
     setAuthMode(mode);
+    setAuthPromptMessage(promptMessage || null);
     setIsAuthModalOpen(true);
   };
 
   const closeAuthModal = () => {
     setIsAuthModalOpen(false);
+    setAuthPromptMessage(null);
+  };
+
+  const requireAuth = (action: () => void, promptMessage?: string): boolean => {
+    if (user) {
+      action();
+      return true;
+    }
+    setPendingAction(() => action);
+    openAuthModal("signup", promptMessage || "Please sign in or create an account to proceed with your submission.");
+    return false;
   };
 
   const signup = (data: Omit<UserLead, "id" | "createdAt" | "status">) => {
@@ -108,6 +240,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setCapturedLeads(updatedLeads);
     localStorage.setItem("galcare_captured_leads", JSON.stringify(updatedLeads));
     closeAuthModal();
+
+    if (pendingAction) {
+      pendingAction();
+      setPendingAction(null);
+    }
   };
 
   const login = (emailOrPhone: string): boolean => {
@@ -119,10 +256,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(existing);
       localStorage.setItem("galcare_active_user", JSON.stringify(existing));
       closeAuthModal();
+      if (pendingAction) {
+        pendingAction();
+        setPendingAction(null);
+      }
       return true;
     }
 
-    // If user not found in leads, create a quick session for demo
     const quickUser: UserLead = {
       id: `user-${Date.now()}`,
       fullName: emailOrPhone.includes("@") ? emailOrPhone.split("@")[0] : "Client Partner",
@@ -142,6 +282,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setCapturedLeads(updatedLeads);
     localStorage.setItem("galcare_captured_leads", JSON.stringify(updatedLeads));
     closeAuthModal();
+
+    if (pendingAction) {
+      pendingAction();
+      setPendingAction(null);
+    }
     return true;
   };
 
@@ -158,19 +303,87 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("galcare_captured_leads", JSON.stringify(updated));
   };
 
+  const addJobApplication = (appData: Omit<UserJobApp, "id" | "date" | "status">) => {
+    const newApp: UserJobApp = {
+      ...appData,
+      id: `app-${Date.now()}`,
+      date: new Date().toISOString().split("T")[0],
+      status: "Incomplete - Pending Admin Processing (Remind Later)",
+    };
+
+    const updated = [newApp, ...userJobApps];
+    setUserJobApps(updated);
+    localStorage.setItem("galcare_user_job_apps", JSON.stringify(updated));
+  };
+
+  const add3rdPartyQuote = (quoteData: Omit<User3rdPartyQuote, "id" | "date" | "status">) => {
+    const newQuote: User3rdPartyQuote = {
+      ...quoteData,
+      id: `quote-${Date.now()}`,
+      date: new Date().toISOString().split("T")[0],
+      status: "Submitted - Under Review",
+    };
+
+    const updated = [newQuote, ...user3rdPartyQuotes];
+    setUser3rdPartyQuotes(updated);
+    localStorage.setItem("galcare_user_quotes", JSON.stringify(updated));
+  };
+
+  const addEnquiry = (enquiryData: Omit<UserEnquiry, "id" | "date" | "status">) => {
+    const newEnquiry: UserEnquiry = {
+      ...enquiryData,
+      id: `enq-${Date.now()}`,
+      date: new Date().toISOString().split("T")[0],
+      status: "Received - In Review",
+    };
+
+    const updated = [newEnquiry, ...userEnquiries];
+    setUserEnquiries(updated);
+    localStorage.setItem("galcare_user_enquiries", JSON.stringify(updated));
+  };
+
+  const updateUserJobAppStatus = (id: string, status: UserJobApp["status"]) => {
+    const updated = userJobApps.map((a) => (a.id === id ? { ...a, status } : a));
+    setUserJobApps(updated);
+    localStorage.setItem("galcare_user_job_apps", JSON.stringify(updated));
+  };
+
+  const updateUser3rdPartyStatus = (id: string, status: User3rdPartyQuote["status"]) => {
+    const updated = user3rdPartyQuotes.map((q) => (q.id === id ? { ...q, status } : q));
+    setUser3rdPartyQuotes(updated);
+    localStorage.setItem("galcare_user_quotes", JSON.stringify(updated));
+  };
+
+  const updateUserEnquiryStatus = (id: string, status: UserEnquiry["status"]) => {
+    const updated = userEnquiries.map((e) => (e.id === id ? { ...e, status } : e));
+    setUserEnquiries(updated);
+    localStorage.setItem("galcare_user_enquiries", JSON.stringify(updated));
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthModalOpen,
         authMode,
+        authPromptMessage,
         openAuthModal,
         closeAuthModal,
+        requireAuth,
         signup,
         login,
         logout,
         capturedLeads,
         updateLeadStatus,
+        userJobApps,
+        user3rdPartyQuotes,
+        userEnquiries,
+        addJobApplication,
+        add3rdPartyQuote,
+        addEnquiry,
+        updateUserJobAppStatus,
+        updateUser3rdPartyStatus,
+        updateUserEnquiryStatus,
       }}
     >
       {children}

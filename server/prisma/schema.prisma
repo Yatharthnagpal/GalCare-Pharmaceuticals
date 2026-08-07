@@ -1,0 +1,110 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  DOCTOR
+  DISTRIBUTOR
+  ADMIN
+}
+
+enum OutreachStatus {
+  NEW_UNCONTACTED
+  COLD_EMAILED
+  IN_TALKS
+  CONVERTED
+  ARCHIVED
+}
+
+enum LeadCategory {
+  B2B_LEAD
+  THIRD_PARTY_MANUFACTURING
+  PRODUCT_ENQUIRY
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(DOCTOR)
+  phone        String?
+  companyName  String?
+  medicalRegNo String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Lead {
+  id             String         @id @default(cuid())
+  category       LeadCategory   @default(B2B_LEAD)
+  name           String
+  company        String?
+  email          String
+  phone          String?
+  interestArea   String
+  outreachStatus OutreachStatus @default(NEW_UNCONTACTED)
+  consentGiven   Boolean        @default(true)
+  notes          String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Job {
+  id           String           @id @default(cuid())
+  title        String
+  department   String
+  location     String
+  type         String           @default("Full-time")
+  description  String
+  active       Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  applications JobApplication[]
+}
+
+model JobApplication {
+  id        String   @id @default(cuid())
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  candidate String
+  email     String
+  phone     String
+  resumeUrl String?
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+}
+
+model NewsArticle {
+  id        String   @id @default(cuid())
+  title     String
+  category  String
+  date      String
+  excerpt   String
+  content   String?
+  image     String?
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ManufacturingCapability {
+  id          String @id @default(cuid())
+  formatName  String
+  capacity    String
+  description String
+  sortOrder   Int    @default(0)
+}
+
+model PartnerLogo {
+  id        String   @id @default(cuid())
+  name      String
+  imageUrl  String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}

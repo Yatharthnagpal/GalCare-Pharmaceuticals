@@ -32,7 +32,7 @@ const certsList = [
     icon: Building,
     title: "Regulatory Approvals",
     issuer: "State Drug Control & Licensing Authorities",
-    text: "Valid licenses allowing production and marketing of dermatological, cosmeceutical, and neuropsychiatric formulations for domestic use and export across 42 countries.",
+    text: "Valid manufacturing & marketing licenses for specialty dermatological and cosmeceutical formulations across 26 Indian states and export hubs.",
     docSize: "2.1 MB"
   }
 ]

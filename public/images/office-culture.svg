@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="1200" height="750">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.2" />
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.03" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <linearGradient id="skinGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="skinGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background Office Atmosphere -->
+  <rect width="1200" height="750" fill="url(#bgGrad)" />
+
+  <!-- Background Architecture Lines (Modern Office Windows) -->
+  <g stroke="#ffffff" stroke-opacity="0.08" stroke-width="1.5">
+    <line x1="200" y1="0" x2="200" y2="750" />
+    <line x1="450" y1="0" x2="450" y2="750" />
+    <line x1="750" y1="0" x2="750" y2="750" />
+    <line x1="1000" y1="0" x2="1000" y2="750" />
+    <line x1="0" y1="220" x2="1200" y2="220" />
+    <line x1="0" y1="480" x2="1200" y2="480" />
+  </g>
+
+  <!-- City Skyline / Daylight through Glass -->
+  <path d="M 0 350 L 150 320 L 220 350 L 350 280 L 450 340 L 600 300 L 720 340 L 880 260 L 980 320 L 1200 290 L 1200 500 L 0 500 Z" fill="#0284c7" opacity="0.06" />
+
+  <!-- Soft Ambient Glow Orbs -->
+  <circle cx="600" cy="200" r="220" fill="#10b981" opacity="0.1" filter="url(#glow)" />
+  <circle cx="950" cy="150" r="180" fill="#3b82f6" opacity="0.08" filter="url(#glow)" />
+
+  <!-- Glass Conference Room Wall Glow -->
+  <rect x="80" y="80" width="1040" height="590" rx="32" fill="url(#glassGrad)" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1.5" filter="url(#shadow)" />
+
+  <!-- Galcare Corporate Brand Panel on Office Wall -->
+  <g transform="translate(420, 120)">
+    <rect x="0" y="0" width="360" height="65" rx="16" fill="#0f172a" fill-opacity="0.8" stroke="url(#accentGrad)" stroke-width="2" />
+    <text x="180" y="32" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="800" font-size="20" text-anchor="middle" letter-spacing="3">GALCARE PHARMA</text>
+    <text x="180" y="52" fill="#10b981" font-family="system-ui, sans-serif" font-weight="600" font-size="11" text-anchor="middle" letter-spacing="1.5">CORPORATE TEAM &amp; WORKPLACE CULTURE</text>
+  </g>
+
+  <!-- Conference Table Backdrop -->
+  <ellipse cx="600" cy="650" rx="520" ry="120" fill="#0f172a" stroke="#ffffff" stroke-opacity="0.1" stroke-width="2" />
+
+  <!-- Indian Office Team Members (Avatars & Collaborating Professionals) -->
+  
+  <!-- Person 1: Indian Female Corporate Leader (Left) -->
+  <g transform="translate(240, 260)">
+    <!-- Body / Suit -->
+    <path d="M -70 260 C -70 170, -40 140, 0 140 C 40 140, 70 170, 70 260 Z" fill="#1e293b" stroke="#334155" stroke-width="2" />
+    <path d="M -25 140 L 0 200 L 25 140 Z" fill="#ffffff" />
+    <path d="M -5 160 L 0 230 L 5 160 Z" fill="#06b6d4" />
+    <!-- Head & Hair -->
+    <circle cx="0" cy="70" r="48" fill="url(#skinGrad1)" />
+    <!-- Hair style (Dark saree/corporate style) -->
+    <path d="M -50 70 C -50 15, 50 15, 50 70 C 50 40, 30 20, 0 20 C -30 20, -50 40, -50 70 Z" fill="#0f172a" />
+    <circle cx="0" cy="22" r="14" fill="#0f172a" /> <!-- Bindi/Hairbun -->
+    <!-- Bindi dot -->
+    <circle cx="0" cy="62" r="3.5" fill="#e11d48" />
+    <!-- Glasses -->
+    <rect x="-32" y="55" width="26" height="18" rx="5" fill="none" stroke="#e2e8f0" stroke-width="2.5" />
+    <rect x="6" y="55" width="26" height="18" rx="5" fill="none" stroke="#e2e8f0" stroke-width="2.5" />
+    <line x1="-6" y1="64" x2="6" y2="64" stroke="#e2e8f0" stroke-width="2.5" />
+    <!-- Smile -->
+    <path d="M -16 90 Q 0 106 16 90" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <!-- Tag -->
+    <rect x="-65" y="240" width="130" height="28" rx="14" fill="#10b981" />
+    <text x="0" y="258" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="12" text-anchor="middle">Corporate Operations</text>
+  </g>
+
+  <!-- Person 2: Indian Male Executive Leader (Center Left) -->
+  <g transform="translate(440, 220)">
+    <path d="M -80 300 C -80 190, -45 150, 0 150 C 45 150, 80 190, 80 300 Z" fill="#0f172a" stroke="#1e293b" stroke-width="2" />
+    <path d="M -30 150 L 0 220 L 30 150 Z" fill="#ffffff" />
+    <path d="M -8 170 L 0 260 L 8 170 Z" fill="#10b981" />
+    <!-- Head -->
+    <circle cx="0" cy="75" r="52" fill="url(#skinGrad2)" />
+    <!-- Short Neat Hair -->
+    <path d="M -54 70 C -54 10, 54 10, 54 70 C 40 25, -40 25, -54 70 Z" fill="#020617" />
+    <!-- Smile -->
+    <path d="M -18 96 Q 0 114 18 96" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+    <!-- Tag -->
+    <rect x="-65" y="270" width="130" height="28" rx="14" fill="#0284c7" />
+    <text x="0" y="288" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="12" text-anchor="middle">Regional Sales Lead</text>
+  </g>
+
+  <!-- Person 3: Indian Female Business Professional (Center Right) -->
+  <g transform="translate(760, 220)">
+    <path d="M -80 300 C -80 190, -45 150, 0 150 C 45 150, 80 190, 80 300 Z" fill="#1e1b4b" stroke="#312e81" stroke-width="2" />
+    <path d="M -25 150 L 0 210 L 25 150 Z" fill="#ffffff" />
+    <path d="M -6 165 L 0 240 L 6 165 Z" fill="#ec4899" />
+    <!-- Head -->
+    <circle cx="0" cy="75" r="52" fill="url(#skinGrad1)" />
+    <!-- Long Hair -->
+    <path d="M -55 75 C -55 5, 55 5, 55 75 C 65 140, 50 190, 40 210 C 35 150, 35 70, 0 30 C -35 70, -35 150, -40 210 C -50 190, -65 140, -55 75 Z" fill="#0f172a" />
+    <!-- Bindi dot -->
+    <circle cx="0" cy="66" r="3.5" fill="#e11d48" />
+    <!-- Smile -->
+    <path d="M -18 96 Q 0 114 18 96" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+    <!-- Tag -->
+    <rect x="-70" y="270" width="140" height="28" rx="14" fill="#8b5cf6" />
+    <text x="0" y="288" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="12" text-anchor="middle">People &amp; Culture Lead</text>
+  </g>
+
+  <!-- Person 4: Indian Male Supply Chain & Operations Director (Right) -->
+  <g transform="translate(960, 260)">
+    <path d="M -70 260 C -70 170, -40 140, 0 140 C 40 140, 70 170, 70 260 Z" fill="#0f172a" stroke="#334155" stroke-width="2" />
+    <path d="M -22 140 L 0 195 L 22 140 Z" fill="#ffffff" />
+    <path d="M -5 155 L 0 220 L 5 155 Z" fill="#3b82f6" />
+    <!-- Head -->
+    <circle cx="0" cy="70" r="48" fill="url(#skinGrad2)" />
+    <!-- Hair -->
+    <path d="M -50 65 C -50 15, 50 15, 50 65 C 38 25, -38 25, -50 65 Z" fill="#020617" />
+    <!-- Smile -->
+    <path d="M -16 90 Q 0 106 16 90" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <!-- Tag -->
+    <rect x="-65" y="240" width="130" height="28" rx="14" fill="#06b6d4" />
+    <text x="0" y="258" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="12" text-anchor="middle">Supply Chain Director</text>
+  </g>
+
+  <!-- Collaboration Laptop & Documents on Conference Table -->
+  <g transform="translate(480, 520)">
+    <rect x="0" y="0" width="240" height="120" rx="16" fill="#1e293b" stroke="#06b6d4" stroke-width="2" />
+    <rect x="20" y="15" width="200" height="90" rx="8" fill="#0f172a" />
+    <path d="M 40 45 L 90 45 M 40 65 L 140 65 M 40 85 L 110 85" stroke="#10b981" stroke-width="3" stroke-linecap="round" />
+    <circle cx="170" cy="55" r="18" fill="#0284c7" opacity="0.3" />
+    <path d="M 160 65 L 170 45 L 180 55 L 190 40" stroke="#38bdf8" stroke-width="3" fill="none" stroke-linecap="round" />
+  </g>
+
+  <!-- Floating Values Badges -->
+  <g transform="translate(140, 140)" filter="url(#shadow)">
+    <rect x="0" y="0" width="220" height="44" rx="22" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+    <circle cx="24" cy="22" r="12" fill="#10b981" />
+    <path d="M 18 22 L 22 26 L 30 18" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <text x="125" y="27" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="13" text-anchor="middle">500+ Team Associates</text>
+  </g>
+
+  <g transform="translate(840, 140)" filter="url(#shadow)">
+    <rect x="0" y="0" width="220" height="44" rx="22" fill="#0f172a" stroke="#3b82f6" stroke-width="1.5" />
+    <circle cx="24" cy="22" r="12" fill="#3b82f6" />
+    <path d="M 18 22 L 22 26 L 30 18" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <text x="125" y="27" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700" font-size="13" text-anchor="middle">Promote From Within</text>
+  </g>
+</svg>

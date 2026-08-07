@@ -150,11 +150,11 @@ export function Navbar() {
                       <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                     </div>
                     <a
-                      href="/register"
+                      href="/dashboard"
                       onClick={() => setUserDropdown(false)}
                       className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-foreground/80 hover:bg-accent"
                     >
-                      <MessageCircle className="size-3.5 text-primary" /> My Quote Requests
+                      <User className="size-3.5 text-primary" /> My Client Dashboard
                     </a>
                     <button
                       onClick={() => {

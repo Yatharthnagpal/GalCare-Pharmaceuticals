@@ -15,7 +15,10 @@ const benefits = [
   { title: "Custom Formulation & Design", text: "Our R&D team helps tailor formulations and designs to match your market needs." }
 ]
 
+import { useAuth } from "@/lib/auth-context"
+
 export default function ThirdPartyPage() {
+  const { user, requireAuth, add3rdPartyQuote } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,8 +32,20 @@ export default function ThirdPartyPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulated form submission
-    setSubmitted(true)
+
+    const processSubmission = () => {
+      add3rdPartyQuote({
+        userEmail: user?.email || formData.email,
+        userName: formData.name || user?.fullName || "3rd Party Applicant",
+        companyName: formData.company || user?.company || "Independent Business Partner",
+        phone: formData.phone || user?.phone || "",
+        requirements: `${formData.division} Formulation (Qty: ${formData.quantity || "Standard"})`,
+        message: formData.message || "Requesting contract manufacturing facility details.",
+      })
+      setSubmitted(true)
+    }
+
+    requireAuth(processSubmission, "Please sign in or create an account to submit your 3rd party manufacturing inquiry.")
   }
 
   return (
@@ -61,7 +76,7 @@ export default function ThirdPartyPage() {
                   Your trusted scale <span className="text-gradient">manufacturing partner.</span>
                 </h1>
                 <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                  Galcare offers high-quality third-party and contract manufacturing services for global partners. Backed by our modern, WHO-GMP certified facilities, rigorous testing capabilities, and robust supply chains, we manufacture stable and cost-efficient dermatological, neuropsychiatric, and cosmeceutical formulations.
+                  Galcare offers high-quality third-party and contract manufacturing services for global partners. Backed by our modern, WHO-GMP certified facilities, rigorous testing capabilities, and robust supply chains, we manufacture stable and cost-efficient dermatological and cosmeceutical formulations.
                 </p>
               </Reveal>
               <Reveal>
@@ -120,7 +135,7 @@ export default function ThirdPartyPage() {
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle2 className="size-5 text-primary" />
-                  <span className="text-sm font-semibold">Tablets & Capsules (Neuro / General)</span>
+                  <span className="text-sm font-semibold">Tablets & Capsules (Solid Oral Doses)</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle2 className="size-5 text-primary" />
@@ -218,7 +233,6 @@ export default function ThirdPartyPage() {
                         onChange={(e) => setFormData({ ...formData, division: e.target.value })}
                       >
                         <option>Dermatology</option>
-                        <option>Neuropsychiatric</option>
                         <option>Cosmeceuticals</option>
                         <option>OTC / General</option>
                       </select>

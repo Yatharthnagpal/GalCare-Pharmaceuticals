@@ -16,7 +16,7 @@ const testimonialsWithImages = [
   {
     ...TESTIMONIALS[1],
     image: "/images/placeholders/testimonial-partner-headshot.png",
-    alt: "Marcus Feld headshot"
+    alt: "Rajesh Sharma headshot"
   },
   {
     ...TESTIMONIALS[2],
@@ -26,7 +26,7 @@ const testimonialsWithImages = [
   {
     ...TESTIMONIALS[3],
     image: "/images/placeholders/testimonial-chief-headshot.png",
-    alt: "Dr. Samuel Okoye headshot"
+    alt: "Dr. Devendra Sharma headshot"
   }
 ]
 

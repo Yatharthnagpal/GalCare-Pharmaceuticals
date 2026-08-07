@@ -136,8 +136,7 @@ export function Hero() {
             variants={itemVariants}
             className="mt-4 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground"
           >
-            Premium skincare and pharmaceutical solutions backed by science and innovation, trusted by
-            dermatologists across 42 countries.
+            Specialty skincare and pharmaceutical formulations backed by science and innovation, trusted by over 30,000 dermatologists across 26 states in India.
           </motion.p>
 
           <motion.div

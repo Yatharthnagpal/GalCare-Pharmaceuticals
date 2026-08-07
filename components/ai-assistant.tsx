@@ -15,7 +15,7 @@ interface Message {
 const SUGGESTIONS = [
   "Products for acne & spots",
   "Third-Party Contract Manufacturing",
-  "Neuropsychiatric division portfolio",
+  "Dermatology division portfolio",
   "WHO-GMP Quality & Certifications",
   "Become a global distributor",
   "Connect with a medical expert",
@@ -90,7 +90,7 @@ function generateReply(input: string): string {
 
   // 1. Greetings
   if (/^(hi|hello|hey|greetings|good morning|good afternoon|good evening)[\s!.]*$/i.test(q)) {
-    return `Hello! Welcome to Galcare Pharmaceuticals. I am Aria, your AI Assistant.\n\nI can help you explore:\n• **[Dermatology & Neuropsychiatric Catalog](/products)**\n• **[Third-Party Contract Manufacturing](/divisions/third-party-manufacturing)**\n• **[WHO-GMP Quality Standards](/quality)**\n• **[Global Distribution & Partnerships](/contact)**\n• **[Doctor & Medical Support](/contact)**\n\nHow can I help you today?`
+    return `Hello! Welcome to Galcare Pharmaceuticals. I am Aria, your AI Assistant.\n\nI can help you explore:\n• **[Dermatology Product Catalog](/products)**\n• **[Third-Party Contract Manufacturing](/divisions/third-party-manufacturing)**\n• **[WHO-GMP Quality Standards](/quality)**\n• **[Global Distribution & Partnerships](/contact)**\n\nHow can I help you today?`
   }
 
   // 2. Product Search by Name / Brand
@@ -239,25 +239,13 @@ function generateReply(input: string): string {
     q.includes("custom formulation") ||
     q.includes("manufacturing service")
   ) {
-    return `**[Third-Party Manufacturing Services](/divisions/third-party-manufacturing)**\n\nWe provide end-to-end pharmaceutical contract manufacturing backed by WHO-GMP certified infrastructure:\n\n• **Dosage Capabilities:** Tablets, Capsules, Creams, Ointments, Gels, Serums, Lotions, and Cleansers.\n• **R&D & Formulation:** Custom formulation development, stability testing (ICH guidelines), & analytical validation.\n• **Packaging:** Aluminum tubes, airless pumps, blister packs, and custom unit doses.\n• **Regulatory Support:** CTD/eCTD dossier documentation and export compliance for 42+ countries.\n• **Quality Assurance:** 100% batch release testing via HPLC, GC, and microbiological labs.\n\n👉 **[Explore Manufacturing Division](/divisions/third-party-manufacturing)**\n👉 **[View Facilities & Infrastructure](/facilities)**\n👉 **[Submit RFQ Inquiry](/contact)**`
+    return `**[Third-Party Manufacturing Services](/divisions/third-party-manufacturing)**\n\nWe provide end-to-end pharmaceutical contract manufacturing backed by our WHO-GMP certified facility in Rajasthan:\n\n• **Dosage Capabilities:** Tablets, Capsules, Creams, Ointments, Gels, Serums, Lotions, and Cleansers.\n• **R&D & Formulation:** Custom formulation development, stability testing (ICH guidelines), & analytical validation.\n• **Packaging:** Aluminum tubes, airless pumps, blister packs, and custom unit doses.\n• **Regulatory Support:** CTD/eCTD dossier documentation and compliance across 26 Indian states & export hubs.\n• **Quality Assurance:** 100% batch release testing via HPLC, GC, and microbiological labs.\n\n👉 **[Explore Manufacturing Division](/divisions/third-party-manufacturing)**\n👉 **[View Facilities & Infrastructure](/facilities)**\n👉 **[Submit RFQ Inquiry](/contact)**`
   }
 
-  // 6. Neuropsychiatric Division Intent
-  if (
-    q.includes("neuro") ||
-    q.includes("psychiatry") ||
-    q.includes("psychiatric") ||
-    q.includes("cns") ||
-    q.includes("brain") ||
-    q.includes("neurological") ||
-    q.includes("mental health")
-  ) {
-    return `**[Neuropsychiatric Division](/divisions/neuropsychiatric)**\n\nGalcare is a trusted leader in neurological and psychiatric healthcare formulations, delivering high-purity Central Nervous System (CNS) therapies:\n\n• **Therapeutic Focus:** Management of mood disorders, anxiety, cognitive health, neuro-degenerative conditions, and sleep architecture.\n• **Formulation Excellence:** High-precision dosing, bio-equivalent active compounds, and strict CNS purity standards.\n• **Doctor Trust:** Prescribed by leading psychiatrists and neurologists nationwide.\n\n👉 **[Explore Neuropsychiatric Division](/divisions/neuropsychiatric)**\n👉 **[Request Product Catalog](/contact)**`
-  }
 
   // 7. Dermatology Division Intent
   if (q.includes("dermatology") || q.includes("dermaceutical") || q.includes("skin division")) {
-    return `**[Dermatology Division](/divisions/dermatology)**\n\nOur Dermatology Division encompasses 180+ evidence-based dermaceutical products designed in collaboration with leading dermatologists:\n\n• **Key Segments:** Hyperpigmentation, Acne Therapeutics, Photoprotection, Hair Growth, Anti-Ageing AHAs, and Immunosuppressive Therapies.\n• **Clinical Rigor:** Formulated for optimal dermal penetration with superior skin tolerance.\n• **Global Footprint:** Prescribed by 30,000+ dermatologists across 42 countries.\n\n👉 **[Explore Dermatology Division](/divisions/dermatology)**\n👉 **[View All Products](/products)**`
+    return `**[Dermatology Division](/divisions/dermatology)**\n\nOur Dermatology Division encompasses 180+ evidence-based dermaceutical products designed in collaboration with leading dermatologists:\n\n• **Key Segments:** Hyperpigmentation, Acne Therapeutics, Photoprotection, Hair Growth, Anti-Ageing AHAs, and Immunosuppressive Therapies.\n• **Clinical Rigor:** Formulated for optimal dermal penetration with superior skin tolerance.\n• **Pan-India Reach:** Prescribed by 30,000+ dermatologists across 26 states in India.\n\n👉 **[Explore Dermatology Division](/divisions/dermatology)**\n👉 **[View All Products](/products)**`
   }
 
   // 8. Quality, Certifications & Manufacturing Facilities
@@ -291,18 +279,6 @@ function generateReply(input: string): string {
     return `**Global Distribution & Partnerships**\n\nGalcare operates across **42+ countries**, supplying premium pharmaceutical formulations worldwide.\n\n• **Partner Benefits:** Exclusive territorial rights, marketing collateral support, competitive pricing, and regulatory dossier assistance.\n• **Response Guarantee:** Our international business team responds to all genuine partner inquiries within 48 business hours.\n\n👉 **[Submit Partnership Inquiry](/contact)**\n👉 **[About Galcare Global](/about)**`
   }
 
-  // 10. Doctor / Expert Consultation Intent
-  if (
-    q.includes("doctor") ||
-    q.includes("connect") ||
-    q.includes("expert") ||
-    q.includes("dermatologist") ||
-    q.includes("physician") ||
-    q.includes("medical") ||
-    q.includes("consult")
-  ) {
-    return `**Medical & Expert Consultation Support**\n\nGalcare collaborates closely with medical professionals:\n\n• **For Healthcare Professionals:** Request product samples, clinical dossiers, or schedule a consultation with our Medical Representative.\n• **For Patients:** Consult your dermatologist or healthcare practitioner for personalized prescription guidance.\n\n👉 **[Contact Medical Liaison Team](/contact)**`
-  }
 
   // 11. Careers & Job Openings
   if (
@@ -340,7 +316,7 @@ function generateReply(input: string): string {
     q.includes("history") ||
     q.includes("overview")
   ) {
-    return `**About Galcare Pharmaceuticals**\n\nGalcare is a premium pharmaceutical company with **16+ years of excellence**, operating across 42+ countries.\n\n• **Core Divisions:** Dermatology, Neuropsychiatric, and Third-Party Contract Manufacturing.\n• **Scale:** Trusted by 30,000+ doctors, offering 68+ active products and 180+ formulations.\n• **Commitment:** Scientific innovation, WHO-GMP certified manufacturing, and ethical healthcare.\n\n👉 **[Learn More About Us](/about)**\n👉 **[Our Research & R&D](/research)**`
+    return `**About Galcare Pharmaceuticals**\n\nGalcare is a premium pharmaceutical company with **16+ years of excellence**, operating across 42+ countries.\n\n• **Core Divisions:** Dermatology and Third-Party Contract Manufacturing.\n• **Scale:** Trusted by 30,000+ doctors, offering 68+ active products and 180+ formulations.\n• **Commitment:** Scientific innovation, WHO-GMP certified manufacturing, and ethical healthcare.\n\n👉 **[Learn More About Us](/about)**\n👉 **[Our Research & R&D](/research)**`
   }
 
   // 14. Contact Information
@@ -357,7 +333,7 @@ function generateReply(input: string): string {
   }
 
   // Default intelligent fallback
-  return `Thank you for reaching out to Galcare Assistant!\n\nI can help you with:\n1. **[Product Catalog](/products)**: Search by product name, active ingredient, or skin concern.\n2. **[Third-Party Manufacturing](/divisions/third-party-manufacturing)**: Request contract manufacturing details & WHO-GMP facility specs.\n3. **[Our Divisions](/divisions/dermatology)**: Learn about Dermatology and Neuropsychiatric portfolios.\n4. **[Global Partnerships](/contact)**: Become an international distributor or business partner.\n5. **[Medical Support](/contact)**: Connect with our medical team or request samples.\n\nWhat would you like to explore?`
+  return `Thank you for reaching out to Galcare Assistant!\n\nI can help you with:\n1. **[Product Catalog](/products)**: Search by product name, active ingredient, or skin concern.\n2. **[Third-Party Manufacturing](/divisions/third-party-manufacturing)**: Request contract manufacturing details & WHO-GMP facility specs.\n3. **[Our Divisions](/divisions/dermatology)**: Learn about our Dermatology division.\n4. **[Global Partnerships](/contact)**: Become an international distributor or business partner.\n\nWhat would you like to explore?`
 }
 
 export function AIAssistant() {
@@ -369,7 +345,7 @@ export function AIAssistant() {
     {
       role: "assistant",
       content:
-        "Hi! I'm Aria, your Galcare AI Assistant. I can recommend formulations across [Dermatology](/divisions/dermatology) & [Neuropsychiatric](/divisions/neuropsychiatric) divisions, detail our [Third-Party Contract Manufacturing](/divisions/third-party-manufacturing), explain ingredients, or connect you with [healthcare experts](/contact). How can I help you today?",
+        "Hi! I'm Aria, your Galcare AI Assistant. I can recommend formulations across our [Dermatology](/divisions/dermatology) division, detail our [Third-Party Contract Manufacturing](/divisions/third-party-manufacturing), or connect you with our [business development team](/contact). How can I help you today?",
     },
   ])
 

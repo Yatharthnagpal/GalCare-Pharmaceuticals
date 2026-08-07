@@ -5,10 +5,35 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
-import { NEWS } from "@/lib/site-data"
+import { useState, useEffect } from "react"
+import { NEWS, NewsItem } from "@/lib/site-data"
 import { Calendar, Tag, ArrowRight, BookOpen } from "lucide-react"
 
 export default function NewsPage() {
+  const [articles, setArticles] = useState<NewsItem[]>(NEWS)
+
+  useEffect(() => {
+    const loadArticles = () => {
+      const saved = localStorage.getItem("galcare_admin_news")
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved)
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setArticles(parsed)
+            return
+          }
+        } catch (e) {
+          console.error("Failed to parse saved articles", e)
+        }
+      }
+      setArticles(NEWS)
+    }
+
+    loadArticles()
+    window.addEventListener("storage", loadArticles)
+    return () => window.removeEventListener("storage", loadArticles)
+  }, [])
+
   return (
     <>
       <Navbar />
@@ -38,7 +63,7 @@ export default function NewsPage() {
         <section className="py-16 bg-muted/30">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {NEWS.map((item, i) => (
+              {articles.map((item, i) => (
                 <Reveal key={item.title} delay={i * 0.08}>
                   <div className="group h-full flex flex-col justify-between rounded-[2rem] border border-border bg-card p-6 md:p-8 shadow-soft hover:border-primary/45 transition-colors duration-300">
                     <div>

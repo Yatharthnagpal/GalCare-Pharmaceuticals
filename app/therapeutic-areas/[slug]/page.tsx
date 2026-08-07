@@ -385,10 +385,12 @@ const THERAPEUTIC_DETAILS: Record<string, {
     ]
   }
 }
+import { useAuth } from "@/lib/auth-context"
 
-export default function TherapeuticAreaPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function TherapeuticAreaDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params)
-  const slug = resolvedParams.slug.toLowerCase()
+  const slug = resolvedParams.slug
+  const { user, requireAuth, addEnquiry } = useAuth()
 
   const area = useMemo(() => {
     return THERAPEUTIC_DETAILS[slug] || null
@@ -409,7 +411,18 @@ export default function TherapeuticAreaPage({ params }: { params: Promise<{ slug
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+
+    const processSubmission = () => {
+      addEnquiry({
+        userEmail: user?.email || formData.email,
+        userName: formData.name || user?.fullName || "Clinical Partner",
+        productName: `Therapeutic Inquiry: ${area?.title || "Clinical"} (${formData.specialty})`,
+        message: formData.message || "Requesting dossier & samples.",
+      })
+      setSubmitted(true)
+    }
+
+    requireAuth(processSubmission, "Please sign in or create an account to submit your clinical inquiry.")
   }
 
   if (!area) {

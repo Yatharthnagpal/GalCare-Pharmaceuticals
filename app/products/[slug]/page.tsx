@@ -9,9 +9,12 @@ import { PRODUCTS, Product } from "@/lib/site-data"
 import Image from "next/image"
 import { ArrowLeft, Send, CheckCircle2, ShieldAlert, Sparkles, Box } from "lucide-react"
 
+import { useAuth } from "@/lib/auth-context"
+
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params)
   const slug = resolvedParams.slug
+  const { user, requireAuth, addEnquiry } = useAuth()
 
   const product = useMemo(() => {
     return PRODUCTS.find((p) => p.id === slug)
@@ -33,7 +36,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+
+    const processSubmission = () => {
+      addEnquiry({
+        userEmail: user?.email || formData.email,
+        userName: formData.name || user?.fullName || "Client Partner",
+        productName: product?.name || "Product Inquiry",
+        message: `[Qty: ${formData.quantity || "Standard"}] ${formData.message}`,
+      })
+      setSubmitted(true)
+    }
+
+    requireAuth(processSubmission, "Please sign in or create an account to submit your product inquiry.")
   }
 
   if (!product) {

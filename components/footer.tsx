@@ -65,7 +65,7 @@ export function Footer() {
               className="h-9 w-auto hidden dark:block"
             />
             <p className="mt-3 max-w-xs text-xs sm:text-sm leading-relaxed text-muted-foreground">
-              Premium skincare and pharmaceutical solutions backed by science, trusted by dermatologists worldwide.
+              Specialty dermatology formulations engineered for excellence. Founded in 2008 by Devkant Bhardwaj, trusted across 26 states in India.
             </p>
             <div className="mt-4 flex gap-2">
               {socials.map(({ Icon, label, href }) => (

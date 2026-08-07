@@ -5,40 +5,30 @@ import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
 import Image from "next/image"
-import { BadgeCheck, ShieldAlert, FlaskConical, ClipboardCheck, CheckCircle2 } from "lucide-react"
+import Link from "next/link"
+import { BadgeCheck, ShieldCheck, FlaskConical, ClipboardCheck, CheckCircle2, Factory, Microscope, ArrowLeft } from "lucide-react"
 
 const testingSteps = [
-  { icon: ClipboardCheck, title: "Raw Material Assay", text: "Verifying active pharmaceutical ingredients (APIs) and excipient purity before batch release." },
-  { icon: FlaskConical, title: "Chemical & Physical QC", text: "Monitoring pH, viscosity, density, and particle size distribution in real-time." },
-  { icon: BadgeCheck, title: "Microbiological Testing", text: "Running culture testing in sterile chambers to guarantee zero bacterial or fungal loading." },
-  { icon: ShieldCheckIcon, title: "Post-Market Stability", text: "Storing reference samples in climate chambers to monitor quality over product lifetime." }
+  { icon: ClipboardCheck, title: "1. API Assay Verification", text: "Verifying active pharmaceutical ingredients (APIs) and excipient purity before batch release." },
+  { icon: FlaskConical, title: "2. Chemical & Physical QC", text: "Monitoring pH, viscosity, density, and particle size distribution in real-time." },
+  { icon: Microscope, title: "3. Microbiological Assay", text: "Running culture testing in sterile chambers to guarantee zero bacterial or fungal loading." },
+  { icon: ShieldCheck, title: "4. Post-Market Stability", text: "Storing reference samples in climate chambers to monitor quality over product lifetime." }
 ]
-
-function ShieldCheckIcon(props: any) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8-2a1 1 0 0 1 .48 0l8 2A1 1 0 0 1 20 6z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  )
-}
 
 export default function QualityPage() {
   return (
     <>
       <Navbar />
       <main className="min-h-screen pt-32 pb-20">
+        <div className="mx-auto max-w-7xl px-4 md:px-6">
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors"
+          >
+            <ArrowLeft className="size-4" /> Back to About Galcare
+          </Link>
+        </div>
+
         <section className="relative overflow-hidden py-12 md:py-20">
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
             <div className="absolute right-1/4 top-10 h-[300px] w-[600px] rounded-full bg-primary/10 blur-[100px]" />
@@ -48,20 +38,20 @@ export default function QualityPage() {
             <div className="grid gap-12 lg:grid-cols-2 items-center">
               <Reveal>
                 <span className="rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold text-primary">
-                  Quality Assurance
+                  WHO-GMP Certified Quality
                 </span>
                 <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
                   Uncompromised quality, <span className="text-gradient">verified at every step.</span>
                 </h1>
                 <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                  Our quality commitment is backed by strict compliance with international standardizations. We believe that clinical safety and product efficacy can only be attained through a culture of absolute precision, multi-stage testing, and robust documentation.
+                  Guided by Founder Devkant Bhardwaj's core dictum—<em className="text-foreground font-medium">"Excellence through People & Innovation"</em>—our commitment to quality is backed by our own 2023 WHO-GMP certified formulation manufacturing unit in Rajasthan and top-tier API sourcing.
                 </p>
               </Reveal>
-              <Reveal>
+              <Reveal delay={0.1}>
                 <div className="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] border border-border bg-muted shadow-soft">
                   <Image
-                    src="/lab.png"
-                    alt="Quality Control Testing"
+                    src="/images/placeholders/rd-team.png"
+                    alt="Galcare Indian R&D and Quality Control Scientist Team"
                     fill
                     className="object-cover"
                   />
@@ -110,15 +100,15 @@ export default function QualityPage() {
                 />
               </div>
             </Reveal>
-            <Reveal>
-              <h2 className="text-3xl font-bold tracking-tight">Compliance & Global Standards</h2>
+            <Reveal delay={0.1}>
+              <h2 className="text-3xl font-bold tracking-tight">Compliance & Manufacturing Standards</h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                Our quality systems undergo routine audits from both local and international regulatory authorities. We maintain full traceability of batches, ensuring that complete records of raw material certificates of analysis (CoA), production parameters, and lab check outcomes are archived securely.
+                Our WHO-GMP certified formulation plant in Rajasthan undergoes routine audits. We maintain full batch traceability with archived records of API Certificate of Analysis (CoA), production parameters, and lab check outcomes.
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center gap-3">
                   <CheckCircle2 className="size-5 text-primary" />
-                  <span className="text-sm font-semibold">WHO-GMP certification for manufacturing</span>
+                  <span className="text-sm font-semibold">WHO-GMP certification for formulation manufacturing</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle2 className="size-5 text-primary" />
@@ -127,6 +117,10 @@ export default function QualityPage() {
                 <li className="flex items-center gap-3">
                   <CheckCircle2 className="size-5 text-primary" />
                   <span className="text-sm font-semibold">GLP (Good Laboratory Practices) compliance</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle2 className="size-5 text-primary" />
+                  <span className="text-sm font-semibold">DCGI approvals for first-time-in-India formulations</span>
                 </li>
               </ul>
             </Reveal>

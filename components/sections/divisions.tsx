@@ -8,16 +8,6 @@ import { Reveal } from "@/components/motion-primitives"
 
 const divisions = [
   {
-    title: "Neuropsychiatric Division",
-    description: "Specialized, high-quality neuro and psychiatric formulations targeting central nervous system disorders with precision and efficacy.",
-    icon: BrainCircuit,
-    carouselImages: ["/lab.png", "/images/placeholders/neuro-human.png"],
-    inset: "/images/placeholders/neuro-doctor.png",
-    insetAlt: "Psychiatrist consulting with patient",
-    link: "/divisions/neuropsychiatric",
-    badge: "CNS Excellence",
-  },
-  {
     title: "Dermatology Division",
     description: "Scientifically developed advanced dermatology and skincare formulations trusted by practitioners to treat acne, pigmentation, hair loss, and more.",
     icon: Sparkles,
@@ -82,11 +72,11 @@ export function Divisions() {
             Providing comprehensive healthcare solutions
           </h2>
           <p className="mt-4 text-pretty text-muted-foreground leading-relaxed">
-            Galcare operates across three dedicated divisions, bringing scientific excellence, trusted quality, and manufacturing scale to partners worldwide.
+            Galcare operates across two dedicated divisions, bringing scientific excellence, trusted quality, and manufacturing scale to partners worldwide.
           </p>
         </Reveal>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
           {divisions.map((div, i) => {
             const Icon = div.icon
             return (

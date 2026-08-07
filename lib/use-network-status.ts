@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 
 interface NetworkInformation {
-  effectiveType?: "slow-2g" | "2g" | "3g" | "4g"
+  effectiveType?: "slow-2g" | "2g" | "3g"
   saveData?: boolean
   addEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void
   removeEventListener?: (type: string, listener: EventListenerOrEventListenerObject) => void

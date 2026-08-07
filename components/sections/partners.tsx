@@ -1,39 +1,53 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Reveal } from "@/components/motion-primitives"
 import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { ArrowRight, Handshake } from "lucide-react"
 
-// 7, 5 Type Arrangement: Row 1 (7 items), Row 2 (5 items)
-const row1Partners = [
-  { id: 1, image: "/partners/partner1.png", alt: "Global Partner Brand 1" },
-  { id: 2, image: "/partners/partner2.png", alt: "Global Partner Brand 2" },
-  { id: 3, image: "/partners/partner3.png", alt: "Global Partner Brand 3" },
-  { id: 4, image: "/partners/partner4.png", alt: "Global Partner Brand 4" },
-  { id: 5, image: "/partners/partner2.png", alt: "Global Partner Brand 5" },
-  { id: 6, image: "/partners/partner1.png", alt: "Global Partner Brand 6" },
-  { id: 7, image: "/partners/partner3.png", alt: "Global Partner Brand 7" },
+interface PartnerItem {
+  id: string | number
+  image: string
+  alt: string
+}
+
+const DEFAULT_PARTNERS: PartnerItem[] = [
+  { id: "slot-1", image: "/partners/partner1.png", alt: "Partner 1" },
+  { id: "slot-2", image: "/partners/partner2.png", alt: "Partner 2" },
+  { id: "slot-3", image: "/partners/partner3.png", alt: "Partner 3" },
+  { id: "slot-4", image: "/partners/partner4.png", alt: "Partner 4" },
+  { id: "slot-5", image: "/partners/partner2.png", alt: "Partner 5" },
+  { id: "slot-6", image: "/partners/partner1.png", alt: "Partner 6" },
+  { id: "slot-7", image: "/partners/partner3.png", alt: "Partner 7" },
+  { id: "slot-8", image: "/partners/partner4.png", alt: "Partner 8" },
+  { id: "slot-9", image: "/partners/partner3.png", alt: "Partner 9" },
+  { id: "slot-10", image: "/partners/partner1.png", alt: "Partner 10" },
+  { id: "slot-11", image: "/partners/partner2.png", alt: "Partner 11" },
+  { id: "slot-12", image: "/partners/partner4.png", alt: "Partner 12" },
 ]
 
-const row2Partners = [
-  { id: 8, image: "/partners/partner4.png", alt: "Global Partner Brand 8" },
-  { id: 9, image: "/partners/partner3.png", alt: "Global Partner Brand 9" },
-  { id: 10, image: "/partners/partner1.png", alt: "Global Partner Brand 10" },
-  { id: 11, image: "/partners/partner2.png", alt: "Global Partner Brand 11" },
-  { id: 12, image: "/partners/partner4.png", alt: "Global Partner Brand 12" },
-]
+function CircularLogoCard({ partner, delay }: { partner: PartnerItem; delay: number }) {
+  const isDataOrBlob = typeof partner.image === "string" && (partner.image.startsWith("data:") || partner.image.startsWith("blob:") || partner.image.startsWith("http"));
 
-function CircularLogoCard({ partner, delay }: { partner: typeof row1Partners[0]; delay: number }) {
   return (
     <Reveal delay={delay}>
       <div className="group relative size-20 sm:size-24 md:size-28 lg:size-32 rounded-full overflow-hidden border border-border/80 bg-white shadow-soft transition-all duration-300 hover:scale-110 hover:border-primary/60 hover:shadow-glow flex items-center justify-center p-2.5 cursor-pointer">
         <div className="relative size-full rounded-full overflow-hidden flex items-center justify-center">
-          <AdaptiveImage
-            src={partner.image}
-            alt={partner.alt}
-            fill
-            className="object-contain p-2 rounded-full transition-transform duration-500 group-hover:scale-110"
-          />
+          {isDataOrBlob ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={partner.image}
+              alt={partner.alt}
+              className="size-full object-contain p-2 rounded-full transition-transform duration-500 group-hover:scale-110"
+            />
+          ) : (
+            <AdaptiveImage
+              src={partner.image}
+              alt={partner.alt}
+              fill
+              className="object-contain p-2 rounded-full transition-transform duration-500 group-hover:scale-110"
+            />
+          )}
         </div>
       </div>
     </Reveal>
@@ -41,6 +55,46 @@ function CircularLogoCard({ partner, delay }: { partner: typeof row1Partners[0];
 }
 
 export function Partners() {
+  const [partners, setPartners] = useState<PartnerItem[]>(DEFAULT_PARTNERS)
+
+  useEffect(() => {
+    const loadPartners = () => {
+      const saved = localStorage.getItem("galcare_admin_partners")
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved)
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const formatted: PartnerItem[] = parsed.map((p: { id?: string; name?: string; logoUrl?: string }, idx: number) => ({
+              id: p.id || `slot-${idx + 1}`,
+              image: p.logoUrl || DEFAULT_PARTNERS[idx]?.image || "/partners/partner1.png",
+              alt: p.name || `Partner ${idx + 1}`,
+            }))
+            setPartners(formatted)
+            return
+          }
+        } catch (e) {
+          console.error("Failed to parse admin partners", e)
+        }
+      }
+      setPartners(DEFAULT_PARTNERS)
+    }
+
+    loadPartners()
+    window.addEventListener("storage", loadPartners)
+    window.addEventListener("galcare_partners_updated", loadPartners)
+    window.addEventListener("focus", loadPartners)
+
+    return () => {
+      window.removeEventListener("storage", loadPartners)
+      window.removeEventListener("galcare_partners_updated", loadPartners)
+      window.removeEventListener("focus", loadPartners)
+    }
+  }, [])
+
+  // Exactly 7 items on Row 1 (Slots 1-7), 5 items on Row 2 (Slots 8-12)
+  const row1Partners = partners.slice(0, 7)
+  const row2Partners = partners.slice(7, 12)
+
   return (
     <section id="partners" className="relative py-8 md:py-14 bg-card border-t border-border overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
@@ -62,22 +116,24 @@ export function Partners() {
           </p>
         </Reveal>
 
-        {/* 7, 5 Type Arrangement */}
+        {/* 12 Slot 7-5 Arrangement */}
         <div className="mt-8 flex flex-col items-center gap-4 sm:gap-5">
           
-          {/* Row 1 (Top: 7 items) */}
+          {/* Row 1 (Slots 1 to 7) */}
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 max-w-6xl">
             {row1Partners.map((partner, i) => (
               <CircularLogoCard key={partner.id} partner={partner} delay={i * 0.03} />
             ))}
           </div>
 
-          {/* Row 2 (Bottom: 5 items) */}
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 max-w-4xl">
-            {row2Partners.map((partner, i) => (
-              <CircularLogoCard key={partner.id} partner={partner} delay={0.21 + i * 0.03} />
-            ))}
-          </div>
+          {/* Row 2 (Slots 8 to 12) */}
+          {row2Partners.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 max-w-4xl">
+              {row2Partners.map((partner, i) => (
+                <CircularLogoCard key={partner.id} partner={partner} delay={0.21 + i * 0.03} />
+              ))}
+            </div>
+          )}
 
         </div>
 

@@ -5,13 +5,34 @@ import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { MapPin, Mail, Phone, Send, Check } from "lucide-react"
 import { Reveal } from "@/components/motion-primitives"
 
+import { useAuth } from "@/lib/auth-context"
+
 export function Contact() {
+  const { user, requireAuth, addEnquiry } = useAuth()
   const [sent, setSent] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    org: "",
+    role: "Healthcare Professional",
+    message: ""
+  })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
-    setTimeout(() => setSent(false), 4000)
+
+    const processSubmission = () => {
+      addEnquiry({
+        userEmail: user?.email || formData.email,
+        userName: formData.name || user?.fullName || "General Partner",
+        productName: `General Contact (${formData.role})`,
+        message: formData.message || "Contact inquiry submitted.",
+      })
+      setSent(true)
+      setTimeout(() => setSent(false), 4000)
+    }
+
+    requireAuth(processSubmission, "Please sign in or create an account to submit your contact inquiry.")
   }
 
   return (

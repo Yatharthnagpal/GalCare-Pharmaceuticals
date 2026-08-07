@@ -6,7 +6,10 @@ import { Footer } from "@/components/footer";
 import { CheckCircle2, Factory, Globe2, Award, ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
 
+import { useAuth } from "@/lib/auth-context";
+
 export default function RegisterPage() {
+  const { user, requireAuth, add3rdPartyQuote } = useAuth();
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -20,12 +23,25 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.phone) {
+    if (!formData.phone && !user?.phone) {
       setErrors({ phone: "Phone Number is required" });
       return;
     }
     setErrors({});
-    setSubmitted(true);
+
+    const processSubmission = () => {
+      add3rdPartyQuote({
+        userEmail: user?.email || formData.email,
+        userName: formData.fullName || user?.fullName || "B2B Partner",
+        companyName: formData.companyName || user?.company || "Pharmaceutical Partner",
+        phone: formData.phone || user?.phone || "",
+        requirements: formData.requirements,
+        message: formData.message || "Requesting WHO-GMP manufacturing quote.",
+      });
+      setSubmitted(true);
+    };
+
+    requireAuth(processSubmission, "Please sign in or create an account to submit your 3rd party manufacturing quote request.");
   };
 
   return (
@@ -97,15 +113,22 @@ export default function RegisterPage() {
                   Thank You!
                 </h2>
                 <p className="text-muted-foreground max-w-sm">
-                  Your registration has been received. Our partnership team will
-                  contact you shortly to discuss next steps.
+                  Your quote request has been received. You can track real-time quote generation and proposal statuses in your Client Dashboard.
                 </p>
-                <button
-                  onClick={() => setSubmitted(false)}
-                  className="mt-8 px-6 py-3 bg-secondary text-secondary-foreground rounded-2xl hover:bg-secondary/80 transition-colors font-medium"
-                >
-                  Submit Another Inquiry
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                  <a
+                    href="/dashboard"
+                    className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl font-semibold shadow-glow text-sm text-center"
+                  >
+                    Track Status in Dashboard
+                  </a>
+                  <button
+                    onClick={() => setSubmitted(false)}
+                    className="px-6 py-3 bg-secondary text-secondary-foreground rounded-2xl hover:bg-secondary/80 transition-colors font-medium text-sm"
+                  >
+                    Submit Another Inquiry
+                  </button>
+                </div>
               </Reveal>
             ) : (
               <Reveal>

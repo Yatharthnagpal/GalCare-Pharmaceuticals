@@ -12,7 +12,7 @@ const steps = [
   { icon: TestTube, title: "R&D & Formulation", text: "Molecule design and stability validation." },
   { icon: Boxes, title: "Precision Production", text: "Automated GMP-controlled production lines." },
   { icon: ShieldCheck, title: "Quality Testing", text: "Multi-stage QC on every single batch." },
-  { icon: Award, title: "Global Distribution", text: "Cold-chain logistics to 42 countries." },
+  { icon: Award, title: "Pan-India Logistics", text: "Robust distribution across 26 Indian states & export hubs." },
 ]
 
 // 7, 5 Type Arrangement: Row 1 (7 items), Row 2 (5 items)

@@ -10,7 +10,7 @@ const steps = [
   { icon: TestTube, title: "R&D & Formulation", text: "Molecule design and stability validation." },
   { icon: Boxes, title: "Precision Production", text: "Automated GMP-controlled production lines." },
   { icon: ShieldCheck, title: "Quality Testing", text: "Multi-stage QC on every single batch." },
-  { icon: Award, title: "Global Distribution", text: "Cold-chain logistics to 42 countries." },
+  { icon: Award, title: "Pan-India Logistics", text: "Robust distribution across 26 Indian states & export hubs." },
 ]
 
 const certs = ["WHO-GMP", "ISO 9001", "ISO 14001", "GLP Certified"]

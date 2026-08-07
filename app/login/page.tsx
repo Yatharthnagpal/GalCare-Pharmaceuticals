@@ -231,7 +231,6 @@ export default function LoginPage() {
                         >
                           <option value="Third Party Manufacturing">3rd Party Manufacturing</option>
                           <option value="Dermatology Range">Dermatology Range</option>
-                          <option value="Neuropsychiatric Range">Neuropsychiatric Range</option>
                           <option value="Bulk Molecule Orders">Bulk Molecule Orders</option>
                         </select>
                       </div>
