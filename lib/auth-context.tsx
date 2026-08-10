@@ -24,7 +24,7 @@ export interface UserJobApp {
   experience: string;
   resume: string;
   date: string;
-  status: "Incomplete - Pending Admin Processing (Remind Later)" | "Under Review" | "Interview Scheduled" | "Accepted" | "Rejected";
+  status: "Incomplete - Pending Processing" | "Under Review" | "Interview Scheduled" | "Accepted" | "Rejected";
 }
 
 export interface User3rdPartyQuote {
@@ -102,7 +102,7 @@ const INITIAL_JOB_APPS: UserJobApp[] = [
     experience: "6 Years",
     resume: "https://drive.google.com/sample-resume",
     date: "2026-07-30",
-    status: "Incomplete - Pending Admin Processing (Remind Later)",
+    status: "Incomplete - Pending Processing",
   },
 ];
 
@@ -308,7 +308,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ...appData,
       id: `app-${Date.now()}`,
       date: new Date().toISOString().split("T")[0],
-      status: "Incomplete - Pending Admin Processing (Remind Later)",
+      status: "Incomplete - Pending Processing",
     };
 
     const updated = [newApp, ...userJobApps];

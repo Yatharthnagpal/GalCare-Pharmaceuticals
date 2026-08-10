@@ -15,10 +15,10 @@ export default function OpportunitiesPage() {
   const [selectedDepartment, setSelectedDepartment] = useState<string>("All")
   const [selectedType, setSelectedType] = useState<string>("All")
 
-  // Load custom admin jobs if available
+  // Load custom jobs if available
   useEffect(() => {
     const loadJobs = () => {
-      const savedJobs = localStorage.getItem("galcare_admin_jobs")
+      const savedJobs = localStorage.getItem("galcare_custom_jobs")
       if (savedJobs) {
         try {
           const parsed = JSON.parse(savedJobs)

@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { Globe, Share2, MessageCircle, Rss } from "lucide-react"
 import { NAV_LINKS } from "@/lib/site-data"
@@ -18,11 +19,12 @@ const columns = [
   {
     title: "Products",
     links: [
-      { label: "Acne Care", href: "/products?category=Acne%20Care" },
-      { label: "Sunscreen", href: "/products?category=Sunscreen" },
-      { label: "Hair Care", href: "/products?category=Hair%20Care" },
-      { label: "Skin Radiance", href: "/products?category=Hyperpigmentation%20%26%20Skin%20Radiance" },
-      { label: "Anti-Fungal", href: "/products?category=Anti-Fungal%20%26%20Anti-Bacterial" },
+      { label: "Acne Care", href: "/products?category=Acne+Care" },
+      { label: "Anti-Ageing & Brightening", href: "/products?category=Anti-Ageing+%26+Brightening" },
+      { label: "Sun Protection", href: "/products?category=Sun+Protection" },
+      { label: "Hair Care", href: "/products?category=Hair+Care" },
+      { label: "Skin Infections & Anti-Fungal", href: "/products?category=Skin+Infections+%26+Anti-Fungal" },
+      { label: "Skin Therapy & Wellness", href: "/products?category=Skin+Therapy+%26+Wellness" },
     ],
   },
   {
@@ -30,7 +32,6 @@ const columns = [
     links: [
       { label: "Quality Assurance", href: "/quality" },
       { label: "Certifications", href: "/certifications" },
-      { label: "Downloads Center", href: "/quality" },
       { label: "Publications", href: "/research" },
       { label: "CSR Initiatives", href: "/about" },
     ],
@@ -38,9 +39,9 @@ const columns = [
 ]
 
 const socials = [
-  { Icon: Globe, label: "LinkedIn", href: "https://linkedin.com" },
-  { Icon: Share2, label: "X (Twitter)", href: "https://x.com" },
-  { Icon: MessageCircle, label: "Facebook", href: "https://facebook.com" },
+  { Icon: Globe, label: "LinkedIn", href: "https://www.linkedin.com/company/galcare-pharmaceuticals" },
+  { Icon: Share2, label: "X (Twitter)", href: "https://x.com/galcarepharma" },
+  { Icon: MessageCircle, label: "Facebook", href: "https://facebook.com/galcarepharma" },
   { Icon: Rss, label: "Blog", href: "/news" },
 ]
 
@@ -50,36 +51,49 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-8 md:py-10 md:px-6">
         <div className="grid gap-6 md:gap-8 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
-            <AdaptiveImage
-              src="/galcare-logo.png"
-              alt="Galcare"
-              width={160}
-              height={44}
-              className="h-9 w-auto dark:hidden"
-            />
-            <AdaptiveImage
-              src="/galcare-logo-dark.svg"
-              alt="Galcare"
-              width={160}
-              height={44}
-              className="h-9 w-auto hidden dark:block"
-            />
+            <Link href="/">
+              <AdaptiveImage
+                src="/galcare-logo.png"
+                alt="Galcare"
+                width={160}
+                height={44}
+                className="h-9 w-auto dark:hidden"
+              />
+              <AdaptiveImage
+                src="/galcare-logo-dark.svg"
+                alt="Galcare"
+                width={160}
+                height={44}
+                className="h-9 w-auto hidden dark:block"
+              />
+            </Link>
             <p className="mt-3 max-w-xs text-xs sm:text-sm leading-relaxed text-muted-foreground">
               Specialty dermatology formulations engineered for excellence. Founded in 2008 by Devkant Bhardwaj, trusted across 26 states in India.
             </p>
             <div className="mt-4 flex gap-2">
-              {socials.map(({ Icon, label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target={href.startsWith("http") ? "_blank" : undefined}
-                  rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  aria-label={label}
-                  className="grid size-9 place-items-center rounded-xl border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
-                >
-                  <Icon className="size-4" />
-                </a>
-              ))}
+              {socials.map(({ Icon, label, href }) =>
+                href.startsWith("http") ? (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="grid size-9 place-items-center rounded-xl border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
+                  >
+                    <Icon className="size-4" />
+                  </a>
+                ) : (
+                  <Link
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    className="grid size-9 place-items-center rounded-xl border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
+                  >
+                    <Icon className="size-4" />
+                  </Link>
+                )
+              )}
             </div>
           </div>
 
@@ -89,9 +103,9 @@ export function Footer() {
               <ul className="mt-3 space-y-2">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="text-xs sm:text-sm text-muted-foreground transition-colors hover:text-primary">
+                    <Link href={link.href} className="text-xs sm:text-sm text-muted-foreground transition-colors hover:text-primary">
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -105,9 +119,9 @@ export function Footer() {
           </p>
           <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2" aria-label="Footer">
             {NAV_LINKS.slice(0, 6).map((l) => (
-              <a key={l.label} href={l.href || l.children?.[0]?.href || "#"} className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
+              <Link key={l.label} href={l.href || l.children?.[0]?.href || "#"} className="text-xs sm:text-sm text-muted-foreground hover:text-primary">
                 {l.label}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>

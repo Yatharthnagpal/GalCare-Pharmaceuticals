@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { AdaptiveImage } from "@/components/ui/adaptive-image"
+import Link from "next/link"
 import { motion, AnimatePresence } from "motion/react"
 import { Menu, X, Moon, Sun, MessageCircle, ChevronDown, User, LogOut } from "lucide-react"
 import { NAV_LINKS } from "@/lib/site-data"
@@ -38,7 +39,7 @@ export function Navbar() {
       style={{ transform: "translate3d(0, 0, 100px)" }}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6 transition-all duration-300">
-        <a href="/" className="flex items-center gap-2" aria-label="Galcare home">
+        <Link href="/" className="flex items-center gap-2" aria-label="Galcare home">
           <AdaptiveImage
             src="/galcare-logo.png"
             alt="Galcare"
@@ -55,7 +56,7 @@ export function Navbar() {
             className="h-9 w-auto hidden dark:block"
             priority
           />
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-1 xl:flex" aria-label="Primary">
@@ -67,12 +68,12 @@ export function Navbar() {
               onMouseLeave={() => setHoveredDesktopItem(null)}
             >
               {link.href ? (
-                <a
+                <Link
                   href={link.href}
                   className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent hover:text-foreground"
                 >
                   {link.label}
-                </a>
+                </Link>
               ) : (
                 <button
                   className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent hover:text-foreground"
@@ -97,13 +98,13 @@ export function Navbar() {
                     >
                       <div className="flex w-48 flex-col rounded-2xl bg-card/90 backdrop-blur-xl border border-border p-2 shadow-soft">
                         {link.children.map((child) => (
-                          <a
+                          <Link
                             key={child.label}
                             href={child.href}
                             className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent hover:text-foreground"
                           >
                             {child.label}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     </motion.div>
@@ -149,13 +150,13 @@ export function Navbar() {
                       <p className="text-xs font-bold text-foreground truncate">{user.fullName}</p>
                       <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                     </div>
-                    <a
+                    <Link
                       href="/dashboard"
                       onClick={() => setUserDropdown(false)}
                       className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-foreground/80 hover:bg-accent"
                     >
                       <User className="size-3.5 text-primary" /> My Client Dashboard
-                    </a>
+                    </Link>
                     <button
                       onClick={() => {
                         logout();
@@ -179,13 +180,13 @@ export function Navbar() {
             </button>
           )}
 
-          <a
+          <Link
             href="/divisions/third-party-manufacturing"
             className="hidden items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:-translate-y-0.5 sm:flex"
           >
             <MessageCircle className="size-4" />
             Partner With Us
-          </a>
+          </Link>
 
           <button
             onClick={() => setOpen((v) => !v)}
@@ -230,14 +231,14 @@ export function Navbar() {
                           >
                             <div className="flex flex-col gap-1 pl-4 pt-1 pb-2">
                               {link.children.map((child) => (
-                                <a
+                                <Link
                                   key={child.label}
                                   href={child.href}
                                   onClick={() => setOpen(false)}
                                   className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent hover:text-foreground"
                                 >
                                   {child.label}
-                                </a>
+                                </Link>
                               ))}
                             </div>
                           </motion.div>
@@ -245,24 +246,24 @@ export function Navbar() {
                       </AnimatePresence>
                     </div>
                   ) : (
-                    <a
-                      href={link.href}
+                    <Link
+                      href={link.href!}
                       onClick={() => setOpen(false)}
                       className="flex w-full rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   )}
                 </div>
               ))}
-              <a
+              <Link
                 href="/divisions/third-party-manufacturing"
                 onClick={() => setOpen(false)}
                 className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
               >
                 <MessageCircle className="size-4" />
                 Partner With Us
-              </a>
+              </Link>
             </nav>
           </motion.div>
         )}

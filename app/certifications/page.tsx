@@ -4,36 +4,32 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
-import { Award, CheckCircle, Shield, FileText, Download, Building, ShieldCheck, Microscope } from "lucide-react"
+import { Award, CheckCircle, Shield, Building, ShieldCheck, Microscope } from "lucide-react"
 
 const certsList = [
   {
     icon: ShieldCheck,
     title: "WHO-GMP Certification",
     issuer: "World Health Organization - Good Manufacturing Practices",
-    text: "Confirms our facilities comply with highest international standards of safety, quality control, sanitization, and batch stability controls. Validated regularly via rigorous inspections.",
-    docSize: "1.4 MB"
+    text: "Confirms our facilities comply with highest international standards of safety, quality control, sanitization, and batch stability controls. Validated regularly via rigorous inspections."
   },
   {
     icon: Award,
     title: "ISO 9001:2015",
     issuer: "International Organization for Standardization",
-    text: "Demonstrates an established quality management system spanning raw material selection, intermediate process controls, packaging uniformity, and customer query resolutions.",
-    docSize: "850 KB"
+    text: "Demonstrates an established quality management system spanning raw material selection, intermediate process controls, packaging uniformity, and customer query resolutions."
   },
   {
     icon: Microscope,
     title: "GLP Compliance",
     issuer: "Good Laboratory Practices",
-    text: "Ensures all laboratory test runs, analytical calculations, stability chamber tests, and chromatographic assays meet international precision standards with zero room for error.",
-    docSize: "1.1 MB"
+    text: "Ensures all laboratory test runs, analytical calculations, stability chamber tests, and chromatographic assays meet international precision standards with zero room for error."
   },
   {
     icon: Building,
     title: "Regulatory Approvals",
     issuer: "State Drug Control & Licensing Authorities",
-    text: "Valid manufacturing & marketing licenses for specialty dermatological and cosmeceutical formulations across 26 Indian states and export hubs.",
-    docSize: "2.1 MB"
+    text: "Valid manufacturing & marketing licenses for specialty dermatological and cosmeceutical formulations across 26 Indian states and export hubs."
   }
 ]
 
@@ -94,17 +90,10 @@ export default function CertificationsPage() {
                       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{c.text}</p>
                     </div>
                     
-                    <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground font-semibold">
-                        <FileText className="size-4 text-muted-foreground/60" />
-                        <span>PDF Document ({c.docSize})</span>
-                      </div>
-                      <button 
-                        onClick={() => alert(`Downloading ${c.title} PDF certificate...`)}
-                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-soft hover:bg-primary/95 transition-all"
-                      >
-                        <Download className="size-3.5" /> Download Certificate
-                      </button>
+                    <div className="mt-8 pt-6 border-t border-border flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                        <CheckCircle className="size-3.5" /> Verified & Active
+                      </span>
                     </div>
                   </div>
                 </Reveal>

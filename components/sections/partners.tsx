@@ -59,7 +59,7 @@ export function Partners() {
 
   useEffect(() => {
     const loadPartners = () => {
-      const saved = localStorage.getItem("galcare_admin_partners")
+      const saved = localStorage.getItem("galcare_partners")
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
@@ -73,7 +73,7 @@ export function Partners() {
             return
           }
         } catch (e) {
-          console.error("Failed to parse admin partners", e)
+          console.error("Failed to parse custom partners", e)
         }
       }
       setPartners(DEFAULT_PARTNERS)

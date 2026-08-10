@@ -1,6 +1,7 @@
 "use client"
 
 import { use, useState, useMemo } from "react"
+import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
@@ -58,9 +59,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <ShieldAlert className="size-16 text-destructive animate-pulse" />
           <h2 className="mt-4 text-2xl font-bold">Product Not Found</h2>
           <p className="mt-2 text-muted-foreground">The requested product could not be located in our catalogue.</p>
-          <a href="/products" className="mt-6 rounded-xl bg-primary text-primary-foreground px-6 py-2.5 font-semibold">
+          <Link href="/products" className="mt-6 rounded-xl bg-primary text-primary-foreground px-6 py-2.5 font-semibold">
             Back to Catalogue
-          </a>
+          </Link>
         </main>
         <Footer />
       </>
@@ -74,13 +75,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
         {/* Breadcrumb & Back button */}
         <section className="py-4 border-b border-border bg-muted/20">
           <div className="mx-auto max-w-7xl px-4 md:px-6 flex items-center justify-between">
-            <a href="/products" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+            <Link href="/products" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
               <ArrowLeft className="size-4" /> Back to Catalogue
-            </a>
+            </Link>
             <div className="hidden sm:flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-              <a href="/" className="hover:text-foreground">Home</a>
+              <Link href="/" className="hover:text-foreground">Home</Link>
               <span>/</span>
-              <a href="/products" className="hover:text-foreground">Products</a>
+              <Link href="/products" className="hover:text-foreground">Products</Link>
               <span>/</span>
               <span className="text-foreground">{product.name}</span>
             </div>

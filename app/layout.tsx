@@ -45,7 +45,6 @@ export const metadata: Metadata = {
     description:
       'Premium skincare and pharmaceutical solutions backed by science and trusted by healthcare professionals worldwide.',
   },
-  generator: 'v0.app',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-icon.png',

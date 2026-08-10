@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "motion/react"
 import { ArrowRight, FlaskConical, Check, Sparkles } from "lucide-react"
@@ -67,11 +68,11 @@ export function Products() {
     <section id="products" className="relative py-10 md:py-16">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <a href="/products" className="text-sm font-semibold uppercase tracking-widest text-primary hover:underline underline-offset-4 transition-all">
+          <Link href="/products" className="text-sm font-semibold uppercase tracking-widest text-primary hover:underline underline-offset-4 transition-all">
             FEATURED PRODUCTS
-          </a>
+          </Link>
           <h2 className="mt-3 text-balance text-2xl font-semibold tracking-tight sm:text-4xl leading-tight">
-            <a href="/products" className="hover:text-primary transition-colors">Science-led dermatology, beautifully formulated</a>
+            <Link href="/products" className="hover:text-primary transition-colors">Science-led dermatology, beautifully formulated</Link>
           </h2>
           <p className="mt-4 text-pretty text-muted-foreground">
             A curated portfolio spanning prescription and cosmetic care, engineered for measurable clinical results.
@@ -164,12 +165,12 @@ export function Products() {
                         </div>
 
                         <div className="mt-auto pt-5 flex items-center">
-                          <a
+                          <Link
                             href={`/products/${product.id}`}
                             className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground shadow-glow hover:bg-primary/95 transition-transform hover:-translate-y-0.5"
                           >
                             View Formulation <ArrowRight className="size-3.5" />
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </article>
@@ -182,12 +183,12 @@ export function Products() {
 
         {/* View Full Catalogue CTA */}
         <div className="mt-12 text-center">
-          <a
+          <Link
             href="/products"
             className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-6 py-3.5 text-sm font-semibold text-foreground shadow-soft hover:bg-accent hover:border-primary/40 transition-all"
           >
            SHOW MORE <ArrowRight className="size-4 text-primary" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

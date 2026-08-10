@@ -196,7 +196,7 @@ export default function UserDashboardPage() {
                 : "Product Enquiry Dashboard"}
             </h2>
             <span className="text-xs text-muted-foreground hidden sm:inline">
-              Controlled directly by Galcare Admin Portal
+              Managed directly by Galcare Support Team
             </span>
           </div>
 

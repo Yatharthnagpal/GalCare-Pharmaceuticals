@@ -52,10 +52,10 @@ function ApplyFormContent() {
     }
   }, [initialJob])
 
-  // Load custom admin jobs if any
+  // Load custom jobs if any
   useEffect(() => {
     const loadJobs = () => {
-      const savedJobs = localStorage.getItem("galcare_admin_jobs")
+      const savedJobs = localStorage.getItem("galcare_custom_jobs")
       if (savedJobs) {
         try {
           const parsed = JSON.parse(savedJobs)
@@ -134,13 +134,13 @@ function ApplyFormContent() {
       }
 
       try {
-        const savedApps = localStorage.getItem("galcare_admin_job_apps")
+        const savedApps = localStorage.getItem("galcare_job_apps")
         const currentApps = savedApps ? JSON.parse(savedApps) : []
         const updatedApps = [newApp, ...currentApps]
-        localStorage.setItem("galcare_admin_job_apps", JSON.stringify(updatedApps))
+        localStorage.setItem("galcare_job_apps", JSON.stringify(updatedApps))
         window.dispatchEvent(new Event("storage"))
       } catch (err) {
-        console.error("Failed to update admin job apps", err)
+        console.error("Failed to update job apps", err)
       }
 
       addJobApplication({

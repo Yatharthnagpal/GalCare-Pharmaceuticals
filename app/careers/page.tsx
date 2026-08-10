@@ -66,21 +66,21 @@ export default function CareersPage() {
       <Navbar />
       <main className="min-h-screen pt-32 pb-20">
         {/* Page Hero */}
-        <section className="relative overflow-hidden py-14 md:py-20">
+        <section className="relative overflow-hidden py-16 md:py-20 bg-[#16a34a] text-white">
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-            <div className="absolute left-1/2 top-0 h-[400px] w-[850px] -translate-x-1/2 rounded-full bg-primary/10 blur-[130px]" />
+            <div className="absolute left-1/2 top-0 h-[400px] w-[850px] -translate-x-1/2 rounded-full bg-white/10 blur-[130px]" />
           </div>
 
           <div className="mx-auto max-w-7xl px-4 md:px-6 text-center">
             <Reveal className="max-w-3xl mx-auto">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary border border-primary/20">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold text-white border border-white/25 backdrop-blur-md shadow-sm">
                 <HeartHandshake className="size-3.5" /> People & Culture at Galcare
               </span>
-              <h1 className="mt-5 text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                Grow Your Career in a <span className="text-gradient">Homely & Supportive</span> Culture
+              <h1 className="mt-5 text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-white">
+                Grow Your Career in a Homely & Supportive Culture
               </h1>
-              <p className="mt-5 text-base sm:text-lg leading-relaxed text-muted-foreground max-w-2xl mx-auto">
-                As Founder Devkant Bhardwaj emphasizes, a company is only as strong as the people who believe in its mission. Built on <strong className="text-foreground font-semibold">Respect, Recognition, and Responsibility</strong>, we invest heavily in people development and prioritize promotion from within.
+              <p className="mt-5 text-base sm:text-lg leading-relaxed text-emerald-50 max-w-2xl mx-auto">
+                As Founder Devkant Bhardwaj emphasizes, a company is only as strong as the people who believe in its mission. Built on <strong className="text-white font-semibold">Respect, Recognition, and Responsibility</strong>, we invest heavily in people development and prioritize promotion from within.
               </p>
             </Reveal>
           </div>
