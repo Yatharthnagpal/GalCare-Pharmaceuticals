@@ -21,7 +21,7 @@ export function AdaptiveImage({
   ...props
 }: AdaptiveImageProps) {
   const { isSlowNetwork } = useNetworkStatus()
-  const [hasError, setHasError] = useState(false)
+  const [svgFailed, setSvgFailed] = useState(false)
 
   // Derive the target SVG path
   const targetSvg = useMemo(() => {
@@ -34,7 +34,7 @@ export function AdaptiveImage({
     return "/placeholder.svg"
   }, [src, svgSrc])
 
-  const shouldUseSvg = forceSvg || isSlowNetwork || hasError
+  const shouldUseSvg = (forceSvg || isSlowNetwork) && !svgFailed
 
   const currentSrc = shouldUseSvg ? targetSvg : src
   const isSvg = typeof currentSrc === "string" && currentSrc.endsWith(".svg")
@@ -48,10 +48,9 @@ export function AdaptiveImage({
       priority={priority}
       loading={priority ? "eager" : props.loading}
       onError={(e) => {
-        if (!hasError && !shouldUseSvg) {
-          setHasError(true)
-        }
-        if (onError) {
+        if (shouldUseSvg && !svgFailed) {
+          setSvgFailed(true)
+        } else if (onError) {
           onError(e)
         }
       }}

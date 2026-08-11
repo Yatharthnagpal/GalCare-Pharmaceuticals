@@ -93,12 +93,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-12 lg:grid-cols-2">
             {/* Image display */}
             <Reveal>
-              <div className="relative aspect-square overflow-hidden rounded-[2.5rem] border border-border bg-muted shadow-soft flex items-center justify-center p-8">
+              <div className="relative aspect-square overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-soft">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-500 hover:scale-105"
                 />
               </div>
             </Reveal>

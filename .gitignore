@@ -29,8 +29,10 @@ galcare-animation-imagery-prompt.md
 product.md
 Website Product.xlsx
 lib/site-data.ts
+scratch/
 
 # Ignore all PNG files
 *.png
 # Keep README.md tracked
 !README.md
+

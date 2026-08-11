@@ -664,12 +664,12 @@ export default function TherapeuticAreaDetailPage({ params }: { params: Promise<
                 {products.map((p, i) => (
                   <Reveal key={p.id} delay={i * 0.05}>
                     <div className="group flex h-full flex-col justify-between overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-soft hover:border-primary/45 hover:shadow-glow transition-all">
-                      <div className="relative aspect-square bg-muted overflow-hidden">
+                      <div className="relative aspect-square overflow-hidden bg-transparent">
                         <Image
                           src={p.image}
                           alt={p.name}
                           fill
-                          className="object-contain p-6 transition-transform group-hover:scale-105"
+                          className="object-cover transition-transform group-hover:scale-105"
                         />
                       </div>
                       <div className="p-6 md:p-8 flex flex-col flex-1 justify-between">

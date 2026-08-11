@@ -258,7 +258,7 @@ export default function ProductsPage() {
                         <div className="group flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-glow">
                           
                           {/* Image Showcase Container */}
-                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-primary/5 to-teal/5">
+                          <div className="relative aspect-[4/3] overflow-hidden bg-transparent">
                             <span className="absolute top-3.5 left-3.5 z-10 rounded-full bg-card/90 px-3 py-1 text-[10px] font-bold text-primary backdrop-blur-md shadow-sm border border-border/50">
                               {p.category}
                             </span>
@@ -271,7 +271,7 @@ export default function ProductsPage() {
                               src={p.image}
                               alt={p.name}
                               fill
-                              className="object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
                             />
                           </div>
 

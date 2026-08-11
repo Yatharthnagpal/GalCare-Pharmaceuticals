@@ -124,7 +124,7 @@ export function Products() {
                 >
                   <TiltCard className="h-full">
                     <article className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all hover:border-primary/50 hover:shadow-glow">
-                      <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-primary/5 to-teal/5">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-transparent">
                         <span className="absolute left-3.5 top-3.5 z-10 rounded-full bg-card/90 px-3 py-1 text-[10px] sm:text-xs font-bold text-primary backdrop-blur-sm border border-border/40">
                           {product.category}
                         </span>
@@ -137,7 +137,7 @@ export function Products() {
                           src={product.image || "/placeholder.svg"}
                           alt={product.name}
                           fill
-                          className="object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
 
