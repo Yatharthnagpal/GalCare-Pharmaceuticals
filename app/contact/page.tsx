@@ -42,17 +42,46 @@ export default function ContactPage() {
   })
   const [submitted, setSubmitted] = useState(false)
 
+  const [submitting, setSubmitting] = useState(false)
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const processSubmission = () => {
-      addEnquiry({
-        userEmail: user?.email || formData.email,
-        userName: formData.name || user?.fullName || "General Partner",
-        productName: `Contact Form: ${formData.subject}`,
-        message: formData.message || "General inquiry submitted.",
-      })
-      setSubmitted(true)
+    const processSubmission = async () => {
+      setSubmitting(true)
+      try {
+        await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name || user?.fullName,
+            email: formData.email || user?.email,
+            phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message,
+          }),
+        })
+
+        addEnquiry({
+          userEmail: user?.email || formData.email,
+          userName: formData.name || user?.fullName || "General Partner",
+          productName: `Contact Form: ${formData.subject}`,
+          message: formData.message || "General inquiry submitted.",
+        })
+
+        setSubmitted(true)
+      } catch (error) {
+        console.error("Failed to submit contact form", error)
+        addEnquiry({
+          userEmail: user?.email || formData.email,
+          userName: formData.name || user?.fullName || "General Partner",
+          productName: `Contact Form: ${formData.subject}`,
+          message: formData.message || "General inquiry submitted.",
+        })
+        setSubmitted(true)
+      } finally {
+        setSubmitting(false)
+      }
     }
 
     requireAuth(processSubmission, "Please sign in or create an account to submit your contact inquiry.")

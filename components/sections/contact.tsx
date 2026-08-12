@@ -21,7 +21,22 @@ export function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const processSubmission = () => {
+    const processSubmission = async () => {
+      try {
+        await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name || user?.fullName,
+            email: formData.email || user?.email,
+            subject: `General Contact (${formData.role})`,
+            message: formData.message || "Contact inquiry submitted.",
+          }),
+        })
+      } catch (err) {
+        console.error("Failed to submit homepage contact form", err)
+      }
+
       addEnquiry({
         userEmail: user?.email || formData.email,
         userName: formData.name || user?.fullName || "General Partner",
@@ -69,7 +84,7 @@ export function Contact() {
             >
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Full name" id="name" placeholder="Dr. Jane Doe" required />
-                <Field label="Email" id="email" type="email" placeholder="you@example.com" required />
+                <Field label="Email" id="email" type="email" placeholder="doctor@galcare.com" required />
               </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <Field label="Organization" id="org" placeholder="Clinic / Company" />

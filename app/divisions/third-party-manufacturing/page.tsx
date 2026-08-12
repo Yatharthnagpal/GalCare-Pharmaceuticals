@@ -33,13 +33,32 @@ export default function ThirdPartyPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const processSubmission = () => {
+    const processSubmission = async () => {
+      const requirements = `${formData.division} Formulation (Qty: ${formData.quantity || "Standard"})`
+
+      try {
+        await fetch("/api/quotes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name || user?.fullName,
+            email: formData.email || user?.email,
+            phone: formData.phone,
+            company: formData.company || user?.company || "Independent Business Partner",
+            requirements,
+            message: formData.message,
+          }),
+        })
+      } catch (err) {
+        console.error("Failed to submit manufacturing quote", err)
+      }
+
       add3rdPartyQuote({
         userEmail: user?.email || formData.email,
         userName: formData.name || user?.fullName || "3rd Party Applicant",
         companyName: formData.company || user?.company || "Independent Business Partner",
         phone: formData.phone || user?.phone || "",
-        requirements: `${formData.division} Formulation (Qty: ${formData.quantity || "Standard"})`,
+        requirements,
         message: formData.message || "Requesting contract manufacturing facility details.",
       })
       setSubmitted(true)

@@ -225,13 +225,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   };
 
-  const signup = (data: Omit<UserLead, "id" | "createdAt" | "status">) => {
+  const signup = async (data: Omit<UserLead, "id" | "createdAt" | "status">) => {
     const newLead: UserLead = {
       ...data,
       id: `lead-${Date.now()}`,
       createdAt: new Date().toISOString().split("T")[0],
       status: "New (Uncontacted)",
     };
+
+    try {
+      await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+    } catch (e) {
+      console.warn("Failed to call register API route", e)
+    }
 
     setUser(newLead);
     localStorage.setItem("galcare_active_user", JSON.stringify(newLead));
@@ -251,6 +261,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const existing = capturedLeads.find(
       (l) => l.email.toLowerCase() === emailOrPhone.toLowerCase() || l.phone === emailOrPhone
     );
+
+    fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: emailOrPhone }),
+    }).catch((e) => console.warn("Failed to call login API route", e))
 
     if (existing) {
       setUser(existing);

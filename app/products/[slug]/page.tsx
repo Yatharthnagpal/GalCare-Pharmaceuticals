@@ -38,7 +38,23 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const processSubmission = () => {
+    const processSubmission = async () => {
+      try {
+        await fetch("/api/enquiries", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name || user?.fullName,
+            email: formData.email || user?.email,
+            phone: formData.phone,
+            productName: product?.name || "Product Inquiry",
+            message: `[Qty: ${formData.quantity || "Standard"}] ${formData.message}`,
+          }),
+        })
+      } catch (err) {
+        console.error("Failed to submit product enquiry", err)
+      }
+
       addEnquiry({
         userEmail: user?.email || formData.email,
         userName: formData.name || user?.fullName || "Client Partner",

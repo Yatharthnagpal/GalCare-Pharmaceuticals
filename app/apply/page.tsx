@@ -122,7 +122,7 @@ function ApplyFormContent() {
       return
     }
 
-    const processSubmission = () => {
+    const processSubmission = async () => {
       const appliedTitle = selectedJob || "General Application"
       const newApp = {
         id: `app-${Date.now()}`,
@@ -134,6 +134,19 @@ function ApplyFormContent() {
       }
 
       try {
+        await fetch("/api/careers/apply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.name || user?.fullName,
+            email: formData.email || user?.email,
+            phone: formData.phone,
+            jobTitle: appliedTitle,
+            experience: formData.experience,
+            resume: pdfFile.name,
+          }),
+        })
+
         const savedApps = localStorage.getItem("galcare_job_apps")
         const currentApps = savedApps ? JSON.parse(savedApps) : []
         const updatedApps = [newApp, ...currentApps]
@@ -150,7 +163,7 @@ function ApplyFormContent() {
         department: "R&D",
         phone: formData.phone || user?.phone || "",
         experience: formData.experience || "Not specified",
-        resume: formData.resume || "https://drive.google.com/sample-resume",
+        resume: pdfFile.name || "resume.pdf",
       })
 
       setSubmitted(true)
