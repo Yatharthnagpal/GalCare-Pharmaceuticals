@@ -1,51 +1,51 @@
 import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { ShieldAlert, Home, Search, ArrowLeft } from "lucide-react"
+import { AIAssistant } from "@/components/ai-assistant"
+import { ArrowLeft, Home, Package, Search } from "lucide-react"
 
 export default function NotFound() {
   return (
     <>
       <Navbar />
-      <main className="min-h-[80vh] pt-32 pb-20 flex items-center justify-center relative overflow-hidden">
-        {/* Background glow circle */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-96 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-
-        <div className="relative mx-auto max-w-xl px-4 text-center">
-          <div className="mx-auto flex size-20 items-center justify-center rounded-3xl bg-primary/10 border border-primary/20 text-primary shadow-glow">
-            <ShieldAlert className="size-10" />
+      <main className="min-h-[75vh] flex items-center justify-center pt-32 pb-20">
+        <div className="mx-auto max-w-2xl px-4 text-center">
+          <div className="inline-flex size-20 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-soft mb-6">
+            <Search className="size-10" />
           </div>
 
-          <span className="mt-6 block text-xs font-bold uppercase tracking-widest text-primary">
-            404 Error • Page Not Found
+          <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary">
+            404 — Page Not Found
           </span>
 
-          <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">
-            Looking for a formulation?
+          <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
+            Looking for something in dermatology?
           </h1>
 
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            The page or product specification you requested could not be located in our active directory. It may have moved or been updated.
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            The page you are looking for does not exist or may have been moved. Browse our specialty product catalog or return home.
           </p>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/"
-              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow hover:bg-primary/95 transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow hover:bg-primary/95 transition-all"
             >
-              <Home className="size-4" /> Return to Home
+              <Home className="size-4" />
+              Return Home
             </Link>
-
             <Link
               href="/products"
-              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-all"
             >
-              <Search className="size-4 text-primary" /> Browse Catalogue
+              <Package className="size-4 text-primary" />
+              Explore Products
             </Link>
           </div>
         </div>
       </main>
       <Footer />
+      <AIAssistant />
     </>
   )
 }

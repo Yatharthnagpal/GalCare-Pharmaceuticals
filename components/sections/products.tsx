@@ -124,7 +124,7 @@ export function Products() {
                 >
                   <TiltCard className="h-full">
                     <article className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all hover:border-primary/50 hover:shadow-glow">
-                      <div className="relative aspect-[4/3] overflow-hidden bg-transparent">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[2rem] bg-gradient-to-b from-card via-muted/20 to-muted/50 p-4 flex items-center justify-center border-b border-border/40">
                         <span className="absolute left-3.5 top-3.5 z-10 rounded-full bg-card/90 px-3 py-1 text-[10px] sm:text-xs font-bold text-primary backdrop-blur-sm border border-border/40">
                           {product.category}
                         </span>
@@ -137,22 +137,26 @@ export function Products() {
                           src={product.image || "/placeholder.svg"}
                           alt={product.name}
                           fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="object-contain p-3 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
                         />
                       </div>
 
-                      <div className="flex flex-1 flex-col p-5 sm:p-6">
-                        <h3 className="text-base sm:text-lg font-bold tracking-tight leading-tight">{product.name}</h3>
-                        {product.composition && (
-                          <p className="mt-1 text-xs font-semibold text-primary leading-tight">{product.composition}</p>
-                        )}
-                        <p className="mt-2 text-xs sm:text-sm leading-relaxed text-muted-foreground line-clamp-2">{product.description}</p>
+                      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+                        <div>
+                          <h3 className="text-base sm:text-lg font-bold tracking-tight leading-tight line-clamp-1">{product.name}</h3>
+                          {product.composition ? (
+                            <p className="mt-1 text-xs font-semibold text-primary leading-tight line-clamp-1 h-4">{product.composition}</p>
+                          ) : (
+                            <div className="h-4 mt-1" />
+                          )}
+                          <p className="mt-2 text-xs sm:text-sm leading-relaxed text-muted-foreground line-clamp-2 h-10">{product.description}</p>
+                        </div>
 
                         <div className="mt-4 hidden sm:block">
                           <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-foreground/70">
                             <FlaskConical className="size-3.5 text-primary" /> Key Active Ingredients
                           </p>
-                          <div className="mt-2 flex flex-wrap gap-1.5">
+                          <div className="mt-2 flex flex-wrap gap-1.5 min-h-[28px] items-center">
                             {product.ingredients.slice(0, 3).map((ing) => (
                               <span
                                 key={ing}

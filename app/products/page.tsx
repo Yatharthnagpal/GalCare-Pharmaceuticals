@@ -123,8 +123,8 @@ export default function ProductsPage() {
         {/* Filter Controls & Catalogue Grid */}
         <section className="py-6">
           <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-8 lg:grid-cols-4">
-            {/* Sidebar Filters */}
-            <Reveal className="lg:col-span-1 space-y-6">
+            {/* Sidebar Filters - Hidden on mobile view, shown on desktop (lg+) */}
+            <Reveal className="hidden lg:block lg:col-span-1 space-y-6">
               <div className="sticky top-28 rounded-3xl border border-border bg-card/70 p-6 shadow-soft backdrop-blur-md">
                 <div className="flex items-center justify-between font-bold pb-4 border-b border-border">
                   <div className="flex items-center gap-2">
@@ -258,7 +258,7 @@ export default function ProductsPage() {
                         <div className="group flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-glow">
                           
                           {/* Image Showcase Container */}
-                          <div className="relative aspect-[4/3] overflow-hidden bg-transparent">
+                          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[2rem] bg-gradient-to-b from-card via-muted/20 to-muted/50 p-4 flex items-center justify-center border-b border-border/40">
                             <span className="absolute top-3.5 left-3.5 z-10 rounded-full bg-card/90 px-3 py-1 text-[10px] font-bold text-primary backdrop-blur-md shadow-sm border border-border/50">
                               {p.category}
                             </span>
@@ -271,44 +271,48 @@ export default function ProductsPage() {
                               src={p.image}
                               alt={p.name}
                               fill
-                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                              className="object-contain p-3 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
                             />
                           </div>
 
                           {/* Content Container */}
-                          <div className="flex flex-1 flex-col p-6">
+                          <div className="flex flex-1 flex-col justify-between p-6">
                             <div>
-                              <h3 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                              <h3 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
                                 {p.name}
                               </h3>
-                              {p.composition && (
-                                <p className="text-xs font-semibold text-primary/90 mt-1 line-clamp-1">
+                              {p.composition ? (
+                                <p className="text-xs font-semibold text-primary/90 mt-1 line-clamp-1 h-4">
                                   {p.composition}
                                 </p>
+                              ) : (
+                                <div className="h-4 mt-1" />
                               )}
-                              <p className="mt-2.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                              <p className="mt-2.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed h-9">
                                 {p.description}
                               </p>
                             </div>
 
                             {/* Ingredient tags */}
-                            {p.ingredients && p.ingredients.length > 0 && (
-                              <div className="mt-4 flex flex-wrap gap-1">
-                                {p.ingredients.slice(0, 2).map((ing) => (
-                                  <span
-                                    key={ing}
-                                    className="rounded-md bg-accent px-2 py-0.5 text-[10px] font-medium text-accent-foreground"
-                                  >
-                                    {ing}
-                                  </span>
-                                ))}
-                                {p.ingredients.length > 2 && (
-                                  <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
-                                    +{p.ingredients.length - 2} more
-                                  </span>
-                                )}
-                              </div>
-                            )}
+                            <div className="mt-4 flex flex-wrap gap-1 min-h-[24px] items-center">
+                              {p.ingredients && p.ingredients.length > 0 && (
+                                <>
+                                  {p.ingredients.slice(0, 2).map((ing) => (
+                                    <span
+                                      key={ing}
+                                      className="rounded-md bg-accent px-2 py-0.5 text-[10px] font-medium text-accent-foreground"
+                                    >
+                                      {ing}
+                                    </span>
+                                  ))}
+                                  {p.ingredients.length > 2 && (
+                                    <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
+                                      +{p.ingredients.length - 2} more
+                                    </span>
+                                  )}
+                                </>
+                              )}
+                            </div>
 
                             {/* Card Footer */}
                             <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">

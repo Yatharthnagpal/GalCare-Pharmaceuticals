@@ -664,12 +664,12 @@ export default function TherapeuticAreaDetailPage({ params }: { params: Promise<
                 {products.map((p, i) => (
                   <Reveal key={p.id} delay={i * 0.05}>
                     <div className="group flex h-full flex-col justify-between overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-soft hover:border-primary/45 hover:shadow-glow transition-all">
-                      <div className="relative aspect-square overflow-hidden bg-transparent">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-b from-card via-muted/20 to-muted/50 p-4 flex items-center justify-center border-b border-border/40">
                         <Image
                           src={p.image}
                           alt={p.name}
                           fill
-                          className="object-cover transition-transform group-hover:scale-105"
+                          className="object-contain p-3 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
                         />
                       </div>
                       <div className="p-6 md:p-8 flex flex-col flex-1 justify-between">
@@ -677,8 +677,8 @@ export default function TherapeuticAreaDetailPage({ params }: { params: Promise<
                           <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
                             {p.category}
                           </span>
-                          <h3 className="text-xl font-bold mt-1 text-foreground">{p.name}</h3>
-                          <p className="text-xs font-semibold text-muted-foreground mt-0.5">{p.genericName}</p>
+                          <h3 className="text-xl font-bold mt-1 text-foreground line-clamp-1">{p.name}</h3>
+                          <p className="text-xs font-semibold text-muted-foreground mt-0.5 line-clamp-1">{p.genericName}</p>
                           <p className="text-sm text-muted-foreground mt-3 leading-relaxed line-clamp-3">
                             {p.description}
                           </p>

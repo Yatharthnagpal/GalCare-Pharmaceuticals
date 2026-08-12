@@ -93,12 +93,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
           <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-12 lg:grid-cols-2">
             {/* Image display */}
             <Reveal>
-              <div className="relative aspect-square overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-soft">
+              <div className="relative aspect-square w-full overflow-hidden rounded-[2.5rem] border border-border bg-gradient-to-b from-card via-muted/20 to-muted/50 p-8 flex items-center justify-center shadow-soft">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover transition-transform duration-500 hover:scale-105"
+                  className="object-contain p-6 transition-transform duration-500 hover:scale-105 drop-shadow-md"
                 />
               </div>
             </Reveal>
@@ -270,20 +270,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               <div className="mt-8 grid gap-6 sm:grid-cols-3">
                 {relatedProducts.map((p, i) => (
                   <Reveal key={p.id} delay={i * 0.08}>
-                    <div className="group rounded-[2rem] border border-border bg-card p-5 shadow-soft hover:border-primary/45 transition-colors">
-                      <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted">
+                    <div className="group flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-border bg-card p-5 shadow-soft hover:border-primary/45 transition-colors">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-gradient-to-b from-card via-muted/20 to-muted/50 p-3 flex items-center justify-center border border-border/40">
                         <Image
                           src={p.image}
                           alt={p.name}
                           fill
-                          className="object-cover transition-transform group-hover:scale-105"
+                          className="object-contain p-2 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
                         />
                       </div>
-                      <h4 className="mt-4 font-bold text-base tracking-tight">{p.name}</h4>
-                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{p.description}</p>
-                      <a href={`/products/${p.id}`} className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-primary">
-                        View Details →
-                      </a>
+                      <div className="mt-4 flex flex-1 flex-col justify-between">
+                        <div>
+                          <h4 className="font-bold text-base tracking-tight line-clamp-1">{p.name}</h4>
+                          <p className="text-xs text-muted-foreground line-clamp-2 mt-1 leading-relaxed">{p.description}</p>
+                        </div>
+                        <a href={`/products/${p.id}`} className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-primary">
+                          View Details →
+                        </a>
+                      </div>
                     </div>
                   </Reveal>
                 ))}
