@@ -9,14 +9,24 @@ export function PWAInstaller() {
   const [isInstalled, setIsInstalled] = useState(false)
 
   useEffect(() => {
-    // 1. Service Worker Registration
+    // 1. Service Worker Registration (Production Only)
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((reg) => console.log("[PWA] Service Worker registered with scope:", reg.scope))
-          .catch((err) => console.warn("[PWA] Service Worker registration failed:", err))
-      })
+      const isDev = process.env.NODE_ENV !== "production" || window.location.hostname === "localhost";
+      if (isDev) {
+        // Unregister any active dev service workers to prevent Turbopack chunk conflicts
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (const registration of registrations) {
+            registration.unregister();
+          }
+        });
+      } else {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => console.log("[PWA] Service Worker registered:", reg.scope))
+            .catch((err) => console.warn("[PWA] Service Worker registration failed:", err));
+        });
+      }
     }
 
     // 2. Online / Offline status monitoring

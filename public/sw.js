@@ -47,8 +47,14 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url)
 
-  // Skip caching for API POST routes (auth, form submissions)
-  if (event.request.method !== "GET" || url.pathname.startsWith("/api/")) {
+  // Skip caching for non-GET, API routes, Turbopack HMR, and Next.js dev chunks
+  if (
+    event.request.method !== "GET" ||
+    url.pathname.startsWith("/api/") ||
+    url.pathname.startsWith("/_next/webpack-hmr") ||
+    url.pathname.includes("turbopack") ||
+    url.pathname.includes("hot-reload")
+  ) {
     return
   }
 
