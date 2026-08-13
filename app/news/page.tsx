@@ -117,12 +117,6 @@ export default function NewsroomPage() {
               >
                 <Mail className="size-4" /> Media Inquiry
               </button>
-              <button
-                onClick={() => setPressModalOpen(true)}
-                className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-6 py-3 text-xs font-bold text-foreground hover:bg-accent transition-colors"
-              >
-                <FileText className="size-4 text-primary" /> Download Press Kit
-              </button>
             </Reveal>
           </div>
         </section>
