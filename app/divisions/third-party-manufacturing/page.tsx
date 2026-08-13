@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
 import Image from "next/image"
-import { Factory, CheckCircle2, ShieldCheck, ArrowLeft, ArrowRight, UserPlus } from "lucide-react"
+import { Factory, CheckCircle2, ShieldCheck, ArrowLeft, ArrowRight, Calculator } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 
 const benefits = [
@@ -122,34 +122,34 @@ export default function ThirdPartyPage() {
               </div>
             </Reveal>
 
-            {/* Right side: Triggers Galcare Client Portal Create Account Pop-up */}
+            {/* Right side: Request Custom Quote Card */}
             <Reveal>
               <div className="rounded-3xl border border-border bg-gradient-to-b from-card to-accent/30 p-8 md:p-10 shadow-soft flex flex-col justify-center items-start text-left h-full">
                 <div className="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
-                  <UserPlus className="size-7" />
+                  <Calculator className="size-7" />
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                  Partner Registration & Inquiries
+                  Request Custom Manufacturing Quote
                 </h3>
                 <p className="mt-3 text-base text-muted-foreground leading-relaxed">
-                  Ready to scale your pharmaceutical production or request custom WHO-GMP manufacturing quotes? Create your Galcare Client Portal account today to connect directly with our business development team.
+                  Ready to scale your pharmaceutical production or request custom WHO-GMP manufacturing quotes? Submit your batch specifications, dosage forms, and packaging style to receive an instant RFQ proposal from our business development team.
                 </p>
 
                 <div className="mt-8 w-full space-y-4">
-                  <button
-                    onClick={() => openAuthModal("signup", "Create a Galcare Client Portal account to submit third-party manufacturing requests.")}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 font-bold text-base text-primary-foreground shadow-glow hover:bg-primary/95 hover:scale-[1.02] transition-all cursor-pointer"
+                  <Link
+                    href="/contact?subject=Third-Party+Manufacturing+Quote"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 font-bold text-base text-primary-foreground shadow-glow hover:bg-primary/95 hover:scale-[1.02] transition-all"
                   >
-                    Create Account <ArrowRight className="size-5" />
-                  </button>
+                    Request Quote <ArrowRight className="size-5" />
+                  </Link>
                   <p className="text-center text-xs text-muted-foreground w-full">
-                    Already have an account?{" "}
-                    <button
-                      onClick={() => openAuthModal("login")}
-                      className="font-semibold text-primary underline underline-offset-2 cursor-pointer"
+                    Need technical formulation support?{" "}
+                    <Link
+                      href="/contact"
+                      className="font-semibold text-primary underline underline-offset-2"
                     >
-                      Sign in to your portal
-                    </button>
+                      Contact our R&D Team
+                    </Link>
                   </p>
                 </div>
               </div>
