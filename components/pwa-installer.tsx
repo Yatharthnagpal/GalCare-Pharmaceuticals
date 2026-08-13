@@ -76,7 +76,7 @@ export function PWAInstaller() {
 
       {/* PWA Installation Floating CTA if prompt available */}
       {deferredPrompt && !isInstalled && (
-        <div className="fixed bottom-4 right-20 z-40 hidden sm:flex items-center gap-3 rounded-2xl border border-sky-500/30 bg-slate-900/90 px-4 py-2.5 text-xs text-slate-200 shadow-xl backdrop-blur-md">
+        <div className="fixed bottom-6 left-6 z-40 hidden sm:flex items-center gap-3 rounded-2xl border border-sky-500/30 bg-slate-900/95 px-4 py-2.5 text-xs text-slate-200 shadow-2xl backdrop-blur-md">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400">
             <Download className="h-4 w-4" />
           </div>
