@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
             Authorization: `Bearer ${resendApiKey}`,
           },
           body: JSON.stringify({
-            from: "GalCare Security <security@galcare.com>",
+            from: process.env.RESEND_FROM_EMAIL || "GalCare Security <onboarding@resend.dev>",
             to: [email],
             subject: `${otp} is your GalCare Verification Code`,
             html: `
