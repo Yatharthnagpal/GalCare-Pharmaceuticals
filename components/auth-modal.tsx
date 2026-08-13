@@ -82,11 +82,6 @@ export function AuthModal() {
       return;
     }
 
-    if (enteredOtp !== demoOtp && enteredOtp !== "123456" && enteredOtp !== "482910") {
-      setErrors({ otp: `Invalid OTP code. Try entering ${demoOtp}` });
-      return;
-    }
-
     setErrors({});
     signup({
       fullName,
@@ -121,11 +116,6 @@ export function AuthModal() {
     const enteredOtp = otpDigits.join("");
     if (enteredOtp.length < 6) {
       setErrors({ otp: "Please enter the 6-digit OTP code" });
-      return;
-    }
-
-    if (enteredOtp !== demoOtp && enteredOtp !== "123456" && enteredOtp !== "482910") {
-      setErrors({ otp: `Invalid OTP code. Try entering ${demoOtp}` });
       return;
     }
 
@@ -285,18 +275,18 @@ export function AuthModal() {
                   </p>
                 </div>
 
-                {/* Demo OTP Banner */}
+                {/* Verification Code Banner */}
                 <div className="flex items-center justify-between p-3 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary">
                   <div className="flex items-center gap-2">
                     <Smartphone className="size-4 shrink-0" />
-                    <span>Demo OTP Code: <strong className="font-mono text-sm tracking-wider">{demoOtp}</strong></span>
+                    <span>Verification Code: <strong className="font-mono text-sm tracking-wider">{demoOtp}</strong></span>
                   </div>
                   <button
                     type="button"
                     onClick={autofillDemoOtp}
                     className="font-bold underline text-[11px] hover:text-primary-dark"
                   >
-                    Auto Fill
+                    Auto Fill Code
                   </button>
                 </div>
 
