@@ -200,25 +200,43 @@ export async function fetchWPJobs(): Promise<Job[]> {
   if (!baseUrl) return []
 
   try {
+    // 1. Try Custom Post Type 'jobs'
     const res = await fetch(`${baseUrl}/wp-json/wp/v2/jobs?_embed`, {
       next: { revalidate: 60 },
     })
 
-    if (!res.ok) {
-      const altRes = await fetch(`${baseUrl}/wp-json/wp/v2/job_listing?_embed`, {
-        next: { revalidate: 60 },
-      })
-      if (!altRes.ok) return []
-      const altData = await altRes.json()
-      return altData.map((item: any) => formatWPJob(item))
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length > 0) {
+        return data.map((item: any) => formatWPJob(item))
+      }
     }
 
-    const data = await res.json()
-    return data.map((item: any) => formatWPJob(item))
+    // 2. Try Custom Post Type 'job_listing'
+    const altRes = await fetch(`${baseUrl}/wp-json/wp/v2/job_listing?_embed`, {
+      next: { revalidate: 60 },
+    })
+    if (altRes.ok) {
+      const altData = await altRes.json()
+      if (Array.isArray(altData) && altData.length > 0) {
+        return altData.map((item: any) => formatWPJob(item))
+      }
+    }
+
+    // 3. Try Standard Posts matching search query 'job' or 'career'
+    const postRes = await fetch(`${baseUrl}/wp-json/wp/v2/posts?search=career&_embed`, {
+      next: { revalidate: 60 },
+    })
+    if (postRes.ok) {
+      const postData = await postRes.json()
+      if (Array.isArray(postData) && postData.length > 0) {
+        return postData.map((item: any) => formatWPJob(item))
+      }
+    }
   } catch (error) {
     console.warn("[WP API] Failed to fetch jobs from WordPress:", error)
-    return []
   }
+  return []
 }
 
 function formatWPJob(item: any): Job {
