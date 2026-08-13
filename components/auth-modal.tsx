@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Lock, Mail, Phone, User, ShieldCheck, ArrowRight, CheckCircle2, Eye, EyeOff, KeyRound, RefreshCw, Smartphone } from "lucide-react";
+import { X, Lock, Mail, Phone, User, ShieldCheck, ArrowRight, CheckCircle2, Eye, EyeOff, KeyRound, RefreshCw, Smartphone, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
 export function AuthModal() {
@@ -16,11 +16,12 @@ export function AuthModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // OTP Verification states
+  // Real Email OTP Verification states
   const [step, setStep] = useState<"form" | "otp_signup" | "otp_login">("form");
   const [loginMethod, setLoginMethod] = useState<"password" | "otp">("password");
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
-  const [demoOtp, setDemoOtp] = useState("482910");
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [resendTimer, setResendTimer] = useState(30);
   const [isResendActive, setIsResendActive] = useState(false);
 
@@ -40,15 +41,35 @@ export function AuthModal() {
     return () => clearInterval(interval);
   }, [isResendActive, resendTimer]);
 
-  const startOtpTimer = () => {
-    setResendTimer(30);
-    setIsResendActive(true);
-    // Generate a fresh random 6 digit OTP for realistic demo
-    const generated = Math.floor(100000 + Math.random() * 900000).toString();
-    setDemoOtp(generated);
+  const dispatchRealEmailOtp = async (targetEmail: string, name: string) => {
+    setIsSendingOtp(true);
+    setErrors({});
+    try {
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: targetEmail, fullName: name }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setResendTimer(30);
+        setIsResendActive(true);
+        setOtpDigits(["", "", "", "", "", ""]);
+        return true;
+      } else {
+        setErrors({ email: data.message || "Failed to send verification email" });
+        return false;
+      }
+    } catch (err: any) {
+      setErrors({ email: "Error connecting to email service" });
+      return false;
+    } finally {
+      setIsSendingOtp(false);
+    }
   };
 
-  const handleSignupSubmit = (e: React.FormEvent) => {
+  const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: { phone?: string; email?: string; fullName?: string; password?: string } = {};
 
@@ -68,60 +89,99 @@ export function AuthModal() {
       return;
     }
 
-    setErrors({});
-    startOtpTimer();
-    setOtpDigits(["", "", "", "", "", ""]);
-    setStep("otp_signup");
+    const sent = await dispatchRealEmailOtp(email, fullName);
+    if (sent) {
+      setStep("otp_signup");
+    }
   };
 
-  const handleVerifySignupOtp = (e: React.FormEvent) => {
+  const handleVerifySignupOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const enteredOtp = otpDigits.join("");
     if (enteredOtp.length < 6) {
-      setErrors({ otp: "Please enter the 6-digit OTP code" });
+      setErrors({ otp: "Please enter the complete 6-digit verification code" });
       return;
     }
 
+    setIsVerifyingOtp(true);
     setErrors({});
-    signup({
-      fullName,
-      email,
-      phone,
-      company: "Client Partner",
-      interest: "General Practice",
-      consent: true,
-    });
 
-    setSuccessMsg(true);
-    setTimeout(() => {
-      setSuccessMsg(false);
-      setStep("form");
-    }, 2000);
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp: enteredOtp }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        signup({
+          fullName,
+          email,
+          phone,
+          company: "Client Partner",
+          interest: "General Practice",
+          consent: true,
+        });
+
+        setSuccessMsg(true);
+        setTimeout(() => {
+          setSuccessMsg(false);
+          setStep("form");
+        }, 2000);
+      } else {
+        setErrors({ otp: data.message || "Incorrect verification code. Please check your inbox." });
+      }
+    } catch (err) {
+      setErrors({ otp: "Verification service temporary error" });
+    } finally {
+      setIsVerifyingOtp(false);
+    }
   };
 
-  const handleSendLoginOtp = () => {
+  const handleSendLoginOtp = async () => {
     const identifier = email || phone;
-    if (!identifier.trim()) {
-      setErrors({ email: "Please enter your Email or Mobile number first" });
+    if (!identifier.trim() || !identifier.includes("@")) {
+      setErrors({ email: "Please enter a valid Email address to receive OTP" });
       return;
     }
-    setErrors({});
-    startOtpTimer();
-    setOtpDigits(["", "", "", "", "", ""]);
-    setStep("otp_login");
+
+    const sent = await dispatchRealEmailOtp(identifier, fullName || "Partner");
+    if (sent) {
+      setStep("otp_login");
+    }
   };
 
-  const handleVerifyLoginOtp = (e: React.FormEvent) => {
+  const handleVerifyLoginOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const enteredOtp = otpDigits.join("");
     if (enteredOtp.length < 6) {
-      setErrors({ otp: "Please enter the 6-digit OTP code" });
+      setErrors({ otp: "Please enter the complete 6-digit verification code" });
       return;
     }
 
+    setIsVerifyingOtp(true);
     setErrors({});
-    login(email || phone);
-    setStep("form");
+
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email || phone, otp: enteredOtp }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        login(email || phone);
+        setStep("form");
+      } else {
+        setErrors({ otp: data.message || "Incorrect verification code. Please check your inbox." });
+      }
+    } catch (err) {
+      setErrors({ otp: "Verification service temporary error" });
+    } finally {
+      setIsVerifyingOtp(false);
+    }
   };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -143,7 +203,6 @@ export function AuthModal() {
 
   const handleOtpInputChange = (index: number, value: string) => {
     if (value.length > 1) {
-      // Pasting full OTP
       const pasted = value.slice(0, 6).split("");
       const newDigits = [...otpDigits];
       pasted.forEach((char, i) => {
@@ -157,7 +216,6 @@ export function AuthModal() {
     newDigits[index] = value;
     setOtpDigits(newDigits);
 
-    // Auto-focus next input field
     if (value && index < 5) {
       const nextInput = document.getElementById(`otp-input-${index + 1}`);
       nextInput?.focus();
@@ -169,11 +227,6 @@ export function AuthModal() {
       const prevInput = document.getElementById(`otp-input-${index - 1}`);
       prevInput?.focus();
     }
-  };
-
-  const autofillDemoOtp = () => {
-    setOtpDigits(demoOtp.split(""));
-    setErrors({});
   };
 
   if (!isAuthModalOpen) return null;
@@ -212,15 +265,13 @@ export function AuthModal() {
 
           <div className="p-6">
             {authPromptMessage && step === "form" && (
-              <div className="mb-4 p-3 rounded-2xl bg-primary/10 border border-primary/20 text-xs font-semibold text-primary flex items-center gap-2">
-                <ShieldCheck className="size-4 shrink-0" />
-                <span>{authPromptMessage}</span>
+              <div className="mb-4 rounded-xl border border-primary/20 bg-primary/10 p-3 text-xs text-primary font-medium">
+                {authPromptMessage}
               </div>
             )}
 
-            {/* Mode Switcher Tabs */}
-            {step === "form" && (
-              <div className="flex rounded-2xl bg-muted p-1 border border-border/50 mb-6">
+            {step === "form" && !successMsg && (
+              <div className="flex rounded-2xl bg-muted p-1 mb-6">
                 <button
                   type="button"
                   onClick={() => {
@@ -257,7 +308,7 @@ export function AuthModal() {
                 <div className="grid size-16 place-items-center rounded-full bg-primary/10 text-primary">
                   <CheckCircle2 className="size-8" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground">Mobile & Email Verified!</h3>
+                <h3 className="text-xl font-bold text-foreground">Email Verified Successfully!</h3>
                 <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
                   Your Galcare partner account is successfully verified and created. You are now signed in.
                 </p>
@@ -269,25 +320,10 @@ export function AuthModal() {
                   <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary mb-3">
                     <KeyRound className="size-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground">Verify OTP Code</h3>
+                  <h3 className="text-lg font-bold text-foreground">Verify Security Code</h3>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    We sent a 6-digit OTP code to <strong className="text-foreground">{phone || "+91 98765 43210"}</strong> and <strong className="text-foreground">{email || "your email"}</strong>
+                    We sent a 6-digit verification code to your email <strong className="text-foreground">{email || phone}</strong>. Please check your inbox and enter it below.
                   </p>
-                </div>
-
-                {/* Verification Code Banner */}
-                <div className="flex items-center justify-between p-3 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary">
-                  <div className="flex items-center gap-2">
-                    <Smartphone className="size-4 shrink-0" />
-                    <span>Verification Code: <strong className="font-mono text-sm tracking-wider">{demoOtp}</strong></span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={autofillDemoOtp}
-                    className="font-bold underline text-[11px] hover:text-primary-dark"
-                  >
-                    Auto Fill Code
-                  </button>
                 </div>
 
                 {/* 6 Digit Input Boxes */}
@@ -319,22 +355,31 @@ export function AuthModal() {
 
                   <button
                     type="button"
-                    disabled={isResendActive}
-                    onClick={startOtpTimer}
+                    disabled={isResendActive || isSendingOtp}
+                    onClick={() => dispatchRealEmailOtp(email || phone, fullName || "Partner")}
                     className={`inline-flex items-center gap-1 font-semibold ${
-                      isResendActive ? "text-muted-foreground cursor-not-allowed" : "text-primary hover:underline"
+                      isResendActive || isSendingOtp ? "text-muted-foreground cursor-not-allowed" : "text-primary hover:underline"
                     }`}
                   >
-                    <RefreshCw className={`size-3 ${isResendActive ? "animate-spin" : ""}`} />
-                    {isResendActive ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
+                    <RefreshCw className={`size-3 ${isResendActive || isSendingOtp ? "animate-spin" : ""}`} />
+                    {isSendingOtp ? "Sending..." : isResendActive ? `Resend Code in ${resendTimer}s` : "Resend Code"}
                   </button>
                 </div>
 
                 <button
                   type="submit"
+                  disabled={isVerifyingOtp}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs sm:text-sm font-bold text-primary-foreground shadow-glow transition-all hover:bg-primary/95"
                 >
-                  Verify & Continue <ArrowRight className="size-4" />
+                  {isVerifyingOtp ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" /> Verifying Code...
+                    </>
+                  ) : (
+                    <>
+                      Verify & Continue <ArrowRight className="size-4" />
+                    </>
+                  )}
                 </button>
               </form>
             ) : authMode === "login" ? (
@@ -354,7 +399,7 @@ export function AuthModal() {
                         setEmail(e.target.value);
                         setPhone(e.target.value);
                       }}
-                      placeholder="doctor@galcare.com or +91 98765 43210"
+                      placeholder="doctor@galcare.com or nagpalyatharth99@gmail.com"
                       className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                     />
                   </div>
@@ -378,7 +423,7 @@ export function AuthModal() {
                       onClick={() => setLoginMethod("otp")}
                       className={`font-semibold ${loginMethod === "otp" ? "text-primary underline" : "text-muted-foreground hover:text-foreground"}`}
                     >
-                      OTP Code
+                      Email OTP Code
                     </button>
                   </div>
                 </div>
@@ -391,7 +436,7 @@ export function AuthModal() {
                       </label>
                       <button
                         type="button"
-                        onClick={() => alert("Password reset OTP sent to your email & mobile.")}
+                        onClick={handleSendLoginOtp}
                         className="text-[11px] font-semibold text-primary hover:underline"
                       >
                         Forgot Password?
@@ -419,13 +464,14 @@ export function AuthModal() {
                   </div>
                 ) : (
                   <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary flex items-center justify-between">
-                    <span>We will send a 6-digit OTP code to verify your mobile/email.</span>
+                    <span>We will send a 6-digit OTP code to verify your email.</span>
                     <button
                       type="button"
                       onClick={handleSendLoginOtp}
+                      disabled={isSendingOtp}
                       className="px-3 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold shrink-0 ml-2"
                     >
-                      Get OTP
+                      {isSendingOtp ? "Sending..." : "Get OTP"}
                     </button>
                   </div>
                 )}
@@ -438,21 +484,19 @@ export function AuthModal() {
                     className="rounded border-border text-primary focus:ring-primary"
                   />
                   <label htmlFor="remember" className="text-xs text-muted-foreground font-medium">
-                    Keep me signed in on this device
+                    Remember my credentials for fast login
                   </label>
                 </div>
 
-                {loginMethod === "password" && (
-                  <button
-                    type="submit"
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs sm:text-sm font-bold text-primary-foreground shadow-glow transition-all hover:bg-primary/95"
-                  >
-                    Sign In to Account <ArrowRight className="size-4" />
-                  </button>
-                )}
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs sm:text-sm font-bold text-primary-foreground shadow-glow transition-all hover:bg-primary/95"
+                >
+                  Sign In to Partner Portal <ArrowRight className="size-4" />
+                </button>
               </form>
             ) : (
-              /* CREATE ACCOUNT / SIGN UP FORM */
+              /* REGISTRATION / CREATE ACCOUNT FORM */
               <form onSubmit={handleSignupSubmit} className="space-y-3.5">
                 <div>
                   <label className="block text-xs font-semibold text-foreground mb-1">
@@ -465,14 +509,14 @@ export function AuthModal() {
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Dr. Ananya Sharma"
-                      className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      placeholder="Dr. Devkant Bhardwaj"
+                      className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                     />
                   </div>
                   {errors.fullName && <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1">
                       Email Address *
@@ -484,8 +528,8 @@ export function AuthModal() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="ananya@clinic.com"
-                        className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        placeholder="doctor@galcare.com"
+                        className="w-full rounded-xl border border-border bg-background pl-10 pr-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
                       />
                     </div>
                     {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
@@ -503,62 +547,69 @@ export function AuthModal() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="+91 98765 43210"
-                        className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        className="w-full rounded-xl border border-border bg-background pl-10 pr-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
                       />
                     </div>
                     {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">
-                      Password *
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Create password"
-                        className="w-full rounded-xl border border-border bg-background pl-10 pr-10 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">
-                      Confirm Password *
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        required
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Re-enter password"
-                        className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                      />
-                    </div>
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">
+                    Set Account Password *
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="At least 6 characters"
+                      className="w-full rounded-xl border border-border bg-background pl-10 pr-10 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    </button>
                   </div>
                 </div>
-                {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
+
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">
+                    Confirm Password *
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Repeat password"
+                      className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
+                </div>
 
                 <button
                   type="submit"
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs sm:text-sm font-bold text-primary-foreground shadow-glow transition-all hover:bg-primary/95"
+                  disabled={isSendingOtp}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs sm:text-sm font-bold text-primary-foreground shadow-glow transition-all hover:bg-primary/95"
                 >
-                  Send OTP & Verify Account <ArrowRight className="size-4" />
+                  {isSendingOtp ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" /> Dispatching Verification Email...
+                    </>
+                  ) : (
+                    <>
+                      Create Verified Account <ArrowRight className="size-4" />
+                    </>
+                  )}
                 </button>
               </form>
             )}

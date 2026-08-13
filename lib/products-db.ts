@@ -337,7 +337,7 @@ export const PRODUCTS: Product[] = [
     category: "Acne Care",
     tagline: "Triple-action anti-acne therapy",
     description: "Combines Clindamycin 1%, Niacinamide 4%, and Allantoin 0.1% to eradicate acne pathogens and soothe inflammation.",
-    image: "/products/Nax-B-gel.png",
+    image: "/lab.png",
     ingredients: ["Clindamycin 1%  ", "Niacinamide 4%  ", "Allantoin 0.1%  "],
     benefits: ["Destroys P. acnes bacteria", "Reduces inflammatory redness", "Prevents scarring"],
     genericName: "Clindamycin & Niacinamide Gel",
