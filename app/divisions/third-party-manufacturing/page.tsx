@@ -137,7 +137,7 @@ export default function ThirdPartyPage() {
 
                 <div className="mt-8 w-full space-y-4">
                   <Link
-                    href="/contact?subject=Third-Party+Manufacturing+Quote"
+                    href="/register"
                     className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 font-bold text-base text-primary-foreground shadow-glow hover:bg-primary/95 hover:scale-[1.02] transition-all"
                   >
                     Request Quote <ArrowRight className="size-5" />
