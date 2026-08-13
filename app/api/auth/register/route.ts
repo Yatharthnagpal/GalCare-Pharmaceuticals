@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { submitWPFormEntry } from "@/lib/wordpress"
 
 export async function POST(request: Request) {
   try {
@@ -11,6 +12,15 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
+
+    // Submit user registration entry to WordPress
+    const wpResult = await submitWPFormEntry("user_registration", {
+      name: fullName,
+      email,
+      phone,
+      company,
+      subject: `New Registered User: ${fullName} (${company || "Individual"})`,
+    })
 
     // Attempt user creation in WordPress if configured
     const wpUrl = (process.env.WORDPRESS_API_URL || "").replace(/\/+$/, "")
@@ -32,18 +42,19 @@ export async function POST(request: Request) {
           }),
         })
       } catch (e) {
-        console.warn("[AUTH API] WP user registration endpoint failed, performing local registration fallback:", e)
+        console.warn("[AUTH API] WP user creation endpoint failed:", e)
       }
     }
 
     return NextResponse.json({
       success: true,
-      message: "Registration successful. Verification email sent.",
+      id: wpResult.id,
+      message: "Registration successful and synced with WordPress.",
       user: {
         id: `user-${Date.now()}`,
         fullName,
         email,
-        phone: phone || "+91-9876543210",
+        phone: phone || "",
         company: company || "Independent Partner",
         status: "New (Uncontacted)",
         createdAt: new Date().toISOString().split("T")[0],

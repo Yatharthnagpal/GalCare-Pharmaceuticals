@@ -49,6 +49,7 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
     apple: '/apple-icon.png',
   },
+  manifest: '/manifest.json',
 }
 
 export const viewport: Viewport = {
@@ -61,6 +62,7 @@ export const viewport: Viewport = {
 
 import { AuthProvider } from '@/lib/auth-context'
 import { AuthModal } from '@/components/auth-modal'
+import { PWAInstaller } from '@/components/pwa-installer'
 
 export default function RootLayout({
   children,
@@ -79,6 +81,7 @@ export default function RootLayout({
             <SmoothScroll />
             {children}
             <AuthModal />
+            <PWAInstaller />
           </ThemeProvider>
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}

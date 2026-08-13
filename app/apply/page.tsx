@@ -15,7 +15,7 @@ function ApplyFormContent() {
   const searchParams = useSearchParams()
   const initialJob = searchParams.get("job") || searchParams.get("position") || ""
 
-  const { user, requireAuth, addJobApplication } = useAuth()
+  const { user, openAuthModal, addJobApplication } = useAuth()
   const [jobs, setJobs] = useState<Job[]>(JOBS)
   const [selectedJob, setSelectedJob] = useState<string>(initialJob)
   const [pdfFile, setPdfFile] = useState<{ name: string; sizeStr: string; dataUrl: string } | null>(null)
@@ -33,9 +33,11 @@ function ApplyFormContent() {
   })
   const [submitted, setSubmitted] = useState(false)
 
-  // Populate user data when signed in
+  // Ensure user is signed in on page load / mount
   useEffect(() => {
-    if (user) {
+    if (!user) {
+      openAuthModal("login", "Please sign in to access the job application portal.")
+    } else {
       setFormData((prev) => ({
         ...prev,
         name: prev.name || user.fullName || "",
@@ -43,7 +45,7 @@ function ApplyFormContent() {
         phone: prev.phone || user.phone || ""
       }))
     }
-  }, [user])
+  }, [user, openAuthModal])
 
   // Update selected position if query parameter changes
   useEffect(() => {
@@ -52,9 +54,22 @@ function ApplyFormContent() {
     }
   }, [initialJob])
 
-  // Load custom jobs if any
+  // Load dynamic jobs from WordPress CMS or local storage
   useEffect(() => {
-    const loadJobs = () => {
+    const loadJobs = async () => {
+      try {
+        const res = await fetch("/api/jobs")
+        if (res.ok) {
+          const data = await res.json()
+          if (data.jobs && data.jobs.length > 0) {
+            setJobs(data.jobs)
+            return
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to fetch jobs from API", e)
+      }
+
       const savedJobs = localStorage.getItem("galcare_custom_jobs")
       if (savedJobs) {
         try {
@@ -117,6 +132,11 @@ function ApplyFormContent() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (!user) {
+      openAuthModal("login", "Please sign in to submit your job application.")
+      return
+    }
+
     if (!formData.resume || !pdfFile) {
       setPdfError("Please upload your PDF resume (Max 1MB) before submitting.")
       return
@@ -126,9 +146,9 @@ function ApplyFormContent() {
       const appliedTitle = selectedJob || "General Application"
       const newApp = {
         id: `app-${Date.now()}`,
-        name: formData.name || user?.fullName || "Candidate",
+        name: formData.name || user.fullName || "Candidate",
         position: appliedTitle,
-        email: user?.email || formData.email,
+        email: user.email || formData.email,
         date: new Date().toISOString().split("T")[0],
         status: "New" as const
       }
@@ -138,8 +158,8 @@ function ApplyFormContent() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: formData.name || user?.fullName,
-            email: formData.email || user?.email,
+            name: formData.name || user.fullName,
+            email: formData.email || user.email,
             phone: formData.phone,
             jobTitle: appliedTitle,
             experience: formData.experience,
@@ -157,11 +177,11 @@ function ApplyFormContent() {
       }
 
       addJobApplication({
-        userEmail: user?.email || formData.email,
-        userName: formData.name || user?.fullName || "Candidate",
+        userEmail: user.email || formData.email,
+        userName: formData.name || user.fullName || "Candidate",
         jobTitle: appliedTitle,
         department: "R&D",
-        phone: formData.phone || user?.phone || "",
+        phone: formData.phone || user.phone || "",
         experience: formData.experience || "Not specified",
         resume: pdfFile.name || "resume.pdf",
       })
@@ -181,7 +201,7 @@ function ApplyFormContent() {
       })
     }
 
-    requireAuth(processSubmission, "Please sign in or create an account to submit your job application.")
+    processSubmission()
   }
 
   return (

@@ -8,6 +8,7 @@ import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
 import { AdaptiveImage } from "@/components/ui/adaptive-image"
 import { NEWS, NewsItem } from "@/lib/site-data"
+import { fetchWPPosts } from "@/lib/wordpress"
 import { 
   ArrowRight, 
   Mail, 
@@ -27,7 +28,43 @@ export default function NewsroomPage() {
   const [inquirySubmitted, setInquirySubmitted] = useState<boolean>(false)
 
   useEffect(() => {
-    const loadArticles = () => {
+    const loadArticles = async () => {
+      try {
+        const res = await fetch("/api/news")
+        if (res.ok) {
+          const data = await res.json()
+          if (data.articles && data.articles.length > 0) {
+            setArticles(data.articles)
+            return
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to fetch news from API", e)
+      }
+
+      try {
+        const wpPosts = await fetchWPPosts()
+        if (wpPosts && wpPosts.length > 0) {
+          const formatted: NewsItem[] = wpPosts.map((post) => ({
+            id: `wp-${post.id}`,
+            slug: post.slug,
+            title: post.title.rendered,
+            category: "Corporate Update",
+            date: new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            excerpt: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
+            summary: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
+            readTime: "3 min read",
+            image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/images/news/news-plant.png",
+            content: post.content.rendered,
+            author: "Galcare Corporate PR",
+          }))
+          setArticles([...formatted, ...NEWS])
+          return
+        }
+      } catch (e) {
+        console.warn("Failed to load WP posts in newsroom", e)
+      }
+
       const saved = localStorage.getItem("galcare_custom_news")
       if (saved) {
         try {
@@ -53,67 +90,132 @@ export default function NewsroomPage() {
       <Navbar />
       <main className="min-h-screen pt-28 pb-20 bg-background">
         
-        {/* Newsroom Hero Banner */}
-        <section className="relative overflow-hidden py-16 md:py-20 bg-[#16a34a] text-white">
+        {/* Newsroom Hero Header */}
+        <section className="relative overflow-hidden py-12 md:py-16">
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-            <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-white/10 blur-[130px]" />
+            <div className="absolute left-1/2 top-10 h-[300px] w-[600px] -translate-x-1/2 rounded-full bg-primary/10 blur-[100px]" />
           </div>
 
           <div className="mx-auto max-w-7xl px-4 md:px-6 text-center">
             <Reveal>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold text-white border border-white/25 backdrop-blur-md mb-4 shadow-sm">
-                <Building2 className="size-3.5" /> Official Corporate News
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
-                Galcare Newsroom
+              <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-wider">
+                Official Media & Corporate Press
+              </span>
+              <h1 className="mt-4 text-balance text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl text-foreground">
+                Galcare <span className="text-gradient">Newsroom & Insights</span>
               </h1>
-              <p className="mt-3 text-base md:text-lg text-emerald-50 max-w-xl mx-auto font-medium">
-                Official company milestones, WHO-GMP plant updates, R&D achievements, and executive announcements from Galcare Pharmaceuticals.
+              <p className="mt-4 max-w-2xl mx-auto text-base md:text-lg leading-relaxed text-muted-foreground">
+                Stay updated with official corporate announcements, clinical dermatological study releases, WHO-GMP manufacturing milestones, and executive insights.
               </p>
+            </Reveal>
+
+            {/* Quick Action Bar */}
+            <Reveal delay={0.1} className="mt-8 flex flex-wrap items-center justify-center gap-4">
+              <button
+                onClick={() => setInquiryModalOpen(true)}
+                className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-xs font-bold text-primary-foreground shadow-glow hover:bg-primary/95 transition-all"
+              >
+                <Mail className="size-4" /> Media Inquiry
+              </button>
+              <button
+                onClick={() => setPressModalOpen(true)}
+                className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-6 py-3 text-xs font-bold text-foreground hover:bg-accent transition-colors"
+              >
+                <FileText className="size-4 text-primary" /> Download Press Kit
+              </button>
             </Reveal>
           </div>
         </section>
 
-        {/* Corporate News Articles Grid (No Categories) */}
-        <section className="py-12 md:py-16">
-          <div className="mx-auto max-w-7xl px-4 md:px-6">
-            
-            {/* Header Title */}
-            <div className="pb-6 border-b border-border/50 mb-10">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                Latest Corporate News & Media
-              </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                Authentic corporate updates, regulatory milestones, and technical breakthroughs.
-              </p>
-            </div>
+        {/* Featured Article Section */}
+        {articles.length > 0 && (
+          <section className="py-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-6">
+              <Reveal>
+                <div className="relative overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-soft grid lg:grid-cols-12 gap-0 items-center">
+                  <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto lg:h-full w-full bg-muted min-h-[280px]">
+                    <AdaptiveImage
+                      src={articles[0].image || "/images/news/news-plant.png"}
+                      alt={articles[0].title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 text-xs font-semibold text-primary mb-3">
+                        <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
+                          Featured Announcement
+                        </span>
+                        <span className="text-muted-foreground/40">•</span>
+                        <span className="flex items-center gap-1 text-muted-foreground font-normal">
+                          <Calendar className="size-3" /> {articles[0].date}
+                        </span>
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
+                        {articles[0].title}
+                      </h2>
+                      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                        {articles[0].excerpt}
+                      </p>
+                    </div>
 
-            {/* Article Cards Grid */}
+                    <div className="mt-8 pt-6 border-t border-border/60 flex items-center justify-between">
+                      <Link
+                        href={`/news/${articles[0].id ? encodeURIComponent(articles[0].id) : 0}`}
+                        className="inline-flex items-center gap-2 text-xs font-bold text-primary hover:underline"
+                      >
+                        Read Full Article <ArrowRight className="size-4" />
+                      </Link>
+                      <span className="text-xs text-muted-foreground font-medium">
+                        {articles[0].authorRole || "Galcare Corporate PR"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </section>
+        )}
+
+        {/* News Grid Section */}
+        <section className="py-12">
+          <div className="mx-auto max-w-7xl px-4 md:px-6">
+            <Reveal className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Latest Articles & Releases</h2>
+                <p className="text-xs text-muted-foreground mt-1">Corporate updates, clinical breakthroughs, and manufacturing news.</p>
+              </div>
+              <span className="text-xs font-semibold text-muted-foreground bg-muted/60 px-3 py-1 rounded-full border border-border">
+                {articles.length} Published Articles
+              </span>
+            </Reveal>
+
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {articles.map((item, idx) => (
-                <Reveal key={item.title || idx} delay={idx * 0.06}>
-                  <article className="group h-full flex flex-col justify-between rounded-2xl border border-border bg-card overflow-hidden shadow-soft hover:shadow-strong hover:border-primary/50 transition-all duration-300">
+                <Reveal key={item.id || idx} delay={idx * 0.05}>
+                  <article className="group h-full flex flex-col justify-between rounded-3xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-all hover:border-primary/40">
                     <div>
-                      {/* Image Container */}
-                      {item.image && (
-                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-                          <AdaptiveImage
-                            src={item.image}
-                            alt={item.title}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        </div>
-                      )}
+                      {/* Image Thumbnail */}
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
+                        <AdaptiveImage
+                          src={item.image || "/images/news/news-plant.png"}
+                          alt={item.title}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <span className="absolute top-3 left-3 rounded-full bg-background/90 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-primary border border-border/50">
+                          {item.category || "Press Release"}
+                        </span>
+                      </div>
 
-                      {/* Card Body */}
+                      {/* Content Body */}
                       <div className="p-6">
-                        {/* Meta Row: Author & Date */}
-                        <div className="flex items-center justify-between text-xs font-semibold text-primary mb-3">
-                          <span className="flex items-center gap-1 text-foreground/80 truncate max-w-[65%]">
-                            <User className="size-3.5 text-primary shrink-0" />
-                            <span className="truncate">{item.author}</span>
+                        <div className="flex items-center gap-2 text-[11px] text-muted-foreground mb-2">
+                          <span className="flex items-center gap-1 font-semibold text-primary">
+                            <User className="size-3" /> {item.author || "Galcare PR"}
                           </span>
+                          <span>•</span>
                           <span className="flex items-center gap-1 text-muted-foreground font-normal shrink-0">
                             <Calendar className="size-3" /> {item.date}
                           </span>
@@ -135,7 +237,7 @@ export default function NewsroomPage() {
                     <div className="px-6 pb-6 pt-0">
                       <div className="pt-4 border-t border-border/50 flex items-center justify-between">
                         <Link
-                          href={`/news/${idx}`}
+                          href={`/news/${item.id ? encodeURIComponent(item.id) : idx}`}
                           className="inline-flex items-center gap-1.5 text-xs font-bold text-primary group-hover:underline"
                         >
                           Read Full Article <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
@@ -156,149 +258,142 @@ export default function NewsroomPage() {
 
       </main>
 
-      {/* Press Team Reach Out Modal */}
+      {/* Press Kit Modal */}
       {pressModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-3xl border border-border bg-card p-6 shadow-strong">
-            <div className="flex items-center justify-between border-b border-border pb-4">
-              <div className="flex items-center gap-2">
-                <div className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                  <Mail className="size-4" />
-                </div>
-                <h3 className="font-bold text-base text-foreground">Press & Media Contacts</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
+          <div className="relative w-full max-w-lg rounded-3xl border border-border bg-card p-6 md:p-8 shadow-glow">
+            <button
+              onClick={() => setPressModalOpen(false)}
+              className="absolute right-4 top-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent"
+            >
+              <X className="size-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+                <FileText className="size-6" />
               </div>
-              <button
-                onClick={() => setPressModalOpen(false)}
-                className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-            <div className="mt-4 space-y-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-accent/40 border border-border">
-                <p className="font-bold text-foreground">Corporate Communications</p>
-                <p className="text-muted-foreground mt-0.5">Email: press@galcare.com</p>
-                <p className="text-muted-foreground">Phone: +91 141 234-5678</p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-accent/40 border border-border">
-                <p className="font-bold text-foreground">Headquarters Address</p>
-                <p className="text-muted-foreground mt-0.5">Galcare Pharmaceutical Pvt. Ltd.</p>
-                <p className="text-muted-foreground">53-54, New Sanganer Road, Sodala, Jaipur, Rajasthan 302019</p>
+              <div>
+                <h3 className="text-xl font-bold text-foreground">Official Galcare Press Kit</h3>
+                <p className="text-xs text-muted-foreground">Download brand guidelines, logos & high-res facility photos.</p>
               </div>
             </div>
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setPressModalOpen(false)}
-                className="px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-xs rounded-xl"
-              >
-                Close Window
-              </button>
+
+            <div className="space-y-3 my-6">
+              <div className="p-3.5 rounded-2xl border border-border bg-background flex items-center justify-between text-xs">
+                <span className="font-semibold">Brand Identity & Logo Specs (EPS, PNG, SVG)</span>
+                <span className="text-muted-foreground">12.4 MB</span>
+              </div>
+              <div className="p-3.5 rounded-2xl border border-border bg-background flex items-center justify-between text-xs">
+                <span className="font-semibold">WHO-GMP Facility Photo Gallery (High-Res)</span>
+                <span className="text-muted-foreground">45.8 MB</span>
+              </div>
+              <div className="p-3.5 rounded-2xl border border-border bg-background flex items-center justify-between text-xs">
+                <span className="font-semibold">Executive Leadership Bios & Fact Sheet</span>
+                <span className="text-muted-foreground">2.1 MB</span>
+              </div>
             </div>
+
+            <button
+              onClick={() => {
+                alert("Downloading Galcare Official Press Kit Package (ZIP)...")
+                setPressModalOpen(false)
+              }}
+              className="w-full py-3.5 bg-primary text-primary-foreground font-bold text-xs uppercase tracking-wider rounded-2xl shadow-glow hover:bg-primary/95 transition-all"
+            >
+              Download Full Media Kit (ZIP)
+            </button>
           </div>
         </div>
       )}
 
       {/* Media Inquiry Modal */}
       {inquiryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-strong">
-            <div className="flex items-center justify-between border-b border-border pb-4">
-              <div className="flex items-center gap-2">
-                <div className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                  <FileText className="size-4" />
-                </div>
-                <h3 className="font-bold text-base text-foreground">Submit a Media Inquiry</h3>
-              </div>
-              <button
-                onClick={() => {
-                  setInquiryModalOpen(false)
-                  setInquirySubmitted(false)
-                }}
-                className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
+          <div className="relative w-full max-w-lg rounded-3xl border border-border bg-card p-6 md:p-8 shadow-glow">
+            <button
+              onClick={() => {
+                setInquiryModalOpen(false)
+                setInquirySubmitted(false)
+              }}
+              className="absolute right-4 top-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent"
+            >
+              <X className="size-5" />
+            </button>
 
             {inquirySubmitted ? (
-              <div className="py-8 text-center">
-                <div className="mx-auto grid size-12 place-items-center rounded-full bg-green-500/10 text-green-500 mb-3">
-                  <CheckCircle2 className="size-6" />
+              <div className="text-center py-6 space-y-4">
+                <div className="size-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary">
+                  <CheckCircle2 className="size-8" />
                 </div>
-                <h4 className="font-bold text-base text-foreground">Inquiry Received</h4>
-                <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
-                  Thank you for contacting Galcare Press Office. Our communications team will respond within 24 business hours.
+                <h3 className="text-2xl font-bold text-foreground">Inquiry Received</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Thank you! Our Corporate Communications desk will get back to your publication within 4 business hours.
                 </p>
                 <button
                   onClick={() => {
                     setInquiryModalOpen(false)
                     setInquirySubmitted(false)
                   }}
-                  className="mt-6 px-6 py-2.5 bg-primary text-primary-foreground font-semibold text-xs rounded-xl"
+                  className="px-6 py-2.5 bg-primary text-primary-foreground font-bold text-xs rounded-xl"
                 >
                   Done
                 </button>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  setInquirySubmitted(true)
-                }}
-                className="mt-4 space-y-4"
-              >
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Your Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Sarah Connor"
-                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+                    <Mail className="size-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-foreground">Media & Press Desk</h3>
+                    <p className="text-xs text-muted-foreground">Submit press queries to Galcare Communications Team.</p>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Publication / Organization</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Pharma Times International"
-                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Email Address</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="sarah@pharmatimes.com"
-                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Inquiry Details</label>
-                  <textarea
-                    rows={3}
-                    required
-                    placeholder="Describe your publication, deadline, and inquiry topic..."
-                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                  />
-                </div>
-                <div className="flex justify-end gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setInquiryModalOpen(false)}
-                    className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
-                  >
-                    Cancel
-                  </button>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    setInquirySubmitted(true)
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label className="text-xs font-semibold uppercase text-muted-foreground">Reporter / Publication *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Economic Times / Pharma Times"
+                      className="mt-1 w-full px-4 py-2.5 text-xs bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold uppercase text-muted-foreground">Work Email *</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="journalist@publication.com"
+                      className="mt-1 w-full px-4 py-2.5 text-xs bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold uppercase text-muted-foreground">Press Inquiry / Statement Request *</label>
+                    <textarea
+                      rows={3}
+                      required
+                      placeholder="Specify deadline, topic, or required executive comment..."
+                      className="mt-1 w-full px-4 py-2.5 text-xs bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-xs rounded-xl shadow-glow hover:bg-primary/95"
+                    className="w-full py-3 bg-primary text-primary-foreground font-bold text-xs uppercase tracking-wider rounded-2xl shadow-glow hover:bg-primary/95 transition-all"
                   >
-                    Submit Inquiry
+                    Submit Press Request
                   </button>
-                </div>
-              </form>
+                </form>
+              </div>
             )}
           </div>
         </div>

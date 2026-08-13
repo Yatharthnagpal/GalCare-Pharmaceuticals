@@ -11,6 +11,7 @@ export interface UserLead {
   interest?: string;
   createdAt: string;
   status: "New (Uncontacted)" | "Cold Emailed" | "Called" | "Converted";
+  role?: "user" | "doctor" | "distributor" | "admin";
   consent: boolean;
 }
 
@@ -330,6 +331,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const updated = [newApp, ...userJobApps];
     setUserJobApps(updated);
     localStorage.setItem("galcare_user_job_apps", JSON.stringify(updated));
+
+    // Automatically sync with WordPress API route
+    fetch("/api/careers/apply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: appData.userName,
+        email: appData.userEmail,
+        phone: appData.phone,
+        jobTitle: appData.jobTitle,
+        experience: appData.experience,
+        resume: appData.resume,
+      }),
+    }).catch((e) => console.warn("[WP SYNC] Failed to sync job application to WordPress:", e));
   };
 
   const add3rdPartyQuote = (quoteData: Omit<User3rdPartyQuote, "id" | "date" | "status">) => {
@@ -343,6 +358,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const updated = [newQuote, ...user3rdPartyQuotes];
     setUser3rdPartyQuotes(updated);
     localStorage.setItem("galcare_user_quotes", JSON.stringify(updated));
+
+    // Automatically sync with WordPress API route
+    fetch("/api/quotes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: quoteData.userName,
+        email: quoteData.userEmail,
+        phone: quoteData.phone,
+        company: quoteData.companyName,
+        requirements: quoteData.requirements,
+        message: quoteData.message,
+      }),
+    }).catch((e) => console.warn("[WP SYNC] Failed to sync 3rd party quote to WordPress:", e));
   };
 
   const addEnquiry = (enquiryData: Omit<UserEnquiry, "id" | "date" | "status">) => {
@@ -356,6 +385,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const updated = [newEnquiry, ...userEnquiries];
     setUserEnquiries(updated);
     localStorage.setItem("galcare_user_enquiries", JSON.stringify(updated));
+
+    // Automatically sync with WordPress API route
+    fetch("/api/enquiries", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: enquiryData.userName,
+        email: enquiryData.userEmail,
+        productName: enquiryData.productName,
+        message: enquiryData.message,
+      }),
+    }).catch((e) => console.warn("[WP SYNC] Failed to sync enquiry to WordPress:", e));
   };
 
   const updateUserJobAppStatus = (id: string, status: UserJobApp["status"]) => {

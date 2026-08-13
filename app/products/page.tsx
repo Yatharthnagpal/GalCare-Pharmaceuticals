@@ -5,9 +5,11 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
-import { PRODUCTS, PRODUCT_CATEGORIES } from "@/lib/site-data"
+import { PRODUCTS, PRODUCT_CATEGORIES, Product } from "@/lib/site-data"
 import Image from "next/image"
-import { Search, SlidersHorizontal, ArrowRight, Clipboard, X, Sparkles, ChevronLeft, ChevronRight } from "lucide-react"
+import { Search, SlidersHorizontal, ArrowRight, Clipboard, X, Sparkles, ChevronLeft, ChevronRight, Scale, ShoppingBag, Plus, Check } from "lucide-react"
+import { ProductCompareModal } from "@/components/product-compare-modal"
+import { SampleCartDrawer } from "@/components/sample-cart-drawer"
 
 const ITEMS_PER_PAGE = 18
 
@@ -16,6 +18,12 @@ export default function ProductsPage() {
   const [selectedDivision, setSelectedDivision] = useState("All")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [currentPage, setCurrentPage] = useState(1)
+
+  // Interactive Comparison & Sample Cart states
+  const [compareList, setCompareList] = useState<Product[]>([])
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false)
+  const [sampleCart, setSampleCart] = useState<Product[]>([])
+  const [isSampleDrawerOpen, setIsSampleDrawerOpen] = useState(false)
 
   // Calculate category counts dynamically
   const categoryCounts = useMemo(() => {
@@ -45,7 +53,6 @@ export default function ProductsPage() {
     })
   }, [search, selectedDivision, selectedCategory])
 
-  // Reset to page 1 whenever filters or search query change
   useEffect(() => {
     setCurrentPage(1)
   }, [search, selectedDivision, selectedCategory])
@@ -71,11 +78,37 @@ export default function ProductsPage() {
     window.scrollTo({ top: 380, behavior: "smooth" })
   }
 
+  // Toggle compare list
+  const toggleCompare = (product: Product) => {
+    if (compareList.some((p) => p.id === product.id)) {
+      setCompareList(compareList.filter((p) => p.id !== product.id))
+    } else {
+      if (compareList.length >= 3) {
+        alert("You can compare a maximum of 3 pharmaceutical SKUs at a time.")
+        return
+      }
+      setCompareList([...compareList, product])
+    }
+  }
+
+  // Toggle sample cart
+  const toggleSampleCart = (product: Product) => {
+    if (sampleCart.some((p) => p.id === product.id)) {
+      setSampleCart(sampleCart.filter((p) => p.id !== product.id))
+    } else {
+      if (sampleCart.length >= 5) {
+        alert("You can request up to 5 product samples per sample kit.")
+        return
+      }
+      setSampleCart([...sampleCart, product])
+    }
+  }
+
   return (
     <>
       <Navbar />
       <main className="min-h-screen pt-28 pb-20">
-        {/* Page Hero with Glass Glow */}
+        {/* Page Hero */}
         <section className="relative overflow-hidden py-12 md:py-16">
           <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
             <div className="absolute left-1/2 top-0 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[130px]" />
@@ -98,19 +131,19 @@ export default function ProductsPage() {
 
             {/* Search Input Bar */}
             <Reveal className="mt-8 max-w-3xl">
-              <div className="relative flex items-center rounded-2xl border border-border bg-card/80 p-2 shadow-soft backdrop-blur-md transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
-                <Search className="ml-3 size-5 text-muted-foreground shrink-0" />
+              <div className="relative flex items-center">
+                <Search className="absolute left-4 size-5 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Search by brand name, active ingredients (e.g. Tranexamic, Glycolic, Tacrolimus)..."
-                  className="w-full border-none bg-transparent px-3 py-2 text-sm text-foreground focus:outline-none placeholder:text-muted-foreground/70"
+                  placeholder="Search by product name, active composition (e.g., Glycolic Acid, Ketoconazole)..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  className="w-full rounded-2xl border border-border bg-card/80 py-4 pl-12 pr-10 text-sm text-foreground shadow-soft backdrop-blur-md placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {search && (
                   <button
                     onClick={() => setSearch("")}
-                    className="mr-2 rounded-full p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+                    className="absolute right-4 text-muted-foreground hover:text-foreground"
                   >
                     <X className="size-4" />
                   </button>
@@ -120,23 +153,23 @@ export default function ProductsPage() {
           </div>
         </section>
 
-        {/* Filter Controls & Catalogue Grid */}
-        <section className="py-6">
-          <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-8 lg:grid-cols-4">
-            {/* Sidebar Filters - Hidden on mobile view, shown on desktop (lg+) */}
-            <Reveal className="hidden lg:block lg:col-span-1 space-y-6">
-              <div className="sticky top-28 rounded-3xl border border-border bg-card/70 p-6 shadow-soft backdrop-blur-md">
-                <div className="flex items-center justify-between font-bold pb-4 border-b border-border">
-                  <div className="flex items-center gap-2">
-                    <SlidersHorizontal className="size-4 text-primary" />
-                    <span className="text-base">Filter Catalogue</span>
-                  </div>
+        {/* Catalog Body */}
+        <section className="mx-auto max-w-7xl px-4 md:px-6">
+          <div className="grid gap-8 lg:grid-cols-4">
+            
+            {/* Sidebar Filters */}
+            <Reveal className="lg:col-span-1">
+              <div className="rounded-[2rem] border border-border bg-card p-6 shadow-soft sticky top-28">
+                <div className="flex items-center justify-between pb-4 border-b border-border">
+                  <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
+                    <SlidersHorizontal className="size-4 text-primary" /> Filter Catalogue
+                  </h3>
                   {hasActiveFilters && (
                     <button
                       onClick={clearFilters}
-                      className="text-xs text-primary font-semibold hover:underline flex items-center gap-1"
+                      className="text-[11px] font-semibold text-primary hover:underline"
                     >
-                      <X className="size-3" /> Reset
+                      Reset
                     </button>
                   )}
                 </div>
@@ -144,7 +177,7 @@ export default function ProductsPage() {
                 {/* Division Filter */}
                 <div className="mt-6">
                   <h4 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Division</h4>
-                  <div className="mt-3 flex flex-col gap-1.5">
+                  <div className="mt-3 flex flex-col gap-1">
                     {["All", "Dermatology"].map((div) => (
                       <button
                         key={div}
@@ -166,10 +199,10 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
-                {/* Category Filter with Counts */}
+                {/* Category Filter */}
                 <div className="mt-6 pt-6 border-t border-border">
                   <h4 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Therapeutic Category</h4>
-                  <div className="mt-3 flex flex-col gap-1 max-h-[420px] overflow-y-auto pr-1 no-scrollbar">
+                  <div className="mt-3 flex flex-col gap-1 max-h-[380px] overflow-y-auto pr-1 no-scrollbar">
                     {["All", ...PRODUCT_CATEGORIES].map((cat) => {
                       const count = categoryCounts[cat] || 0
                       const isSelected = selectedCategory === cat
@@ -203,7 +236,6 @@ export default function ProductsPage() {
 
             {/* Products Grid */}
             <div className="lg:col-span-3">
-              {/* Header Bar */}
               <Reveal>
                 <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-border">
                   <div className="flex items-center gap-2">
@@ -253,84 +285,106 @@ export default function ProductsPage() {
               ) : (
                 <>
                   <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {paginatedProducts.map((p, i) => (
-                      <Reveal key={p.id} delay={Math.min(i * 0.03, 0.25)}>
-                        <div className="group flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-glow">
-                          
-                          {/* Image Showcase Container */}
-                          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[2rem] bg-gradient-to-b from-card via-muted/20 to-muted/50 p-4 flex items-center justify-center border-b border-border/40">
-                            <span className="absolute top-3.5 left-3.5 z-10 rounded-full bg-card/90 px-3 py-1 text-[10px] font-bold text-primary backdrop-blur-md shadow-sm border border-border/50">
-                              {p.category}
-                            </span>
-                            {p.dosageForm && (
-                              <span className="absolute top-3.5 right-3.5 z-10 rounded-full bg-primary/90 px-2.5 py-0.5 text-[9px] font-bold text-primary-foreground shadow-sm">
-                                {p.dosageForm}
-                              </span>
-                            )}
-                            <Image
-                              src={p.image}
-                              alt={p.name}
-                              fill
-                              className="object-contain p-3 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
-                            />
-                          </div>
+                    {paginatedProducts.map((p, i) => {
+                      const isComparing = compareList.some((item) => item.id === p.id)
+                      const isSampleAdded = sampleCart.some((item) => item.id === p.id)
 
-                          {/* Content Container */}
-                          <div className="flex flex-1 flex-col justify-between p-6">
-                            <div>
-                              <h3 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                                {p.name}
-                              </h3>
-                              {p.composition ? (
-                                <p className="text-xs font-semibold text-primary/90 mt-1 line-clamp-1 h-4">
-                                  {p.composition}
+                      return (
+                        <Reveal key={p.id} delay={Math.min(i * 0.03, 0.25)}>
+                          <div className="group flex h-full flex-col justify-between overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-glow">
+                            
+                            {/* Image Container */}
+                            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[2rem] bg-gradient-to-b from-card via-muted/20 to-muted/50 p-4 flex items-center justify-center border-b border-border/40">
+                              <span className="absolute top-3.5 left-3.5 z-10 rounded-full bg-card/90 px-3 py-1 text-[10px] font-bold text-primary backdrop-blur-md shadow-sm border border-border/50">
+                                {p.category}
+                              </span>
+
+                              {/* Interactive Actions Overlay Badges */}
+                              <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleCompare(p)}
+                                  className={`rounded-full p-1.5 text-[10px] font-bold transition-all shadow-sm ${
+                                    isComparing
+                                      ? "bg-primary text-primary-foreground"
+                                      : "bg-card/90 text-muted-foreground hover:text-foreground border border-border"
+                                  }`}
+                                  title={isComparing ? "Remove from comparison" : "Add to comparison"}
+                                >
+                                  <Scale className="size-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleSampleCart(p)}
+                                  className={`rounded-full p-1.5 text-[10px] font-bold transition-all shadow-sm ${
+                                    isSampleAdded
+                                      ? "bg-teal-500 text-slate-950"
+                                      : "bg-card/90 text-muted-foreground hover:text-foreground border border-border"
+                                  }`}
+                                  title={isSampleAdded ? "In sample cart" : "Add to sample kit"}
+                                >
+                                  <ShoppingBag className="size-3.5" />
+                                </button>
+                              </div>
+
+                              <Image
+                                src={p.image}
+                                alt={p.name}
+                                fill
+                                className="object-contain p-3 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
+                              />
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex flex-1 flex-col justify-between p-6">
+                              <div>
+                                <h3 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                                  {p.name}
+                                </h3>
+                                {p.composition ? (
+                                  <p className="text-xs font-semibold text-primary/90 mt-1 line-clamp-1 h-4">
+                                    {p.composition}
+                                  </p>
+                                ) : (
+                                  <div className="h-4 mt-1" />
+                                )}
+                                <p className="mt-2.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed h-9">
+                                  {p.description}
                                 </p>
-                              ) : (
-                                <div className="h-4 mt-1" />
-                              )}
-                              <p className="mt-2.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed h-9">
-                                {p.description}
-                              </p>
+                              </div>
+
+                              <div className="mt-4 flex flex-wrap gap-1 min-h-[24px] items-center">
+                                {p.ingredients && p.ingredients.length > 0 && (
+                                  <>
+                                    {p.ingredients.slice(0, 2).map((ing) => (
+                                      <span
+                                        key={ing}
+                                        className="rounded-md bg-accent px-2 py-0.5 text-[10px] font-medium text-accent-foreground"
+                                      >
+                                        {ing}
+                                      </span>
+                                    ))}
+                                  </>
+                                )}
+                              </div>
+
+                              <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+                                <span className="text-[10px] font-semibold text-muted-foreground/80">
+                                  Pack: {p.strength || "Standard"}
+                                </span>
+                                <a
+                                  href={`/products/${p.id}`}
+                                  className="inline-flex items-center gap-1.5 text-xs font-bold text-primary group-hover:translate-x-0.5 transition-transform"
+                                >
+                                  Details <ArrowRight className="size-3.5" />
+                                </a>
+                              </div>
                             </div>
 
-                            {/* Ingredient tags */}
-                            <div className="mt-4 flex flex-wrap gap-1 min-h-[24px] items-center">
-                              {p.ingredients && p.ingredients.length > 0 && (
-                                <>
-                                  {p.ingredients.slice(0, 2).map((ing) => (
-                                    <span
-                                      key={ing}
-                                      className="rounded-md bg-accent px-2 py-0.5 text-[10px] font-medium text-accent-foreground"
-                                    >
-                                      {ing}
-                                    </span>
-                                  ))}
-                                  {p.ingredients.length > 2 && (
-                                    <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
-                                      +{p.ingredients.length - 2} more
-                                    </span>
-                                  )}
-                                </>
-                              )}
-                            </div>
-
-                            {/* Card Footer */}
-                            <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
-                              <span className="text-[10px] font-semibold text-muted-foreground/80">
-                                Pack: {p.strength || "Standard"}
-                              </span>
-                              <a
-                                href={`/products/${p.id}`}
-                                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary group-hover:translate-x-0.5 transition-transform"
-                              >
-                                Details <ArrowRight className="size-3.5" />
-                              </a>
-                            </div>
                           </div>
-
-                        </div>
-                      </Reveal>
-                    ))}
+                        </Reveal>
+                      )
+                    })}
                   </div>
 
                   {/* Pagination Bar */}
@@ -380,6 +434,54 @@ export default function ProductsPage() {
           </div>
         </section>
       </main>
+
+      {/* Floating Compare Action Bar */}
+      {compareList.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2 flex items-center gap-3 rounded-full border border-sky-500/40 bg-slate-900/90 px-5 py-3 text-xs text-slate-100 shadow-2xl backdrop-blur-md animate-bounce">
+          <Scale className="size-4 text-sky-400" />
+          <span className="font-semibold">{compareList.length} SKUs selected for comparison</span>
+          <button
+            onClick={() => setIsCompareModalOpen(true)}
+            className="rounded-full bg-sky-500 px-4 py-1.5 font-bold text-slate-950 hover:bg-sky-400 transition"
+          >
+            Compare Now
+          </button>
+          <button onClick={() => setCompareList([])} className="text-slate-400 hover:text-slate-200">
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Floating Sample Cart Action Bar */}
+      {sampleCart.length > 0 && (
+        <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full border border-teal-500/40 bg-slate-900/90 px-4 py-2.5 text-xs text-slate-100 shadow-2xl backdrop-blur-md">
+          <ShoppingBag className="size-4 text-teal-400" />
+          <span className="font-semibold">{sampleCart.length} Samples in Cart</span>
+          <button
+            onClick={() => setIsSampleDrawerOpen(true)}
+            className="ml-2 rounded-full bg-teal-500 px-3.5 py-1.5 font-bold text-slate-950 hover:bg-teal-400 transition"
+          >
+            Request Kit
+          </button>
+        </div>
+      )}
+
+      {/* Modals & Drawers */}
+      <ProductCompareModal
+        isOpen={isCompareModalOpen}
+        onClose={() => setIsCompareModalOpen(false)}
+        products={compareList}
+        onRemoveProduct={(id) => setCompareList(compareList.filter((p) => p.id !== id))}
+      />
+
+      <SampleCartDrawer
+        isOpen={isSampleDrawerOpen}
+        onClose={() => setIsSampleDrawerOpen(false)}
+        cartItems={sampleCart}
+        onRemoveItem={(id) => setSampleCart(sampleCart.filter((p) => p.id !== id))}
+        onClearCart={() => setSampleCart([])}
+      />
+
       <Footer />
       <AIAssistant />
     </>

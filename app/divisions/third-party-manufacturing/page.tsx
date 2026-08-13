@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AIAssistant } from "@/components/ai-assistant"
 import { Reveal } from "@/components/motion-primitives"
 import Image from "next/image"
-import { Factory, FileText, CheckCircle2, ShieldCheck, Mail, Send, ArrowLeft } from "lucide-react"
+import { Factory, CheckCircle2, ShieldCheck, ArrowLeft, ArrowRight, UserPlus } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 
 const benefits = [
   { title: "WHO-GMP Certified Facilities", text: "Production processes conform to highest international safety and hygienic standards." },
@@ -15,57 +16,8 @@ const benefits = [
   { title: "Custom Formulation & Design", text: "Our R&D team helps tailor formulations and designs to match your market needs." }
 ]
 
-import { useAuth } from "@/lib/auth-context"
-
 export default function ThirdPartyPage() {
-  const { user, requireAuth, add3rdPartyQuote } = useAuth()
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    division: "Dermatology",
-    quantity: "",
-    message: ""
-  })
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const processSubmission = async () => {
-      const requirements = `${formData.division} Formulation (Qty: ${formData.quantity || "Standard"})`
-
-      try {
-        await fetch("/api/quotes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: formData.name || user?.fullName,
-            email: formData.email || user?.email,
-            phone: formData.phone,
-            company: formData.company || user?.company || "Independent Business Partner",
-            requirements,
-            message: formData.message,
-          }),
-        })
-      } catch (err) {
-        console.error("Failed to submit manufacturing quote", err)
-      }
-
-      add3rdPartyQuote({
-        userEmail: user?.email || formData.email,
-        userName: formData.name || user?.fullName || "3rd Party Applicant",
-        companyName: formData.company || user?.company || "Independent Business Partner",
-        phone: formData.phone || user?.phone || "",
-        requirements,
-        message: formData.message || "Requesting contract manufacturing facility details.",
-      })
-      setSubmitted(true)
-    }
-
-    requireAuth(processSubmission, "Please sign in or create an account to submit your 3rd party manufacturing inquiry.")
-  }
+  const { openAuthModal } = useAuth()
 
   return (
     <>
@@ -78,12 +30,12 @@ export default function ThirdPartyPage() {
 
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <Reveal>
-              <a
+              <Link
                 href="/#divisions"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
               >
                 <ArrowLeft className="size-4" /> Back to Divisions
-              </a>
+              </Link>
             </Reveal>
 
             <div className="mt-8 grid gap-12 lg:grid-cols-2 items-center">
@@ -95,14 +47,14 @@ export default function ThirdPartyPage() {
                   Your trusted scale <span className="text-gradient">manufacturing partner.</span>
                 </h1>
                 <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                  Galcare offers high-quality third-party and contract manufacturing services for global partners. Backed by our modern, WHO-GMP certified facilities, rigorous testing capabilities, and robust supply chains, we manufacture stable and cost-efficient dermatological and cosmeceutical formulations.
+                  Galcare offers high-quality third-party and contract manufacturing services for prestigious clients. Backed by our modern, WHO-GMP certified facilities, rigorous testing capabilities, and robust supply chains, we manufacture stable and cost-efficient dermatological and cosmeceutical formulations.
                 </p>
               </Reveal>
               <Reveal>
                 <div className="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] border border-border bg-muted shadow-soft">
                   <Image
                     src="/manufacturing.png"
-                    alt="Manufacturing scale"
+                    alt="WHO-GMP Manufacturing Facility"
                     fill
                     className="object-cover"
                   />
@@ -112,25 +64,16 @@ export default function ThirdPartyPage() {
           </div>
         </section>
 
-        {/* Manufacturing Strengths */}
-        <section className="py-16 bg-muted/30">
+        {/* Benefits Grid */}
+        <section className="py-12 bg-card border-y border-border">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
-            <Reveal className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight">Our Manufacturing Strengths</h2>
-              <p className="mt-3 text-muted-foreground">
-                We provide reliable scalability, regulatory compliance, and packaging excellence.
-              </p>
-            </Reveal>
-
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {benefits.map((b, i) => (
-                <Reveal key={b.title} delay={i * 0.08}>
-                  <div className="h-full rounded-2xl border border-border bg-card p-6 shadow-soft hover:border-primary/45 transition-colors">
-                    <div className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
-                      <Factory className="size-5" />
-                    </div>
-                    <h3 className="mt-4 text-lg font-bold">{b.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.text || b.description}</p>
+                <Reveal key={b.title} delay={i * 0.1}>
+                  <div className="rounded-2xl border border-border bg-background p-6 shadow-sm">
+                    <Factory className="size-8 text-primary" />
+                    <h3 className="mt-4 font-bold text-lg">{b.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{b.text || b.description}</p>
                   </div>
                 </Reveal>
               ))}
@@ -138,14 +81,15 @@ export default function ThirdPartyPage() {
           </div>
         </section>
 
-        {/* Inquiry Form & Scope */}
-        <section className="py-16">
-          <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-12 lg:grid-cols-2">
-            {/* Left side: Process & Scope */}
+        {/* Section with Partner Registration CTA Modal Trigger */}
+        <section className="py-16 md:py-24">
+          <div className="mx-auto max-w-7xl px-4 md:px-6 grid gap-12 lg:grid-cols-2 items-stretch">
             <Reveal>
-              <h2 className="text-3xl font-bold tracking-tight">Capabilities & Scope</h2>
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                We maintain active capacities for diverse dosage forms including:
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                Comprehensive Manufacturing Capabilities
+              </h2>
+              <p className="mt-4 text-base text-muted-foreground leading-relaxed">
+                We handle turnkey formulation development, scale-up batch trials, commercial production, and stability testing across a wide variety of therapeutic dosages:
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center gap-3">
@@ -178,114 +122,36 @@ export default function ThirdPartyPage() {
               </div>
             </Reveal>
 
-            {/* Right side: Inquiry Form */}
+            {/* Right side: Triggers Galcare Client Portal Create Account Pop-up */}
             <Reveal>
-              <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
-                <h3 className="text-2xl font-bold">Manufacturing Inquiry</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Send us your manufacturing requirements and our business development team will respond within 24 hours.
+              <div className="rounded-3xl border border-border bg-gradient-to-b from-card to-accent/30 p-8 md:p-10 shadow-soft flex flex-col justify-center items-start text-left h-full">
+                <div className="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                  <UserPlus className="size-7" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                  Partner Registration & Inquiries
+                </h3>
+                <p className="mt-3 text-base text-muted-foreground leading-relaxed">
+                  Ready to scale your pharmaceutical production or request custom WHO-GMP manufacturing quotes? Create your Galcare Client Portal account today to connect directly with our business development team.
                 </p>
 
-                {submitted ? (
-                  <div className="mt-8 rounded-2xl bg-primary/10 p-6 text-center text-primary">
-                    <CheckCircle2 className="mx-auto size-12" />
-                    <h4 className="mt-4 font-bold text-lg">Inquiry Submitted Successfully</h4>
-                    <p className="mt-2 text-sm text-primary/80">
-                      Thank you for reaching out. A partner relations manager will contact you soon.
-                    </p>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold uppercase text-muted-foreground">Your Name</label>
-                        <input
-                          type="text"
-                          required
-                          className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-transparent focus:outline-primary"
-                          placeholder="John Doe"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold uppercase text-muted-foreground">Email Address</label>
-                        <input
-                          type="email"
-                          required
-                          className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-transparent focus:outline-primary"
-                          placeholder="john@company.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div>
-                        <label className="text-xs font-semibold uppercase text-muted-foreground">Phone Number</label>
-                        <input
-                          type="tel"
-                          required
-                          className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-transparent focus:outline-primary"
-                          placeholder="+1 (555) 000-0000"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold uppercase text-muted-foreground">Company Name</label>
-                        <input
-                          type="text"
-                          required
-                          className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-transparent focus:outline-primary"
-                          placeholder="Pharma Corp Inc."
-                          value={formData.company}
-                          onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold uppercase text-muted-foreground">Product Division</label>
-                      <select
-                        className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-card focus:outline-primary"
-                        value={formData.division}
-                        onChange={(e) => setFormData({ ...formData, division: e.target.value })}
-                      >
-                        <option>Dermatology</option>
-                        <option>Cosmeceuticals</option>
-                        <option>OTC / General</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold uppercase text-muted-foreground">Estimated Order Quantity</label>
-                      <input
-                        type="text"
-                        required
-                        className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-transparent focus:outline-primary"
-                        placeholder="e.g. 10,000 units"
-                        value={formData.quantity}
-                        onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold uppercase text-muted-foreground">Requirements & Details</label>
-                      <textarea
-                        rows={3}
-                        required
-                        className="mt-1 w-full rounded-xl border border-border px-4 py-2.5 text-sm bg-transparent focus:outline-primary resize-none"
-                        placeholder="Describe the formulation, packaging style, and timeline details..."
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      />
-                    </div>
+                <div className="mt-8 w-full space-y-4">
+                  <button
+                    onClick={() => openAuthModal("signup", "Create a Galcare Client Portal account to submit third-party manufacturing requests.")}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 font-bold text-base text-primary-foreground shadow-glow hover:bg-primary/95 hover:scale-[1.02] transition-all cursor-pointer"
+                  >
+                    Create Account <ArrowRight className="size-5" />
+                  </button>
+                  <p className="text-center text-xs text-muted-foreground w-full">
+                    Already have an account?{" "}
                     <button
-                      type="submit"
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-glow hover:bg-primary/95 transition-colors"
+                      onClick={() => openAuthModal("login")}
+                      className="font-semibold text-primary underline underline-offset-2 cursor-pointer"
                     >
-                      <Send className="size-4" /> Send inquiry
+                      Sign in to your portal
                     </button>
-                  </form>
-                )}
+                  </p>
+                </div>
               </div>
             </Reveal>
           </div>

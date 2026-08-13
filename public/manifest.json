@@ -1,0 +1,24 @@
+{
+  "name": "GalCare Pharmaceuticals",
+  "short_name": "GalCare",
+  "description": "Leading WHO-GMP Certified Pharmaceutical Manufacturer, PCD Franchise & Contract Manufacturing Portal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#0284c7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/galcare-logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/galcare-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["medical", "business", "health"]
+}

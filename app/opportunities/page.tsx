@@ -15,9 +15,22 @@ export default function OpportunitiesPage() {
   const [selectedDepartment, setSelectedDepartment] = useState<string>("All")
   const [selectedType, setSelectedType] = useState<string>("All")
 
-  // Load custom jobs if available
+  // Load dynamic jobs from WordPress CMS or local storage
   useEffect(() => {
-    const loadJobs = () => {
+    const loadJobs = async () => {
+      try {
+        const res = await fetch("/api/jobs")
+        if (res.ok) {
+          const data = await res.json()
+          if (data.jobs && data.jobs.length > 0) {
+            setJobs(data.jobs)
+            return
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to fetch jobs from API", e)
+      }
+
       const savedJobs = localStorage.getItem("galcare_custom_jobs")
       if (savedJobs) {
         try {

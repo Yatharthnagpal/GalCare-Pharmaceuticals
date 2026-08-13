@@ -4,9 +4,80 @@ import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@/lib/auth-context";
-import { Briefcase, Factory, HelpCircle, FileText, User, ArrowUpRight, CheckCircle2, Search, MessageSquare } from "lucide-react";
+import { Briefcase, Factory, HelpCircle, FileText, User, ArrowUpRight, CheckCircle2, Search, MessageSquare, Printer, Clock, ShieldCheck, ChevronRight } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
 import Link from "next/link";
+
+interface StatusTimelineProps {
+  status: string;
+  type: "quote" | "job" | "enquiry";
+}
+
+function GraphicalStatusTracker({ status, type }: StatusTimelineProps) {
+  // Determine current active step (1-4)
+  let currentStep = 1;
+  if (status.includes("Incomplete") || status.includes("New")) {
+    currentStep = 1;
+  } else if (status.includes("Review") || status.includes("Submitted") || status.includes("Received")) {
+    currentStep = 2;
+  } else if (status.includes("Interview") || status.includes("Generated") || status.includes("Sent") || status.includes("Ready") || status.includes("Proposal")) {
+    currentStep = 3;
+  } else if (status.includes("Accepted") || status.includes("Finalized") || status.includes("Converted") || status.includes("Resolved")) {
+    currentStep = 4;
+  }
+
+  const steps = type === "quote" 
+    ? ["RFQ Submitted", "Feasibility Review", "Quote & Proposal", "Contract Finalized"]
+    : type === "job"
+    ? ["Application Sent", "HR Screening", "Interview Round", "Offer & Onboarding"]
+    : ["Inquiry Received", "Medical Team Review", "Product Proposal", "Resolved"];
+
+  return (
+    <div className="mt-4 pt-4 border-t border-border/60">
+      <div className="flex items-center justify-between text-[11px] font-semibold text-muted-foreground mb-2">
+        <span>Order & Verification Timeline</span>
+        <span className="text-primary font-bold">Step {currentStep} of 4</span>
+      </div>
+      
+      {/* Visual Step Progress Bar */}
+      <div className="relative flex items-center justify-between">
+        {/* Connection line */}
+        <div className="absolute top-1/2 left-0 right-0 h-1 bg-muted -translate-y-1/2 -z-10 rounded-full" />
+        <div 
+          className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-sky-500 to-teal-500 -translate-y-1/2 -z-10 rounded-full transition-all duration-500"
+          style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+        />
+
+        {steps.map((stepLabel, idx) => {
+          const stepNumber = idx + 1;
+          const isCompleted = stepNumber < currentStep;
+          const isCurrent = stepNumber === currentStep;
+
+          return (
+            <div key={stepLabel} className="flex flex-col items-center group">
+              <div 
+                className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                  isCompleted
+                    ? "bg-teal-500 text-slate-950 shadow-sm"
+                    : isCurrent
+                    ? "bg-sky-500 text-slate-950 shadow-glow ring-4 ring-sky-500/20"
+                    : "bg-muted text-muted-foreground border border-border"
+                }`}
+              >
+                {isCompleted ? <CheckCircle2 className="size-4" /> : stepNumber}
+              </div>
+              <span className={`mt-1.5 text-[10px] text-center max-w-[80px] leading-tight font-medium ${
+                isCurrent ? "text-foreground font-bold" : "text-muted-foreground"
+              }`}>
+                {stepLabel}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export default function UserDashboardPage() {
   const { user, userJobApps, user3rdPartyQuotes, userEnquiries, openAuthModal, logout } = useAuth();
@@ -24,10 +95,6 @@ export default function UserDashboardPage() {
     (e) => e.userEmail.toLowerCase() === user.email.toLowerCase()
   ) : [];
 
-  // Determine smart default tab based on user request:
-  // 1. If job applicant -> "jobs" default
-  // 2. If 3rd party applicant -> "quotes" default
-  // 3. If neither -> "enquiries" default
   const getDefaultTab = (): "quotes" | "jobs" | "enquiries" => {
     if (myJobApps.length > 0 && myQuotes.length === 0) return "jobs";
     if (myQuotes.length > 0 && myJobApps.length === 0) return "quotes";
@@ -42,6 +109,46 @@ export default function UserDashboardPage() {
       setActiveTab(getDefaultTab());
     }
   }, [userJobApps.length, user3rdPartyQuotes.length, user?.email]);
+
+  const handlePrintSummary = (title: string, details: string, id: string) => {
+    if (typeof window !== "undefined") {
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>GalCare Statement - ${id}</title>
+              <style>
+                body { font-family: Arial, sans-serif; padding: 40px; color: #1e293b; }
+                .header { border-bottom: 2px solid #0284c7; padding-bottom: 15px; margin-bottom: 20px; }
+                .title { font-size: 22px; font-weight: bold; color: #0f172a; }
+                .sub { font-size: 12px; color: #64748b; }
+                .card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-top: 20px; }
+                .footer { margin-top: 40px; font-size: 11px; color: #94a3b8; text-align: center; }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <div class="title">GalCare Pharmaceuticals — B2B Partner Portal</div>
+                <div class="sub">Official Inquiry Summary Statement • ID: ${id}</div>
+              </div>
+              <div><strong>Account:</strong> ${user?.fullName} (${user?.email})</div>
+              <div><strong>Company:</strong> ${user?.company || "Independent"}</div>
+              <div class="card">
+                <h3>${title}</h3>
+                <p>${details}</p>
+              </div>
+              <div class="footer">
+                Verified Document • GalCare Pharmaceuticals WHO-GMP Facility Network • https://galcare.com
+              </div>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  };
 
   if (!user) {
     return (
@@ -108,8 +215,8 @@ export default function UserDashboardPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-bold text-foreground">{user.fullName}</h1>
-                <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary border border-primary/20">
-                  {myJobApps.length > 0 ? "Candidate Partner" : myQuotes.length > 0 ? "3rd Party B2B Partner" : "Registered Client"}
+                <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary border border-primary/20 capitalize">
+                  {user.role ? `${user.role} Account` : myJobApps.length > 0 ? "Candidate Partner" : myQuotes.length > 0 ? "3rd Party B2B Partner" : "Registered Client"}
                 </span>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -136,7 +243,6 @@ export default function UserDashboardPage() {
 
         {/* Dashboard Navigation Menu Bar */}
         <div className="mt-8 bg-card border border-border rounded-2xl p-1.5 shadow-soft flex overflow-x-auto gap-1">
-          {/* Show 3rd Party Quotes Tab if user requested or has quotes */}
           <button
             onClick={() => setActiveTab("quotes")}
             className={`flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
@@ -152,7 +258,6 @@ export default function UserDashboardPage() {
             </span>
           </button>
 
-          {/* Show Job Applications Tab if user requested or applied */}
           <button
             onClick={() => setActiveTab("jobs")}
             className={`flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
@@ -168,7 +273,6 @@ export default function UserDashboardPage() {
             </span>
           </button>
 
-          {/* Product Enquiry Tab */}
           <button
             onClick={() => setActiveTab("enquiries")}
             className={`flex-1 min-w-[160px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
@@ -203,25 +307,39 @@ export default function UserDashboardPage() {
           {activeTab === "quotes" && (
             <div className="p-6">
               {myQuotes.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {myQuotes.map((q) => (
                     <div
                       key={q.id}
-                      className="p-5 rounded-2xl border border-border bg-background flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+                      className="p-6 rounded-2xl border border-border bg-background flex flex-col gap-4 shadow-xs"
                     >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base text-foreground">{q.requirements}</h3>
-                          <span className="text-xs text-muted-foreground">• {q.date}</span>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-base text-foreground">{q.requirements}</h3>
+                            <span className="text-xs text-muted-foreground">• {q.date}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed max-w-xl">
+                            {q.message}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground mt-2">
+                            Company: <span className="font-semibold text-foreground">{q.companyName || user.company || "Independent"}</span> • Contact: <span className="font-semibold text-foreground">{q.phone}</span>
+                          </p>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed max-w-xl">
-                          {q.message}
-                        </p>
-                        <p className="text-[11px] text-muted-foreground mt-2">
-                          Company: <span className="font-semibold text-foreground">{q.companyName || user.company || "Independent"}</span> • Contact: <span className="font-semibold text-foreground">{q.phone}</span>
-                        </p>
+                        <div className="flex items-center gap-2">
+                          {getStatusBadge(q.status)}
+                          <button
+                            onClick={() => handlePrintSummary(q.requirements, q.message, q.id)}
+                            className="p-2 border border-border rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                            title="Print Quote Summary"
+                          >
+                            <Printer className="size-4" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="shrink-0">{getStatusBadge(q.status)}</div>
+                      
+                      {/* Graphical Step Timeline */}
+                      <GraphicalStatusTracker status={q.status} type="quote" />
                     </div>
                   ))}
                 </div>
@@ -246,32 +364,46 @@ export default function UserDashboardPage() {
           {activeTab === "jobs" && (
             <div className="p-6">
               {myJobApps.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {myJobApps.map((app) => (
                     <div
                       key={app.id}
-                      className="p-5 rounded-2xl border border-border bg-background flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+                      className="p-6 rounded-2xl border border-border bg-background flex flex-col gap-4 shadow-xs"
                     >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base text-foreground">{app.jobTitle}</h3>
-                          <span className="text-xs text-muted-foreground">• {app.date}</span>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-base text-foreground">{app.jobTitle}</h3>
+                            <span className="text-xs text-muted-foreground">• {app.date}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Department: <span className="font-semibold text-foreground">{app.department}</span> • Experience: <span className="font-semibold text-foreground">{app.experience}</span>
+                          </p>
+                          {app.resume && (
+                            <a
+                              href={app.resume}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2"
+                            >
+                              <FileText className="size-3" /> View Submitted Resume
+                            </a>
+                          )}
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Department: <span className="font-semibold text-foreground">{app.department}</span> • Experience: <span className="font-semibold text-foreground">{app.experience}</span>
-                        </p>
-                        {app.resume && (
-                          <a
-                            href={app.resume}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2"
+                        <div className="flex items-center gap-2">
+                          {getStatusBadge(app.status)}
+                          <button
+                            onClick={() => handlePrintSummary(app.jobTitle, `Department: ${app.department}`, app.id)}
+                            className="p-2 border border-border rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                            title="Print Application Details"
                           >
-                            <FileText className="size-3" /> View Submitted Resume
-                          </a>
-                        )}
+                            <Printer className="size-4" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="shrink-0">{getStatusBadge(app.status)}</div>
+
+                      {/* Graphical Step Timeline */}
+                      <GraphicalStatusTracker status={app.status} type="job" />
                     </div>
                   ))}
                 </div>
@@ -296,22 +428,36 @@ export default function UserDashboardPage() {
           {activeTab === "enquiries" && (
             <div className="p-6">
               {myEnquiries.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {myEnquiries.map((enq) => (
                     <div
                       key={enq.id}
-                      className="p-5 rounded-2xl border border-border bg-background flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+                      className="p-6 rounded-2xl border border-border bg-background flex flex-col gap-4 shadow-xs"
                     >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base text-foreground">{enq.productName}</h3>
-                          <span className="text-xs text-muted-foreground">• {enq.date}</span>
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-base text-foreground">{enq.productName}</h3>
+                            <span className="text-xs text-muted-foreground">• {enq.date}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed max-w-xl">
+                            {enq.message}
+                          </p>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed max-w-xl">
-                          {enq.message}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          {getStatusBadge(enq.status)}
+                          <button
+                            onClick={() => handlePrintSummary(enq.productName, enq.message, enq.id)}
+                            className="p-2 border border-border rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                            title="Print Inquiry Details"
+                          >
+                            <Printer className="size-4" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="shrink-0">{getStatusBadge(enq.status)}</div>
+
+                      {/* Graphical Step Timeline */}
+                      <GraphicalStatusTracker status={enq.status} type="enquiry" />
                     </div>
                   ))}
                 </div>
