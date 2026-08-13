@@ -1,4 +1,4 @@
-import { Job } from "@/lib/site-data"
+import { Job, Product, ProductCategory } from "@/lib/site-data"
 
 /**
  * WordPress Headless REST API Client
@@ -254,7 +254,7 @@ function formatWPJob(item: any): Job {
 /**
  * Create a new job opening in WordPress CMS
  */
-export async function createWPJob(job: Job): Promise<{ success: boolean; id?: string }> {
+export async function createWPJob(job: Partial<Job>): Promise<{ success: boolean; id?: string }> {
   const baseUrl = getWordPressApiUrl()
   if (!baseUrl) return { success: false }
 
@@ -348,6 +348,59 @@ export async function deleteWPJob(id: string): Promise<{ success: boolean }> {
   } catch (err) {
     console.warn(`[WP API] Failed to delete job ${id} in WordPress:`, err)
     return { success: false }
+  }
+}
+
+/**
+ * Fetch dynamic product catalog from WordPress REST API (Custom Post Type: 'products' or 'product')
+ */
+export async function fetchWPProducts(): Promise<Product[]> {
+  const baseUrl = getWordPressApiUrl()
+  if (!baseUrl) return []
+
+  try {
+    // 1. Try Custom Post Type 'products'
+    const res = await fetch(`${baseUrl}/wp-json/wp/v2/products?_embed`, {
+      next: { revalidate: 60 },
+    })
+
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length > 0) {
+        return data.map((item: any) => formatWPProduct(item))
+      }
+    }
+
+    // 2. Try Custom Post Type 'product'
+    const altRes = await fetch(`${baseUrl}/wp-json/wp/v2/product?_embed`, {
+      next: { revalidate: 60 },
+    })
+    if (altRes.ok) {
+      const altData = await altRes.json()
+      if (Array.isArray(altData) && altData.length > 0) {
+        return altData.map((item: any) => formatWPProduct(item))
+      }
+    }
+  } catch (error) {
+    console.warn("[WP API] Failed to fetch products from WordPress:", error)
+  }
+  return []
+}
+
+function formatWPProduct(item: any): Product {
+  return {
+    id: `wp-${item.id}`,
+    name: item.title?.rendered || "Pharmaceutical Product",
+    category: (item.meta?.category || item.acf?.category || "Acne Care") as ProductCategory,
+    tagline: item.excerpt?.rendered?.replace(/<[^>]+>/g, "").slice(0, 100) || "WHO-GMP Certified Formulation",
+    description: item.content?.rendered?.replace(/<[^>]+>/g, "") || "",
+    ingredients: [item.meta?.composition || item.acf?.composition || "Active Ingredient"],
+    benefits: [item.meta?.benefits || item.acf?.benefits || "WHO-GMP Quality Assured"],
+    image: item._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/images/products/derma-pack.png",
+    packaging: item.meta?.packaging || item.acf?.packaging || "Blister Pack / Bottle",
+    division: item.meta?.division || item.acf?.division || "Galcare Dermatology",
+    genericName: item.meta?.generic_name || item.acf?.generic_name || item.title?.rendered,
+    composition: item.meta?.composition || item.acf?.composition || "WHO-GMP Certified Formulation",
   }
 }
 
