@@ -77,6 +77,7 @@ interface AuthContextType {
   deleteJobApplication: (id: string) => void;
   delete3rdPartyQuote: (id: string) => void;
   deleteEnquiry: (id: string) => void;
+  refreshSubmissions: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -433,6 +434,79 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const refreshSubmissions = async () => {
+    if (!user || !user.email) return;
+    const targetEmail = user.email;
+
+    try {
+      // 1. Fetch WP Quotes & live status updates
+      const qRes = await fetch(`/api/quotes?email=${encodeURIComponent(targetEmail)}`, { cache: "no-store" });
+      if (qRes.ok) {
+        const qData = await qRes.json();
+        if (qData.quotes && Array.isArray(qData.quotes)) {
+          setUser3rdPartyQuotes((prevQuotes) => {
+            const wpQuotes: User3rdPartyQuote[] = qData.quotes;
+            const updated = [...prevQuotes];
+
+            wpQuotes.forEach((wpQ) => {
+              const idx = updated.findIndex(
+                (p) => p.id === wpQ.id || (p.requirements === wpQ.requirements && p.userEmail.toLowerCase() === targetEmail.toLowerCase())
+              );
+              if (idx !== -1) {
+                // Live status update from WordPress admin!
+                updated[idx] = { ...updated[idx], status: wpQ.status };
+              } else {
+                updated.unshift(wpQ);
+              }
+            });
+
+            localStorage.setItem("galcare_user_quotes", JSON.stringify(updated));
+            return updated;
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to refresh quotes from WP:", e);
+    }
+
+    try {
+      // 2. Fetch WP Job Applications & live status updates
+      const jRes = await fetch(`/api/careers/apply?email=${encodeURIComponent(targetEmail)}`, { cache: "no-store" });
+      if (jRes.ok) {
+        const jData = await jRes.json();
+        if (jData.apps && Array.isArray(jData.apps)) {
+          setUserJobApps((prevApps) => {
+            const wpApps: UserJobApp[] = jData.apps;
+            const updated = [...prevApps];
+
+            wpApps.forEach((wpA) => {
+              const idx = updated.findIndex(
+                (p) => p.id === wpA.id || (p.jobTitle === wpA.jobTitle && p.userEmail.toLowerCase() === targetEmail.toLowerCase())
+              );
+              if (idx !== -1) {
+                // Live status update from WordPress admin!
+                updated[idx] = { ...updated[idx], status: wpA.status };
+              } else {
+                updated.unshift(wpA);
+              }
+            });
+
+            localStorage.setItem("galcare_user_job_apps", JSON.stringify(updated));
+            return updated;
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to refresh job applications from WP:", e);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.email) {
+      refreshSubmissions();
+    }
+  }, [user?.email]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -460,6 +534,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         deleteJobApplication,
         delete3rdPartyQuote,
         deleteEnquiry,
+        refreshSubmissions,
       }}
     >
       {children}

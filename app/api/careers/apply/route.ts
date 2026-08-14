@@ -1,5 +1,65 @@
 import { NextResponse } from "next/server"
-import { submitWPFormEntry } from "@/lib/wordpress"
+import { submitWPFormEntry, getWordPressApiUrl } from "@/lib/wordpress"
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const email = searchParams.get("email")
+    const baseUrl = getWordPressApiUrl()
+
+    if (baseUrl) {
+      const wpRes = await fetch(`${baseUrl}/wp-json/wp/v2/job_application?_embed&per_page=50`, {
+        cache: "no-store",
+      })
+      if (wpRes.ok) {
+        const data = await wpRes.json()
+        if (Array.isArray(data)) {
+          const apps = data
+            .map((item: any) => {
+              const content = item.content?.rendered || ""
+              const status = item.submission_status || item.meta?.submission_status || "Incomplete - Pending Processing"
+              
+              let applicantEmail = item.applicant_email || item.meta?.applicant_email || ""
+              let jobTitle = item.job_title || item.meta?.job_title || ""
+              let experience = item.experience || item.meta?.experience || ""
+              let phone = item.applicant_phone || item.meta?.applicant_phone || ""
+              let resume = item.resume_media_url || item.meta?.resume_media_url || ""
+
+              if (!applicantEmail && content) {
+                const emailMatch = content.match(/Email:<\/strong>\s*([^\s<]+)/i)
+                if (emailMatch) applicantEmail = emailMatch[1]
+              }
+              if (!jobTitle && item.title?.rendered) {
+                const parts = item.title.rendered.split("—")
+                if (parts.length > 1) jobTitle = parts[1].trim()
+              }
+
+              return {
+                id: `wp-${item.id}`,
+                userEmail: applicantEmail || email || "",
+                userName: item.title?.rendered ? item.title.rendered.split("—")[0].trim() : "Applicant",
+                jobTitle: jobTitle || "Formulation Scientist",
+                department: "R&D / Quality Control",
+                phone: phone || "+1 (555) 000-1122",
+                experience: experience || "3+ Years",
+                resume: resume,
+                date: new Date(item.date).toISOString().split("T")[0],
+                status: status,
+              }
+            })
+            .filter((app: any) => !email || (app.userEmail && app.userEmail.toLowerCase() === email.toLowerCase()))
+
+          return NextResponse.json({ success: true, apps })
+        }
+      }
+    }
+
+    return NextResponse.json({ success: true, apps: [] })
+  } catch (error) {
+    console.error("Error fetching job applications from WP:", error)
+    return NextResponse.json({ success: true, apps: [] })
+  }
+}
 
 export async function POST(request: Request) {
   try {

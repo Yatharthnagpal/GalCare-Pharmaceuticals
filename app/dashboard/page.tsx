@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@/lib/auth-context";
-import { Briefcase, Factory, HelpCircle, FileText, User, ArrowUpRight, CheckCircle2, Search, MessageSquare, Printer, Clock, ShieldCheck, ChevronRight, Trash2, AlertTriangle, X } from "lucide-react";
+import { Briefcase, Factory, HelpCircle, FileText, User, ArrowUpRight, CheckCircle2, Search, MessageSquare, Printer, Clock, ShieldCheck, ChevronRight, Trash2, AlertTriangle, X, RefreshCw } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
 import Link from "next/link";
 
@@ -90,6 +90,7 @@ export default function UserDashboardPage() {
     deleteJobApplication,
     delete3rdPartyQuote,
     deleteEnquiry,
+    refreshSubmissions,
   } = useAuth();
 
   // Filter items matching logged in user
@@ -118,12 +119,29 @@ export default function UserDashboardPage() {
     type: "quote" | "job" | "enquiry";
     title: string;
   } | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    await refreshSubmissions();
+    setTimeout(() => setIsSyncing(false), 500);
+  };
 
   useEffect(() => {
     if (user) {
       setActiveTab(getDefaultTab());
     }
   }, [userJobApps.length, user3rdPartyQuotes.length, user?.email]);
+
+  useEffect(() => {
+    if (user?.email) {
+      refreshSubmissions();
+      const interval = setInterval(() => {
+        refreshSubmissions();
+      }, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [user?.email]);
 
   const handleConfirmDelete = () => {
     if (!itemToDelete) return;
@@ -253,6 +271,15 @@ export default function UserDashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={handleManualSync}
+              disabled={isSyncing}
+              className="px-4 py-2.5 border border-primary/20 bg-primary/5 text-primary font-semibold rounded-xl text-xs hover:bg-primary/10 transition-all flex items-center gap-1.5"
+              title="Sync latest application and quotation statuses from WordPress Admin"
+            >
+              <RefreshCw className={`size-3.5 ${isSyncing ? "animate-spin" : ""}`} />
+              {isSyncing ? "Syncing..." : "Refresh Status"}
+            </button>
             <Link
               href="/products"
               className="px-4 py-2.5 border border-border text-foreground font-semibold rounded-xl text-xs hover:bg-accent transition-all flex items-center gap-1.5"

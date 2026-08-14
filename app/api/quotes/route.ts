@@ -9,7 +9,7 @@ export async function GET(request: Request) {
 
     if (baseUrl) {
       const wpRes = await fetch(`${baseUrl}/wp-json/wp/v2/quote_request?_embed&per_page=50`, {
-        next: { revalidate: 10 },
+        cache: "no-store",
       })
       if (wpRes.ok) {
         const data = await wpRes.json()
@@ -17,20 +17,20 @@ export async function GET(request: Request) {
           const quotes = data
             .map((item: any) => {
               const content = item.content?.rendered || ""
-              const status = item.submission_status || "Submitted - Under Review"
+              const status = item.submission_status || item.meta?.submission_status || "Submitted - Under Review"
               return {
                 id: `wp-${item.id}`,
-                userEmail: item.meta?.contact_email || email || "",
+                userEmail: item.contact_email || item.meta?.contact_email || email || "",
                 userName: item.title?.rendered || "Partner Quote Request",
-                companyName: item.meta?.company_name || "Pharmaceutical Partner",
-                phone: item.meta?.contact_phone || "+1 (555) 000-1122",
-                requirements: item.meta?.requirements || item.title?.rendered || "3rd Party Manufacturing",
+                companyName: item.company_name || item.meta?.company_name || "Pharmaceutical Partner",
+                phone: item.contact_phone || item.meta?.contact_phone || "+1 (555) 000-1122",
+                requirements: item.requirements || item.meta?.requirements || item.title?.rendered || "3rd Party Manufacturing",
                 message: content.replace(/<[^>]+>/g, ""),
                 date: new Date(item.date).toISOString().split("T")[0],
                 status: status,
               }
             })
-            .filter((q: any) => !email || q.userEmail.toLowerCase() === email.toLowerCase())
+            .filter((q: any) => !email || (q.userEmail && q.userEmail.toLowerCase() === email.toLowerCase()))
 
           return NextResponse.json({ success: true, quotes })
         }
