@@ -24,8 +24,6 @@ import {
 export default function NewsroomPage() {
   const [articles, setArticles] = useState<NewsItem[]>(NEWS)
   const [pressModalOpen, setPressModalOpen] = useState<boolean>(false)
-  const [inquiryModalOpen, setInquiryModalOpen] = useState<boolean>(false)
-  const [inquirySubmitted, setInquirySubmitted] = useState<boolean>(false)
 
   useEffect(() => {
     const loadArticles = async () => {
@@ -109,15 +107,6 @@ export default function NewsroomPage() {
               </p>
             </Reveal>
 
-            {/* Quick Action Bar */}
-            <Reveal delay={0.1} className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <button
-                onClick={() => setInquiryModalOpen(true)}
-                className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-xs font-bold text-primary-foreground shadow-glow hover:bg-primary/95 transition-all"
-              >
-                <Mail className="size-4" /> Media Inquiry
-              </button>
-            </Reveal>
           </div>
         </section>
 
@@ -297,98 +286,6 @@ export default function NewsroomPage() {
             >
               Download Full Media Kit (ZIP)
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Media Inquiry Modal */}
-      {inquiryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-lg rounded-3xl border border-border bg-card p-6 md:p-8 shadow-glow">
-            <button
-              onClick={() => {
-                setInquiryModalOpen(false)
-                setInquirySubmitted(false)
-              }}
-              className="absolute right-4 top-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent"
-            >
-              <X className="size-5" />
-            </button>
-
-            {inquirySubmitted ? (
-              <div className="text-center py-6 space-y-4">
-                <div className="size-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary">
-                  <CheckCircle2 className="size-8" />
-                </div>
-                <h3 className="text-2xl font-bold text-foreground">Inquiry Received</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Thank you! Our Corporate Communications desk will get back to your publication within 4 business hours.
-                </p>
-                <button
-                  onClick={() => {
-                    setInquiryModalOpen(false)
-                    setInquirySubmitted(false)
-                  }}
-                  className="px-6 py-2.5 bg-primary text-primary-foreground font-bold text-xs rounded-xl"
-                >
-                  Done
-                </button>
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-3 rounded-2xl bg-primary/10 text-primary">
-                    <Mail className="size-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-foreground">Media & Press Desk</h3>
-                    <p className="text-xs text-muted-foreground">Submit press queries to Galcare Communications Team.</p>
-                  </div>
-                </div>
-
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    setInquirySubmitted(true)
-                  }}
-                  className="space-y-4"
-                >
-                  <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground">Reporter / Publication *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Economic Times / Pharma Times"
-                      className="mt-1 w-full px-4 py-2.5 text-xs bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground">Work Email *</label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="journalist@publication.com"
-                      className="mt-1 w-full px-4 py-2.5 text-xs bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground">Press Inquiry / Statement Request *</label>
-                    <textarea
-                      rows={3}
-                      required
-                      placeholder="Specify deadline, topic, or required executive comment..."
-                      className="mt-1 w-full px-4 py-2.5 text-xs bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full py-3 bg-primary text-primary-foreground font-bold text-xs uppercase tracking-wider rounded-2xl shadow-glow hover:bg-primary/95 transition-all"
-                  >
-                    Submit Press Request
-                  </button>
-                </form>
-              </div>
-            )}
           </div>
         </div>
       )}
