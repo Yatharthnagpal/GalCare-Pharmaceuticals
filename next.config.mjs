@@ -4,7 +4,22 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2592000,
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "118.139.178.174",
+      },
+      {
+        protocol: "https",
+        hostname: "galcare.com",
+      },
+      {
+        protocol: "https",
+        hostname: "galcare-pharmaceuticals.vercel.app",
+      },
+    ],
   },
   async rewrites() {
     // Proxy WordPress admin, login, and REST API requests to the original

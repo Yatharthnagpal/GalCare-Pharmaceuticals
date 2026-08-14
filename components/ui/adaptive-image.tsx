@@ -34,7 +34,7 @@ export function AdaptiveImage({
     return "/placeholder.svg"
   }, [src, svgSrc])
 
-  const shouldUseSvg = (forceSvg || isSlowNetwork) && !svgFailed
+  const shouldUseSvg = forceSvg && !svgFailed
 
   const currentSrc = shouldUseSvg ? targetSvg : src
   const isSvg = typeof currentSrc === "string" && currentSrc.endsWith(".svg")
@@ -43,6 +43,7 @@ export function AdaptiveImage({
     <Image
       src={currentSrc}
       alt={alt || "Galcare Pharmaceutical"}
+      quality={props.quality || 85}
       unoptimized={isSvg || unoptimized}
       decoding="async"
       priority={priority}
