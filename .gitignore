@@ -35,4 +35,6 @@ scratch/
 *.png
 # Keep README.md tracked
 !README.md
-
+# Ignore test outputs
+test-results/
+playwright-report/

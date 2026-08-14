@@ -264,6 +264,52 @@ export function Navbar() {
                 <MessageCircle className="size-4" />
                 Partner With Us
               </Link>
+
+              {/* Mobile User Profile / Auth Action */}
+              <div className="mt-2 pt-2 border-t border-border/50">
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-card border border-border/50">
+                      <div className="grid size-7 place-items-center rounded-full bg-primary/10 text-primary text-xs font-bold">
+                        {user.fullName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="overflow-hidden">
+                        <p className="text-xs font-bold text-foreground truncate">{user.fullName}</p>
+                        <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setOpen(false)}
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2.5 text-xs font-semibold text-foreground hover:bg-accent"
+                      >
+                        <User className="size-3.5 text-primary" /> My Portal
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setOpen(false);
+                        }}
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-500/20"
+                      >
+                        <LogOut className="size-3.5" /> Sign Out
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      openAuthModal("signup");
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card/80 px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-accent"
+                  >
+                    <User className="size-4 text-primary" />
+                    Sign In / Create Account
+                  </button>
+                )}
+              </div>
             </nav>
           </motion.div>
         )}

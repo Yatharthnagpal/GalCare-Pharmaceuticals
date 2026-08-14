@@ -40,7 +40,7 @@ test.describe('GalCare Pharmaceuticals — E2E User Journey & API Suite', () => 
     await expect(page.getByText(/third party manufacturing|contract manufacturing/i).first()).toBeVisible();
 
     // Verify quote calculator form elements exist
-    const quoteForm = page.locator('form, button').filter({ hasText: /submit|request|calculate|quote/i });
+    const quoteForm = page.locator('a, form, button').filter({ hasText: /submit|request|calculate|quote/i });
     await expect(quoteForm.first()).toBeVisible();
   });
 

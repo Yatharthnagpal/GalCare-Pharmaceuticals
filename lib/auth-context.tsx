@@ -211,7 +211,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const openAuthModal = (mode: "login" | "signup" = "signup", promptMessage?: string) => {
     setAuthMode(mode);
-    setAuthPromptMessage(promptMessage || null);
+    if (promptMessage !== undefined) {
+      setAuthPromptMessage(promptMessage);
+    }
     setIsAuthModalOpen(true);
   };
 

@@ -33,11 +33,14 @@ function ApplyFormContent() {
   })
   const [submitted, setSubmitted] = useState(false)
 
-  // Ensure user is signed in on page load / mount
+  const hasPromptedRef = useRef(false)
+
+  // Ensure user is signed in on page load / mount (only prompt once)
   useEffect(() => {
-    if (!user) {
+    if (!user && !hasPromptedRef.current) {
+      hasPromptedRef.current = true
       openAuthModal("login", "Please sign in to access the job application portal.")
-    } else {
+    } else if (user) {
       setFormData((prev) => ({
         ...prev,
         name: prev.name || user.fullName || "",
@@ -267,7 +270,7 @@ function ApplyFormContent() {
                     type="text"
                     required
                     className="mt-1.5 w-full rounded-xl border border-border px-4 py-3 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="Jane Doe"
+                    placeholder="Yatharth Nagpal"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
@@ -278,7 +281,7 @@ function ApplyFormContent() {
                     type="email"
                     required
                     className="mt-1.5 w-full rounded-xl border border-border px-4 py-3 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="jane@example.com"
+                    placeholder="yatharthnagpal@gmail.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
@@ -292,7 +295,7 @@ function ApplyFormContent() {
                     type="tel"
                     required
                     className="mt-1.5 w-full rounded-xl border border-border px-4 py-3 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                    placeholder="+91-98765-43210"
+                    placeholder="+91-98999 99999"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
@@ -404,12 +407,11 @@ function ApplyFormContent() {
               </div>
 
               <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">COVER LETTER / MESSAGE</label>
+                <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">COVER LETTER / MESSAGE (OPTIONAL)</label>
                 <textarea
                   rows={4}
-                  required
                   className="mt-1.5 w-full rounded-xl border border-border px-4 py-3 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none transition-all"
-                  placeholder="Introduce yourself, your academic background, and why you wish to join Galcare..."
+                  placeholder="Introduce yourself, your academic background, and why you wish to join Galcare (optional)..."
                   value={formData.coverLetter}
                   onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
                 />

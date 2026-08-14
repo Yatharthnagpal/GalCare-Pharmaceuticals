@@ -40,12 +40,12 @@ function GraphicalStatusTracker({ status, type }: StatusTimelineProps) {
       </div>
       
       {/* Visual Step Progress Bar */}
-      <div className="relative flex items-center justify-between">
-        {/* Connection line */}
-        <div className="absolute top-1/2 left-0 right-0 h-1 bg-muted -translate-y-1/2 -z-10 rounded-full" />
+      <div className="relative flex items-start justify-between">
+        {/* Connection line centered vertically relative to 28px step circles (top-3.5) */}
+        <div className="absolute top-3.5 left-3.5 right-3.5 h-1 bg-muted -translate-y-1/2 -z-10 rounded-full" />
         <div 
-          className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-sky-500 to-teal-500 -translate-y-1/2 -z-10 rounded-full transition-all duration-500"
-          style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+          className="absolute top-3.5 left-3.5 h-1 bg-gradient-to-r from-sky-500 to-teal-500 -translate-y-1/2 -z-10 rounded-full transition-all duration-500"
+          style={{ width: `calc(${((currentStep - 1) / 3) * 100}% - 7px)` }}
         />
 
         {steps.map((stepLabel, idx) => {
@@ -54,9 +54,9 @@ function GraphicalStatusTracker({ status, type }: StatusTimelineProps) {
           const isCurrent = stepNumber === currentStep;
 
           return (
-            <div key={stepLabel} className="flex flex-col items-center group">
+            <div key={stepLabel} className="flex flex-col items-center group flex-1">
               <div 
-                className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all z-10 ${
                   isCompleted
                     ? "bg-teal-500 text-slate-950 shadow-sm"
                     : isCurrent
@@ -66,7 +66,7 @@ function GraphicalStatusTracker({ status, type }: StatusTimelineProps) {
               >
                 {isCompleted ? <CheckCircle2 className="size-4" /> : stepNumber}
               </div>
-              <span className={`mt-1.5 text-[10px] text-center max-w-[80px] leading-tight font-medium ${
+              <span className={`mt-1.5 text-[9px] sm:text-[10px] text-center max-w-[64px] sm:max-w-[80px] leading-tight font-medium ${
                 isCurrent ? "text-foreground font-bold" : "text-muted-foreground"
               }`}>
                 {stepLabel}

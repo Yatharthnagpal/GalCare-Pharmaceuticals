@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -11,6 +11,7 @@ import { useAuth } from "@/lib/auth-context";
 export default function RegisterPage() {
   const { user, openAuthModal, add3rdPartyQuote } = useAuth();
   const [submitted, setSubmitted] = useState(false);
+  const hasPromptedRef = useRef(false);
   const [formData, setFormData] = useState({
     fullName: "",
     companyName: "",
@@ -23,11 +24,12 @@ export default function RegisterPage() {
   });
   const [errors, setErrors] = useState<{ phone?: string }>({});
 
-  // Ensure user is signed in on page load / mount
+  // Ensure user is signed in on page load / mount (only prompt once)
   useEffect(() => {
-    if (!user) {
+    if (!user && !hasPromptedRef.current) {
+      hasPromptedRef.current = true;
       openAuthModal("login", "Please sign in to access the 3rd party manufacturing quotation portal.");
-    } else {
+    } else if (user) {
       setFormData((prev) => ({
         ...prev,
         fullName: prev.fullName || user.fullName || "",
@@ -230,7 +232,7 @@ export default function RegisterPage() {
                           setFormData({ ...formData, fullName: e.target.value })
                         }
                         className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-all"
-                        placeholder="John Doe"
+                        placeholder="Yatharth Nagpal"
                       />
                     </div>
 
@@ -268,7 +270,7 @@ export default function RegisterPage() {
                             ? "border-red-500 focus:ring-red-500/50"
                             : "border-border focus:ring-primary/50"
                         }`}
-                        placeholder="+91 98765 43210"
+                        placeholder="+91 989999 99999"
                       />
                       {errors.phone && (
                         <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
@@ -287,7 +289,7 @@ export default function RegisterPage() {
                           setFormData({ ...formData, email: e.target.value })
                         }
                         className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm transition-all"
-                        placeholder="john@company.com"
+                        placeholder="yatharth@galcare.com"
                       />
                     </div>
                   </div>

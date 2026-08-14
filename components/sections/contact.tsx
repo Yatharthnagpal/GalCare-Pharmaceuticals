@@ -83,8 +83,8 @@ export function Contact() {
               className="rounded-[2rem] glass-strong p-6 shadow-soft sm:p-8 h-full flex flex-col justify-center"
             >
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Full name" id="name" placeholder="Dr. Jane Doe" required />
-                <Field label="Email" id="email" type="email" placeholder="doctor@galcare.com" required />
+                <Field label="Full name" id="name" placeholder="Dr. Yatharth Nagpal" required />
+                <Field label="Email" id="email" type="email" placeholder="yatharth@galcare.com" required />
               </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <Field label="Organization" id="org" placeholder="Clinic / Company" />

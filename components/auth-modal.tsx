@@ -239,7 +239,7 @@ export function AuthModal() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.2 }}
-          className="relative w-full max-w-md overflow-hidden rounded-3xl border border-border bg-card shadow-2xl"
+          className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl border border-border bg-card shadow-2xl"
         >
           {/* Header Bar */}
           <div className="flex items-center justify-between border-b border-border bg-muted/30 px-6 py-4">
@@ -276,7 +276,7 @@ export function AuthModal() {
                   type="button"
                   onClick={() => {
                     setErrors({});
-                    openAuthModal("login");
+                    openAuthModal("login", authPromptMessage || undefined);
                   }}
                   className={`flex-1 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all ${
                     authMode === "login"
@@ -290,7 +290,7 @@ export function AuthModal() {
                   type="button"
                   onClick={() => {
                     setErrors({});
-                    openAuthModal("signup");
+                    openAuthModal("signup", authPromptMessage || undefined);
                   }}
                   className={`flex-1 py-2.5 text-xs sm:text-sm font-semibold rounded-xl transition-all ${
                     authMode === "signup"
@@ -399,7 +399,7 @@ export function AuthModal() {
                         setEmail(e.target.value);
                         setPhone(e.target.value);
                       }}
-                      placeholder="doctor@galcare.com or nagpalyatharth99@gmail.com"
+                      placeholder="yatharthnagpal@gmail.com"
                       className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                     />
                   </div>
@@ -494,6 +494,19 @@ export function AuthModal() {
                 >
                   Sign In to Partner Portal <ArrowRight className="size-4" />
                 </button>
+                <p className="text-center text-xs text-muted-foreground pt-1">
+                  Don't have a partner account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setErrors({});
+                      openAuthModal("signup", authPromptMessage || undefined);
+                    }}
+                    className="font-bold text-primary hover:underline"
+                  >
+                    Create an Account
+                  </button>
+                </p>
               </form>
             ) : (
               /* REGISTRATION / CREATE ACCOUNT FORM */
@@ -611,6 +624,19 @@ export function AuthModal() {
                     </>
                   )}
                 </button>
+                <p className="text-center text-xs text-muted-foreground pt-1">
+                  Already registered as a partner?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setErrors({});
+                      openAuthModal("login", authPromptMessage || undefined);
+                    }}
+                    className="font-bold text-primary hover:underline"
+                  >
+                    Sign In
+                  </button>
+                </p>
               </form>
             )}
           </div>
