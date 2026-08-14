@@ -733,7 +733,7 @@ export const PRODUCTS: Product[] = [
     category: "Skin Infections & Anti-Fungal",
     tagline: "Broad-spectrum systemic triazole antifungal",
     description: "Itraconazole BP 200 mg micro-pelletized oral capsules for rapid eradication of systemic and recalcitrant fungal infections.",
-    image: "/products/itanol-200-tab.png",
+    image: "/lab.png",
     ingredients: ["Itraconazole BP 200 mg"],
     benefits: ["High tissue lipophilicity", "Once-daily therapeutic dosing"],
     genericName: "Itraconazole 200 mg Capsules",

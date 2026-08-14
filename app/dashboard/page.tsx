@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@/lib/auth-context";
-import { Briefcase, Factory, HelpCircle, FileText, User, ArrowUpRight, CheckCircle2, Search, MessageSquare, Printer, Clock, ShieldCheck, ChevronRight } from "lucide-react";
+import { Briefcase, Factory, HelpCircle, FileText, User, ArrowUpRight, CheckCircle2, Search, MessageSquare, Printer, Clock, ShieldCheck, ChevronRight, Trash2, AlertTriangle, X } from "lucide-react";
 import { Reveal } from "@/components/motion-primitives";
 import Link from "next/link";
 
@@ -80,7 +80,17 @@ function GraphicalStatusTracker({ status, type }: StatusTimelineProps) {
 }
 
 export default function UserDashboardPage() {
-  const { user, userJobApps, user3rdPartyQuotes, userEnquiries, openAuthModal, logout } = useAuth();
+  const {
+    user,
+    userJobApps,
+    user3rdPartyQuotes,
+    userEnquiries,
+    openAuthModal,
+    logout,
+    deleteJobApplication,
+    delete3rdPartyQuote,
+    deleteEnquiry,
+  } = useAuth();
 
   // Filter items matching logged in user
   const myJobApps = user ? userJobApps.filter(
@@ -103,12 +113,29 @@ export default function UserDashboardPage() {
   };
 
   const [activeTab, setActiveTab] = useState<"quotes" | "jobs" | "enquiries">("enquiries");
+  const [itemToDelete, setItemToDelete] = useState<{
+    id: string;
+    type: "quote" | "job" | "enquiry";
+    title: string;
+  } | null>(null);
 
   useEffect(() => {
     if (user) {
       setActiveTab(getDefaultTab());
     }
   }, [userJobApps.length, user3rdPartyQuotes.length, user?.email]);
+
+  const handleConfirmDelete = () => {
+    if (!itemToDelete) return;
+    if (itemToDelete.type === "quote") {
+      delete3rdPartyQuote(itemToDelete.id);
+    } else if (itemToDelete.type === "job") {
+      deleteJobApplication(itemToDelete.id);
+    } else if (itemToDelete.type === "enquiry") {
+      deleteEnquiry(itemToDelete.id);
+    }
+    setItemToDelete(null);
+  };
 
   const handlePrintSummary = (title: string, details: string, id: string) => {
     if (typeof window !== "undefined") {
@@ -335,6 +362,13 @@ export default function UserDashboardPage() {
                           >
                             <Printer className="size-4" />
                           </button>
+                          <button
+                            onClick={() => setItemToDelete({ id: q.id, type: "quote", title: q.requirements })}
+                            className="p-2 border border-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors"
+                            title="Delete Quotation Request"
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
                         </div>
                       </div>
                       
@@ -399,6 +433,13 @@ export default function UserDashboardPage() {
                           >
                             <Printer className="size-4" />
                           </button>
+                          <button
+                            onClick={() => setItemToDelete({ id: app.id, type: "job", title: app.jobTitle })}
+                            className="p-2 border border-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors"
+                            title="Withdraw Job Application"
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
                         </div>
                       </div>
 
@@ -453,6 +494,13 @@ export default function UserDashboardPage() {
                           >
                             <Printer className="size-4" />
                           </button>
+                          <button
+                            onClick={() => setItemToDelete({ id: enq.id, type: "enquiry", title: enq.productName })}
+                            className="p-2 border border-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors"
+                            title="Delete Product Inquiry"
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
                         </div>
                       </div>
 
@@ -487,6 +535,58 @@ export default function UserDashboardPage() {
             </div>
           )}
         </div>
+
+        {/* Deletion Confirmation Modal */}
+        {itemToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+            <div className="relative w-full max-w-md bg-card border border-border rounded-3xl p-6 shadow-2xl space-y-4">
+              <button
+                onClick={() => setItemToDelete(null)}
+                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent transition-colors"
+              >
+                <X className="size-4" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="grid size-12 place-items-center rounded-2xl bg-rose-500/10 text-rose-500">
+                  <AlertTriangle className="size-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-foreground">Confirm Deletion</h3>
+                  <p className="text-xs text-muted-foreground">This action cannot be undone.</p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-muted/50 border border-border text-xs text-foreground space-y-1">
+                <p className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">
+                  Target {itemToDelete.type === "quote" ? "Quota Request" : itemToDelete.type === "job" ? "Job Application" : "Product Inquiry"}
+                </p>
+                <p className="font-bold text-sm text-foreground truncate">{itemToDelete.title}</p>
+                <p className="text-muted-foreground text-[11px]">ID: {itemToDelete.id}</p>
+              </div>
+
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Are you sure you want to permanently delete this {itemToDelete.type === "quote" ? "3rd party quotation request" : itemToDelete.type === "job" ? "job application" : "product inquiry"}? It will be removed from your portal immediately.
+              </p>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  onClick={() => setItemToDelete(null)}
+                  className="px-4 py-2.5 rounded-xl border border-border text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-glow transition-all flex items-center gap-1.5"
+                >
+                  <Trash2 className="size-3.5" />
+                  Confirm & Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
     </div>

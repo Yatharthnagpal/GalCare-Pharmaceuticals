@@ -163,7 +163,8 @@ function ApplyFormContent() {
             phone: formData.phone,
             jobTitle: appliedTitle,
             experience: formData.experience,
-            resume: pdfFile.name,
+            resume: pdfFile.dataUrl || pdfFile.name,
+            resumeName: pdfFile.name,
           }),
         })
 
@@ -183,7 +184,7 @@ function ApplyFormContent() {
         department: "R&D",
         phone: formData.phone || user.phone || "",
         experience: formData.experience || "Not specified",
-        resume: pdfFile.name || "resume.pdf",
+        resume: pdfFile.dataUrl || pdfFile.name || "resume.pdf",
       })
 
       setSubmitted(true)

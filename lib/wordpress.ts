@@ -200,7 +200,19 @@ export async function fetchWPJobs(): Promise<Job[]> {
   if (!baseUrl) return []
 
   try {
-    // 1. Try Custom Post Type 'jobs'
+    // 1. Try Custom Post Type 'job' (confirmed slug in WordPress admin)
+    const jobRes = await fetch(`${baseUrl}/wp-json/wp/v2/job?_embed`, {
+      next: { revalidate: 60 },
+    })
+
+    if (jobRes.ok) {
+      const jobData = await jobRes.json()
+      if (Array.isArray(jobData) && jobData.length > 0) {
+        return jobData.map((item: any) => formatWPJob(item))
+      }
+    }
+
+    // 2. Try Custom Post Type 'jobs' (alternate slug)
     const res = await fetch(`${baseUrl}/wp-json/wp/v2/jobs?_embed`, {
       next: { revalidate: 60 },
     })
@@ -212,7 +224,7 @@ export async function fetchWPJobs(): Promise<Job[]> {
       }
     }
 
-    // 2. Try Custom Post Type 'job_listing'
+    // 3. Try Custom Post Type 'job_listing'
     const altRes = await fetch(`${baseUrl}/wp-json/wp/v2/job_listing?_embed`, {
       next: { revalidate: 60 },
     })
@@ -223,7 +235,7 @@ export async function fetchWPJobs(): Promise<Job[]> {
       }
     }
 
-    // 3. Try Standard Posts matching search query 'job' or 'career'
+    // 4. Try Standard Posts matching search query 'job' or 'career'
     const postRes = await fetch(`${baseUrl}/wp-json/wp/v2/posts?search=career&_embed`, {
       next: { revalidate: 60 },
     })

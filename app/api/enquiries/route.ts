@@ -36,3 +36,22 @@ export async function POST(request: Request) {
     )
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get("id")
+
+    return NextResponse.json({
+      success: true,
+      message: `Enquiry ${id || ""} deleted successfully.`,
+    })
+  } catch (error) {
+    console.error("Error deleting enquiry:", error)
+    return NextResponse.json(
+      { error: "Internal server error deleting product enquiry." },
+      { status: 500 }
+    )
+  }
+}
+

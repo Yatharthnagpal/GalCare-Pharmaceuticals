@@ -6,19 +6,22 @@ export async function GET() {
   try {
     const wpPosts = await fetchWPPosts(1, 20)
     if (wpPosts && wpPosts.length > 0) {
-      const formatted = wpPosts.map((post) => ({
-        id: `wp-${post.id}`,
-        slug: post.slug,
-        title: post.title.rendered,
-        category: "Corporate News",
-        date: new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-        excerpt: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
-        summary: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
-        readTime: "3 min read",
-        image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/images/news/news-plant.png",
-        content: post.content.rendered,
-        author: "Galcare Corporate PR",
-      }))
+      const formatted = wpPosts.map((post) => {
+        const acf = (post as any).acf || {}
+        return {
+          id: `wp-${post.id}`,
+          slug: post.slug,
+          title: post.title.rendered,
+          category: acf.news_category || "Corporate News",
+          date: new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          excerpt: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
+          summary: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
+          readTime: acf.read_time || "3 min read",
+          image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/images/news/news-plant.png",
+          content: post.content.rendered,
+          author: acf.author_name || "Galcare Corporate PR",
+        }
+      })
       return NextResponse.json({ success: true, articles: formatted })
     }
     return NextResponse.json({ success: true, articles: NEWS })

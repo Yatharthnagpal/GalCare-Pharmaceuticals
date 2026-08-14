@@ -74,6 +74,9 @@ interface AuthContextType {
   updateUserJobAppStatus: (id: string, status: UserJobApp["status"]) => void;
   updateUser3rdPartyStatus: (id: string, status: User3rdPartyQuote["status"]) => void;
   updateUserEnquiryStatus: (id: string, status: UserEnquiry["status"]) => void;
+  deleteJobApplication: (id: string) => void;
+  delete3rdPartyQuote: (id: string) => void;
+  deleteEnquiry: (id: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -331,20 +334,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const updated = [newApp, ...userJobApps];
     setUserJobApps(updated);
     localStorage.setItem("galcare_user_job_apps", JSON.stringify(updated));
-
-    // Automatically sync with WordPress API route
-    fetch("/api/careers/apply", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: appData.userName,
-        email: appData.userEmail,
-        phone: appData.phone,
-        jobTitle: appData.jobTitle,
-        experience: appData.experience,
-        resume: appData.resume,
-      }),
-    }).catch((e) => console.warn("[WP SYNC] Failed to sync job application to WordPress:", e));
   };
 
   const add3rdPartyQuote = (quoteData: Omit<User3rdPartyQuote, "id" | "date" | "status">) => {
@@ -417,6 +406,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("galcare_user_enquiries", JSON.stringify(updated));
   };
 
+  const deleteJobApplication = (id: string) => {
+    const updated = userJobApps.filter((a) => a.id !== id);
+    setUserJobApps(updated);
+    localStorage.setItem("galcare_user_job_apps", JSON.stringify(updated));
+    fetch(`/api/careers/apply?id=${encodeURIComponent(id)}`, { method: "DELETE" }).catch((e) =>
+      console.warn("Failed to sync application deletion with API:", e)
+    );
+  };
+
+  const delete3rdPartyQuote = (id: string) => {
+    const updated = user3rdPartyQuotes.filter((q) => q.id !== id);
+    setUser3rdPartyQuotes(updated);
+    localStorage.setItem("galcare_user_quotes", JSON.stringify(updated));
+    fetch(`/api/quotes?id=${encodeURIComponent(id)}`, { method: "DELETE" }).catch((e) =>
+      console.warn("Failed to sync quote deletion with API:", e)
+    );
+  };
+
+  const deleteEnquiry = (id: string) => {
+    const updated = userEnquiries.filter((e) => e.id !== id);
+    setUserEnquiries(updated);
+    localStorage.setItem("galcare_user_enquiries", JSON.stringify(updated));
+    fetch(`/api/enquiries?id=${encodeURIComponent(id)}`, { method: "DELETE" }).catch((e) =>
+      console.warn("Failed to sync enquiry deletion with API:", e)
+    );
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -441,6 +457,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updateUserJobAppStatus,
         updateUser3rdPartyStatus,
         updateUserEnquiryStatus,
+        deleteJobApplication,
+        delete3rdPartyQuote,
+        deleteEnquiry,
       }}
     >
       {children}

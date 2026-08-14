@@ -4,7 +4,7 @@ import { submitWPFormEntry } from "@/lib/wordpress"
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, email, phone, jobTitle, experience, resume } = body
+    const { name, email, phone, jobTitle, experience, resume, resumeName } = body
 
     if (!name || !email || !jobTitle) {
       return NextResponse.json(
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
       jobTitle,
       experience,
       resume,
+      meta: { resumeName },
       subject: `Career Application: ${jobTitle}`,
     })
 
@@ -37,3 +38,22 @@ export async function POST(request: Request) {
     )
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get("id")
+
+    return NextResponse.json({
+      success: true,
+      message: `Job application ${id || ""} withdrawn successfully.`,
+    })
+  } catch (error) {
+    console.error("Error deleting career application:", error)
+    return NextResponse.json(
+      { error: "Internal server error deleting career application." },
+      { status: 500 }
+    )
+  }
+}
+

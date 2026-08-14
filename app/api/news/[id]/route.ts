@@ -10,20 +10,21 @@ export async function GET(
     const post = await fetchWPPostBySlug(id)
 
     if (post) {
+      const acf = (post as any).acf || {}
       return NextResponse.json({
         success: true,
         article: {
           id: `wp-${post.id}`,
           slug: post.slug,
           title: post.title.rendered,
-          category: "Corporate News",
+          category: acf.news_category || "Corporate News",
           date: new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
           excerpt: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
           summary: post.excerpt.rendered.replace(/<[^>]+>/g, "").slice(0, 160) + "...",
-          readTime: "3 min read",
+          readTime: acf.read_time || "3 min read",
           image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "/images/news/news-plant.png",
           content: post.content.rendered,
-          author: "Galcare Corporate PR",
+          author: acf.author_name || "Galcare Corporate PR",
         },
       })
     }
