@@ -213,7 +213,7 @@ export function ThirdPartyCTA() {
             </Reveal>
           </div>
 
-          <Reveal>
+          <Reveal className="hidden md:block">
             <div className="relative rounded-[2rem] border border-border shadow-soft aspect-[1.3] w-full overflow-hidden bg-muted">
               {/* Big facility image */}
               <AdaptiveImage
@@ -343,7 +343,7 @@ export function ThirdPartyCTA() {
         </motion.div>
 
         {/* Interactive Configurator Wizard */}
-        <Reveal className="mt-20">
+        <Reveal className="mt-20 hidden md:block">
           <div className="max-w-4xl mx-auto rounded-3xl border border-border bg-background p-6 sm:p-10 shadow-soft">
             <div className="flex items-center justify-between border-b border-border pb-6">
               <div className="flex items-center gap-2">

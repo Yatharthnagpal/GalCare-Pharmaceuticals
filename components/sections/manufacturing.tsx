@@ -73,7 +73,7 @@ export function Manufacturing() {
             </Reveal>
           </div>
 
-          <Reveal>
+          <Reveal className="hidden md:block">
             <div className="relative rounded-[2rem] border border-border shadow-soft aspect-[1.3] w-full overflow-hidden bg-muted">
               {/* Big facility image */}
               <AdaptiveImage

@@ -69,7 +69,7 @@ export function Overview() {
           </div>
 
           {/* horizontal animated timeline */}
-          <div className="relative mt-10 pb-4">
+          <div className="relative mt-10 pb-4 hidden md:block">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/60 mb-5 text-center sm:text-left">
               Our Journey Milestones
             </p>

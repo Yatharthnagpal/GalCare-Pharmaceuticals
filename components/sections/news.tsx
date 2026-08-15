@@ -53,7 +53,7 @@ export function News() {
   })
 
   return (
-    <section id="news" className="relative py-10 md:py-16">
+    <section id="news" className="relative py-10 md:py-16 hidden md:block">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <Reveal className="flex flex-col items-center text-center lg:flex-row lg:items-end lg:justify-between lg:text-left gap-6">
           <div className="max-w-2xl">

@@ -114,7 +114,7 @@ export function Products() {
                   }
                 }
               }}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3"
             >
               {visible.map((product, i) => (
                 <motion.div
@@ -123,36 +123,36 @@ export function Products() {
                   className={cn("h-full", i >= 4 && "hidden sm:block")}
                 >
                   <TiltCard className="h-full">
-                    <article className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all hover:border-primary/50 hover:shadow-glow">
-                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[2rem] bg-gradient-to-b from-card via-muted/20 to-muted/50 p-4 flex items-center justify-center border-b border-border/40">
-                        <span className="absolute left-3.5 top-3.5 z-10 rounded-full bg-card/90 px-3 py-1 text-[10px] sm:text-xs font-bold text-primary backdrop-blur-sm border border-border/40">
+                    <article className="group flex h-full flex-col overflow-hidden rounded-2xl sm:rounded-[2rem] border border-border bg-card shadow-soft transition-all hover:border-primary/50 hover:shadow-glow">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-2xl sm:rounded-t-[2rem] bg-gradient-to-b from-card via-muted/20 to-muted/50 p-2 sm:p-4 flex items-center justify-center border-b border-border/40">
+                        <span className="absolute left-2 top-2 sm:left-3.5 sm:top-3.5 z-10 rounded-full bg-card/90 px-2 py-0.5 sm:px-3 sm:py-1 text-[8px] sm:text-xs font-bold text-primary backdrop-blur-sm border border-border/40 truncate max-w-[65%] sm:max-w-none">
                           {product.category}
                         </span>
                         {product.featured && (
-                          <span className="absolute right-3.5 top-3.5 z-10 rounded-full bg-primary/90 px-2.5 py-0.5 text-[9px] font-bold text-primary-foreground shadow-sm">
-                            Hero Product
+                          <span className="absolute right-2 top-2 sm:right-3.5 sm:top-3.5 z-10 rounded-full bg-primary/90 px-1.5 py-0.5 sm:px-2.5 sm:py-0.5 text-[8px] sm:text-[9px] font-bold text-primary-foreground shadow-sm">
+                            Hero
                           </span>
                         )}
                         <AdaptiveImage
-                          src={product.image || "/placeholder.svg"}
+                          src={product.image || "/placeholder.jpg"}
                           alt={product.name}
                           fill
-                          className="object-contain p-3 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
+                          className="object-contain p-2 sm:p-3 transition-transform duration-500 group-hover:scale-105 drop-shadow-sm"
                         />
                       </div>
 
-                      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+                      <div className="flex flex-1 flex-col justify-between p-3 sm:p-6">
                         <div>
-                          <h3 className="text-base sm:text-lg font-bold tracking-tight leading-tight line-clamp-1">{product.name}</h3>
+                          <h3 className="text-xs sm:text-lg font-bold tracking-tight leading-tight line-clamp-1">{product.name}</h3>
                           {product.composition ? (
-                            <p className="mt-1 text-xs font-semibold text-primary leading-tight line-clamp-1 h-4">{product.composition}</p>
+                            <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs font-semibold text-primary leading-tight line-clamp-1 h-3.5 sm:h-4">{product.composition}</p>
                           ) : (
-                            <div className="h-4 mt-1" />
+                            <div className="h-3.5 sm:h-4 mt-0.5 sm:mt-1" />
                           )}
-                          <p className="mt-2 text-xs sm:text-sm leading-relaxed text-muted-foreground line-clamp-2 h-10">{product.description}</p>
+                          <p className="mt-1 sm:mt-2 text-[10px] sm:text-sm leading-tight sm:leading-relaxed text-muted-foreground line-clamp-2 h-7 sm:h-10">{product.description}</p>
                         </div>
 
-                        <div className="mt-4 hidden sm:block">
+                        <div className="mt-3 hidden sm:block">
                           <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-foreground/70">
                             <FlaskConical className="size-3.5 text-primary" /> Key Active Ingredients
                           </p>
@@ -168,12 +168,14 @@ export function Products() {
                           </div>
                         </div>
 
-                        <div className="mt-auto pt-5 flex items-center">
+                        <div className="mt-auto pt-3 sm:pt-5 flex items-center">
                           <Link
                             href={`/products/${product.id}`}
-                            className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground shadow-glow hover:bg-primary/95 transition-transform hover:-translate-y-0.5"
+                            className="inline-flex w-full items-center justify-center gap-1 rounded-lg sm:rounded-xl bg-primary px-2.5 py-1.5 sm:px-4 sm:py-2.5 text-[11px] sm:text-sm font-semibold text-primary-foreground shadow-glow hover:bg-primary/95 transition-transform hover:-translate-y-0.5"
                           >
-                            View Formulation <ArrowRight className="size-3.5" />
+                            <span className="hidden sm:inline">View Formulation</span>
+                            <span className="sm:hidden">View Details</span>
+                            <ArrowRight className="size-3 sm:size-3.5" />
                           </Link>
                         </div>
                       </div>
